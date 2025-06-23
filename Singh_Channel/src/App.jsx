@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import UserLayout from './Layouts/UserLayout';
 import AdminLayout from './Layouts/AdminLayout';
 import Header from './Components/Header/Header';
+import AdsCard from './Components/Ui/Carousel';
 
 
 // const router=createBrowserRouter([
@@ -35,9 +36,9 @@ import Header from './Components/Header/Header';
 
 function App() {
   return (
-    <div>
+    <div className='bg-slate-100  p-2'>
 
-     <Header/>
+     <AdsCard/>
     </div>
     
   );
