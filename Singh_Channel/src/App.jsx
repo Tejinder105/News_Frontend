@@ -4,6 +4,7 @@ import UserLayout from './Layouts/UserLayout';
 import AdminLayout from './Layouts/AdminLayout';
 import Header from './Components/Header/Header';
 import AdsCard from './Components/Ui/Carousel';
+import Weather from './Components/Ui/Weather';
 
 
 // const router=createBrowserRouter([
@@ -37,8 +38,7 @@ import AdsCard from './Components/Ui/Carousel';
 function App() {
   return (
     <div className='bg-slate-100  p-2'>
-
-     <AdsCard/>
+      <Weather />
     </div>
     
   );
