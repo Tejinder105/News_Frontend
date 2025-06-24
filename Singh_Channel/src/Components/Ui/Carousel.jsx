@@ -95,32 +95,30 @@ function Carousel({ autoSlide = true, autoSlideInterval = 3000 }) {
   }, [autoSlide, autoSlideInterval, paginate]);
 
   return (
-    <div className="relative min-h-[400px] max-w-3xl overflow-hidden rounded-2xl bg-white shadow-lg">
-      <AnimatePresence initial={false} custom={direction}>
+<div className="relative h-full w-full overflow-hidden rounded-2xl bg-white shadow-lg">      <AnimatePresence initial={false} custom={direction}>
         <motion.div
-  key={index}
-  custom={direction}
-  variants={variants}
-  initial="enter"
-  animate="center"
-  exit="exit"
-  transition={{
-    duration: 0.4,
-    ease: "easeInOut",
-  }}
-  drag="x"
-  dragConstraints={{ left: 0, right: 0 }}
-  dragElastic={0.1}
-  onDragEnd={(e, { offset, velocity }) => {
-    const swipe = swipePower(offset.x, velocity.x);
-    if (swipe < -swipeConfidenceThreshold) paginate(1);
-    else if (swipe > swipeConfidenceThreshold) paginate(-1);
-  }}
-  className="absolute inset-0 w-full h-full p-2 flex items-center justify-center"
->
-  <CarouselItem item={items[currentIndex]} />
-</motion.div>
-
+          key={index}
+          custom={direction}
+          variants={variants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{
+            duration: 0.4,
+            ease: "easeInOut",
+          }}
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.1}
+          onDragEnd={(e, { offset, velocity }) => {
+            const swipe = swipePower(offset.x, velocity.x);
+            if (swipe < -swipeConfidenceThreshold) paginate(1);
+            else if (swipe > swipeConfidenceThreshold) paginate(-1);
+          }}
+          className="absolute inset-0 flex h-full w-full items-center justify-center p-2"
+        >
+          <CarouselItem item={items[currentIndex]} />
+        </motion.div>
       </AnimatePresence>
 
       {/* Navigation Buttons */}
