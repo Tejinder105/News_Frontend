@@ -1,23 +1,35 @@
 import React from "react";
 
 function Button({
-    children,
-    type = "button",
-    bgColor = "bg-white/10",
-    textColor = "text-white",
-    className = "",
-    ...props
+  children,
+  type = "button",
+  classname = "",
+  size = "medium",
+  variant = "default",
+  iconLeft,
+  iconRight,
+  ...props
 }) {
-    return (
-    
+  const baseClasses =
+    "flex items-center justify-center gap-1.5 rounded-md transition-colors duration-300 focus-outline-none  text-base font-semibold";
 
-        <button
-            className={`${bgColor} backdrop-blur-md flex items-center gap-1.5 border border-white/20 ${textColor} rounded-md px-4 py-1 text-base font-semibold transition-all duration-300 hover:bg-white/10`}
-            >
-            {children}
-        </button>
-        
-    );
+    const variantClasses={
+        default:"text-white",
+        outline:"bg-transparent text-white hover:bg-blue-400",
+        ghost:"bg-transparent backdrop-blur-md border border-white/20 text-white hover:white/10 "
+    }
+    const sizeClasses = {
+    small: "px-3 py-1.5 text-sm",
+    medium: "px-4 py-2 text-base",
+    large: "px-6 py-3 text-lg",
+  };
+  return (
+    <div type={type} className={`${baseClasses} ${classname} ${variantClasses[variant]} ${sizeClasses[size]} `} {...props}>
+      {iconLeft && <span className="flex-shrink-0">{iconLeft}</span>}
+      {children && <span>{children}</span>}
+      {iconRight && <span className="flex-shrink-0">{iconRight}</span>}
+    </div>
+  );
 }
 
 export default Button;
