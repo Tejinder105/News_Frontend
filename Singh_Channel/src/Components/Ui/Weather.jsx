@@ -75,7 +75,7 @@ function Weather() {
                         </div>
                     </div>
                     <div className="flex flex-col">
-                            <span className="text-base font-semibold">
+                            <span className="text-xs font-semibold">
                                 {weatherData.current.condition.text}
                             </span>
 
