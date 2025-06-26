@@ -3,7 +3,8 @@ import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import Carousel from "./Ui/Carousel";
 import Weather from "./Ui/Weather"
-import AdsCard from "./Ui/AdsCard"
+import Card from "./Ui/Card";
+import CardAd from "./Ui/CardAd";
 
 export {
     Button,
@@ -11,5 +12,6 @@ export {
     Footer,
     Carousel,
     Weather,
-    AdsCard
+    CardAd,
+    Card
 };
