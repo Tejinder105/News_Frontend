@@ -1,5 +1,4 @@
 import { Mail, MapPin, Phone } from "lucide-react";
-import { footer } from "motion/react-client";
 import React from "react";
 import { NavLink } from "react-router-dom";
 
@@ -71,7 +70,7 @@ function Footer() {
               Contact Us
             </h4>
             <div className="flex items-start space-x-3">
-              <MapPin size={18} className="text-sky mt-0.5 flex-shrink-0" />
+              <MapPin size={18} className="text-sky-400 mt-0.5 flex-shrink-0" />
               <p className="text-sm text-gray-300">
                 Main Market, Ratia, Fatehabad District, Haryana-125051
               </p>
@@ -97,7 +96,7 @@ function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h4 className="inline-block border-b border-sky-400 pb-2 text-lg font-semibold">
+            <h4 className="inline-block border-b border-sky-400 text-lg font-semibold">
               Quick Links
             </h4>
             <ul className="space-y-2">
