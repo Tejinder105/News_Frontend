@@ -3,6 +3,10 @@
 @layer utilities{
     .animate-marquee{
         animation: marquee 40s linear infinite;
+
+    }
+    .animate-ticker{
+      animation: ticker 10s linear infinitel;
     }
     
   @keyframes marquee {
@@ -13,5 +17,16 @@
 
       transform: translateX(-100%); 
     }
+
   }
+  @keyframes ticker{
+    from{
+      transform: translateX(50%);
+    }
+    to{
+      transform: translateX(-50%);
+    }
+  }
+
+
 }

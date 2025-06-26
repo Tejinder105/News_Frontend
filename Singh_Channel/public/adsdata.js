@@ -1,4 +1,4 @@
-const items = [
+export const items = [
   {
     name: "Vintage Accessories",
     image: "/shop.jpg",
