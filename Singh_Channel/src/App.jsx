@@ -3,6 +3,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import UserLayout from "./Layouts/UserLayout";
 import AdminLayout from "./Layouts/AdminLayout";
 import Home from "./Pages/Home";
+import Navigator from "./Pages/Navigator";
+import Article from "./Pages/Article";
+import NewsArticle from "./Pages/NewsArticle";
 
 const router = createBrowserRouter([
   {
@@ -13,9 +16,14 @@ const router = createBrowserRouter([
         path: "/",
         element: <Home />,
       },
-      // {
-      //   path:"/newsarticle/:id"
-      // },
+      {
+        path: "/nav",
+        element: <Navigator />,
+      },
+      {
+        path: "/article/:id",
+        element: <NewsArticle/>
+      },
       // {
       //   path:"/admin",
       //   element:<AdminLayout/>,

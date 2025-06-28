@@ -5,7 +5,8 @@ import Carousel from "./Ui/Carousel";
 import Weather from "./Ui/Weather"
 import Card from "./Ui/Card";
 import CardAd from "./Ui/CardAd";
-
+import Spinner from "./Ui/Spinner";
+import ResourceNotFound from "./Ui/ResourceNotFound";
 export {
     Button,
     Header,
@@ -13,5 +14,7 @@ export {
     Carousel,
     Weather,
     CardAd,
-    Card
+    Card,
+    Spinner,
+    ResourceNotFound
 };

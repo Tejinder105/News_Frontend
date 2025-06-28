@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import React from "react";
-import { Carousel, Weather,CardAd, Card } from "../Components";
+import { Carousel, Weather, CardAd, Card } from "../Components";
 import { items } from "../carousel.js";
 import { Link } from "react-router-dom";
 import { newsItem } from "../NewItem.js";
@@ -42,14 +42,13 @@ const adItem = [
 
 function Home() {
   return (
-    <div className="max-w-7xl mx-auto bg-slate-100 px-2 py-3 sm:px-4 lg:px-6">
+    <div className="mx-auto max-w-7xl bg-slate-100 px-2 py-3 sm:px-4 lg:px-6">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
-
         <div className="space-y-4 md:col-span-2 lg:col-span-3">
           <Carousel items={items} />
 
           <div className="flex items-center justify-between border-b border-slate-300 pb-2">
-            <h1 className="text-xl font-semibold  text-gray-900 sm:text-2xl">
+            <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl">
               Top Stories
             </h1>
             <Link
@@ -59,10 +58,11 @@ function Home() {
               Read more <ArrowRight size={16} className="ml-1" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 gap-3  sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
             {newsItem.map((item, index) => (
               <Card
                 key={index}
+                id={item.id}
                 title={item.title}
                 description={item.description}
                 timeAgo={item.timeAgo}
@@ -79,7 +79,7 @@ function Home() {
             <h2 className="border-b border-slate-300 pb-2 text-lg font-semibold text-gray-900 sm:text-xl">
               Advertisements
             </h2>
-            <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-1">
               {adItem.map((ad, idx) => (
                 <CardAd key={idx} data={ad} />
               ))}

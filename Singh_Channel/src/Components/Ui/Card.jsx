@@ -2,7 +2,7 @@ import React from "react";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
-function Card({ title, description, timeAgo, imageUrl }) {
+function Card({ id, title, description, timeAgo, imageUrl }) {
   return (
     <div className="group flex h-full w-full flex-col overflow-hidden rounded-lg bg-white shadow-sm transition-all duration-200 hover:shadow-md">
       <div className="aspect-auto h-35 w-full flex-shrink-0">
@@ -21,7 +21,10 @@ function Card({ title, description, timeAgo, imageUrl }) {
         </p>
         <div className="mt-auto flex items-center justify-between text-xs text-gray-500 sm:text-sm">
           <span>{timeAgo}</span>
-          <Link className="flex items-center font-medium text-blue-600 transition-colors hover:text-blue-800">
+          <Link 
+            to={`/article/${id}`}
+            className="flex items-center font-medium text-blue-600 transition-colors hover:text-blue-800"
+          >
             <span>Read More</span> <ArrowRight size={16} className="ml-1" />
           </Link>
         </div>
