@@ -32,7 +32,7 @@ const router = createBrowserRouter([
     element: <AdminLayout />,
     children: [
       {
-        index: "/admin",
+        index: true,
         element: <Dashboard />,
       },
       {
