@@ -76,7 +76,7 @@ function Home() {
         <div className="space-y-4 md:col-span-1">
           <Weather />
           <div>
-            <h2 className="border-b border-slate-300 pb-2 text-lg font-semibold text-gray-900 sm:text-xl">
+            <h2 className="border-b border-slate-300 mb-2 text-lg font-semibold text-gray-900 sm:text-xl">
               Advertisements
             </h2>
             <div className="grid grid-cols-2 gap-3 md:grid-cols-1">
