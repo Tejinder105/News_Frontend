@@ -4,8 +4,9 @@ import UserLayout from "./Layouts/UserLayout";
 import AdminLayout from "./Layouts/AdminLayout";
 import Home from "./Pages/Home";
 import Navigator from "./Pages/Navigator";
-import Article from "./Pages/Article";
 import NewsArticle from "./Pages/NewsArticle";
+import Dashboard from "./Pages/Admin/Dashboard";
+import CreateArticle from "./Pages/Admin/CreateArticle";
 
 const router = createBrowserRouter([
   {
@@ -13,29 +14,31 @@ const router = createBrowserRouter([
     element: <UserLayout />,
     children: [
       {
-        path: "/",
+        index: true,
         element: <Home />,
       },
       {
-        path: "/nav",
+        path: "nav",
         element: <Navigator />,
       },
       {
-        path: "/article/:id",
-        element: <NewsArticle/>
+        path: "article/:id",
+        element: <NewsArticle />,
       },
-      // {
-      //   path:"/admin",
-      //   element:<AdminLayout/>,
-      //   children:[
-      //     {
-      //       path:"/admin",
-      //     }
-      //   ]
-      // },
-      // {
-      //   path
-      // }
+    ],
+  },
+  {
+    path: "/admin",
+    element: <AdminLayout />,
+    children: [
+      {
+        index: "/admin",
+        element: <Dashboard />,
+      },
+      {
+        path: "createarticles",
+        element: <CreateArticle />,
+      },
     ],
   },
 ]);
