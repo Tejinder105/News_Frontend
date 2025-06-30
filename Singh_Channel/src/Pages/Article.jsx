@@ -2,7 +2,7 @@ import { FastForward } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import YouTube from "react-youtube";
-import { CardAd } from "../Components";
+import { CardAd, ResourceNotFound, Spinner } from "../Components";
 import { adItem } from "../AdItem";
 
 function Article() {
@@ -31,40 +31,13 @@ function Article() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#121212] px-4 transition-all duration-300">
-        <div
-          className="flex flex-col items-center gap-4"
-          role="status"
-          aria-label="Loading article"
-        >
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-700 border-t-blue-500 sm:h-12 sm:w-12"></div>
-          <p className="animate-pulse text-base text-gray-400 sm:text-lg">
-            Loading article...
-          </p>
-        </div>
-      </div>
+     <Spinner/>
     );
   }
 
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#121212] px-4 transition-all duration-300">
-        <div className="w-full max-w-md transform rounded-xl bg-[#1c1c1c] p-6 text-center shadow-lg ring-1 ring-gray-800 transition-transform hover:scale-105 sm:p-8">
-          <h2 className="mb-4 text-2xl leading-snug font-bold text-red-500 sm:text-3xl">
-            Article Not Found
-          </h2>
-          <p className="text-base leading-relaxed text-gray-400 sm:text-lg">
-            We couldn't locate the article you requested.
-          </p>
-          <a
-            href="/"
-            className="mt-6 inline-block rounded-lg bg-blue-600 px-5 py-2.5 text-base font-medium text-white transition hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            aria-label="Return to homepage"
-          >
-            ← Back to Home
-          </a>
-        </div>
-      </div>
+    <ResourceNotFound/>
     );
   }
 
@@ -96,7 +69,7 @@ function Article() {
               </div>
             </div>
           </div>
-          {/* Article Body */}
+      
           <div className="bg-[#181818] rounded-xl p-6 text-gray-200">
             <div className="mb-6 aspect-video w-full">
               <YouTube
@@ -130,7 +103,7 @@ function Article() {
             </div>
           </div>
         </div>
-        {/* Sidebar */}
+    
         <div className="lg:col-span-4 flex flex-col gap-4">
           <CardAd data={adItem[0]} />
          
