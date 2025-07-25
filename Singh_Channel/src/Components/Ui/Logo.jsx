@@ -18,7 +18,7 @@ const Logo = ({ className = "", showText = true, size = "normal" }) => {
       className={`flex items-center space-x-2 transition-transform duration-300 hover:scale-105 ${className}`}
     >
       <img
-        src="logo.png"
+        src="/logo.png"
         alt="singh channel logo"
         className={`${sizes[size]} rounded-full object-cover shadow-sm`}
       />

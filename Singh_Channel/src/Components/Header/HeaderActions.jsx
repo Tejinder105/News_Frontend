@@ -9,7 +9,7 @@ const HeaderActions = ({ isMenuOpen, onMenuToggle }) => {
         <Button
           variant="outline"
           size="small"
-          iconLeft={<User size={16} className="text-sky-400" strokeWidth={3} />}
+          iconLeft={<User size={16} className="text-white" strokeWidth={3} />}
           className="border-slate-600 transition-colors duration-300 hover:border-sky-400"
         >
           <span className="text-sm">Login</span>
