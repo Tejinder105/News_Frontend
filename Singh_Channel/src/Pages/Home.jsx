@@ -1,10 +1,8 @@
-import { ArrowRight } from "lucide-react";
-import React from "react";
-import { Carousel, Weather, CardAd, Card } from "../Components";
+import React, { useEffect, useState } from "react";
+import { Carousel, Weather, CardAd, Card, Spinner } from "../Components";
 import { items } from "../carousel.js";
-import { Link } from "react-router-dom";
-import { newsItem } from "../NewItem.js";
 
+import { newsItem } from "../NewItem.js";
 const adItem = [
   {
     name: "Vintage Accessories",
@@ -41,34 +39,57 @@ const adItem = [
 ];
 
 function Home() {
+  const [article, setArticle] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setArticle(newsItem);
+      setLoading(false);
+    }, 500);
+  }, []);
+
+  const breakingNews = article.filter((item) => item?.isBreaking);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-100">
+        <div className="text-center">
+          <div>
+            <Spinner size="large" color="blue-500" />
+          </div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="mx-auto max-w-7xl bg-slate-100 px-2 py-3 sm:px-4 lg:px-6">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
         <div className="space-y-4 md:col-span-2 lg:col-span-3">
           <Carousel items={items} />
 
-          <div className="flex items-center justify-between border-b border-slate-300 pb-2">
-            <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl">
-              Top Stories
-            </h1>
-            <Link
-              to="#"
-              className="flex items-center text-sm font-medium text-blue-600 transition-colors hover:text-blue-700 sm:text-base"
-            >
-              Read more <ArrowRight size={16} className="ml-1" />
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
-            {newsItem.map((item, index) => (
-              <Card
-                key={index}
-                id={item.id}
-                title={item.title}
-                description={item.description}
-                timeAgo={item.timeAgo}
-                imageUrl={item.imageUrl}
-              />
-            ))}
+          {breakingNews.length > 0 && (
+            <div className="mb-8">
+              <div className="mb-4 flex items-center">
+                <h2 className="mr-3 flex items-center gap-2 text-xl font-bold text-gray-900">
+                  <div className="h-2 w-2 animate-pulse rounded-full bg-red-600" />
+                  Breaking News
+                </h2>
+                <div className="h-px flex-1 bg-red-600" />
+              </div>
+              <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+                {breakingNews.slice(0, 10).map((item) => (
+                  <Card key={item.id} article={item} />
+                ))}
+              </div>
+            </div>
+          )}
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+            {newsItem
+              .filter((item) => !item.isBreaking)
+              .map((item) => (
+                <Card key={item.id} article={item} />
+              ))}
           </div>
         </div>
 
@@ -76,8 +97,10 @@ function Home() {
         <div className="space-y-4 md:col-span-1">
           <Weather />
           <div>
-            <h2 className="border-b border-slate-300 mb-2 text-lg font-semibold text-gray-900 sm:text-xl">
-              Advertisements
+            <h2 className="mb-4 border-b-2 border-slate-200 pb-3 text-xl font-bold text-gray-800 sm:text-2xl dark:border-slate-700 dark:text-gray-100">
+              <span className="inline-block text-blue-600">
+                Advertisements
+              </span>
             </h2>
             <div className="grid grid-cols-2 gap-3 md:grid-cols-1">
               {adItem.map((ad, idx) => (
