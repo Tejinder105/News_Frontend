@@ -3,7 +3,7 @@ import React from "react";
 
 function CardAd({ data }) {
   return (
-    <div className="rounded-xl  overflow-hidden bg-white shadow-md hover:shadow-lg transition-shadow"> 
+    <div className="rounded-md overflow-hidden bg-white shadow-md hover:shadow-lg transition-shadow"> 
       <div className="w-full">
         <img
           src={data.image}

@@ -1,21 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ResourceNotFound, Spinner, Weather, CardAd, Button } from "../Components";
-import YouTube from "react-youtube";
-import {
-  FastForward,
-  Clock,
-  User,
-  ArrowLeft,
-  Share2,
-} from "lucide-react";
-import { adItem } from "../AdItem";
+import ArticleHeader from "../Components/Article/ArticleHeader";
+import ArticleContent from "../Components/Article/ArticleContent";
+import SkeletonArticle from "../Components/Article/SkeletonArticle";
+import ResourceNotFound from "../Components/Ui/ResourceNotFound";
 
-function NewsArticle() {
+import CardAd from "../Components/Ui/CardAd";
+import { newsItem } from "../NewItem.js";
+import { adItem } from "../AdItem.jsx";
+
+function NewsArtilcle() {
   const { id } = useParams();
   const [content, setContent] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) return 'Just now';
+    else if (diffInHours < 24) return `${diffInHours} hours ago`;
+    else if (diffInHours < 48) return 'Yesterday';
+    else if (diffInHours < 168) return `${Math.floor(diffInHours / 24)} days ago`;
+    return date.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
+  };
+
   useEffect(() => {
     setLoading(true);
     setError(false);
@@ -34,153 +45,75 @@ function NewsArticle() {
       });
   }, [id]);
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
-        <Spinner size="large" />
-      </div>
-    );
-  }
+  const relatedArticles = useMemo(() => {
+    return newsItem.filter((item) => item.id !== id);
+  }, [id]);
 
-  if (error) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
-        <ResourceNotFound />
-      </div>
-    );
-  }
-
-  const paragraphs = content.content
-    ? content.content.split(/\n\n|\n/).filter((para) => para.trim() !== "")
-    : ["No content available."];
-
-
+  if (loading) return <SkeletonArticle />;
+  if (error) return <ResourceNotFound />;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 pb-12">
-      {/* Floating Back Button */}
-      <div className="fixed top-28 left-4 z-50">
-        <button
-          className="flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 font-medium text-slate-700 shadow-lg backdrop-blur-sm transition-all hover:bg-white"
-          onClick={() => window.history.back()}
-        >
-          <ArrowLeft size={18} />
-          Back to News
-        </button>
-      </div>
-
-      {/* Hero Section */}
-      <div className="relative mb-8">
-        <div className="h-64 overflow-hidden sm:h-80 md:h-[28rem] lg:h-[30rem]">
-          <img
-            src={content.image}
-            alt={content.img_cap}
-            className="lazyload h-full w-full object-cover"
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
-        </div>
-
-        <div className="absolute bottom-0 left-0 w-full p-4 md:p-8">
-          <div className="mx-auto max-w-7xl">
-          
-
-            <h1 className="mb-3 max-w-4xl font-['Montserrat'] text-2xl font-bold text-white drop-shadow-xl sm:text-3xl md:text-4xl lg:text-5xl">
-              {content.headline}
-            </h1>
-
-            <p className="mb-4 max-w-4xl font-['Roboto'] text-base text-gray-100 drop-shadow-md sm:text-lg md:text-xl">
-              {content.description}
-            </p>
-
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-200">
-              <div className="flex items-center gap-1">
-                <User size={16} />
-                <span>{content.by}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Clock size={16} />
-                <span>{content.uploaded_Time}</span>
-              </div>
-            </div>
+  <div className="grid min-h-screen grid-cols-1 gap-4 bg-slate-100 p-4 md:grid-cols-12">
+    {/* Related News - Left on Desktop, Second on Mobile */}
+    <div className="order-2 md:order-1 md:col-span-3">
+      <div className="space-y-6">
+        <div className="rounded-md border border-gray-200 bg-white shadow-sm">
+          <div className="border-b border-gray-200 p-4">
+            <h3 className="text-lg font-semibold text-gray-900">Related News</h3>
           </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
-          {/* Article Content */}
-          <div className="lg:col-span-3">
-            <div className="overflow-hidden rounded-xl bg-white shadow-lg">
-              {/* Action Bar */}
-              <div className="flex items-center justify-between border-b p-4">
-                <div className="flex items-center gap-1">
-                  <FastForward size={18}  className="text-sky-500"/>
-                  <span className="text-sm text-slate-500">
-                    {Math.ceil(content.content?.split(" ").length / 200) || 5}{" "}
-                    min read
-                  </span>
-                </div>
-                <Button iconRight={<Share2 size={18} className="text-sky-500"/>} variant="outline" size="small">
-                    <span className="text-sm text-slate-500">Share</span>
-                </Button>
-              </div>
-
-              <div className="p-4 md:p-6 lg:p-8">
-                <article className="prose prose-lg max-w-none">
-                  {paragraphs.map((para, index) => (
-                    <p
-                      key={index}
-                      className="font-Inter mb-6 leading-relaxed text-slate-700"
-                    >
-                      {para}
-                    </p>
-                  ))}
-                </article>
-
-                {/* Video Section */}
-                <div className="my-8">
-                  <h3 className="mb-4 font-['Montserrat'] text-xl font-bold text-slate-800">
-                    Related Video
-                  </h3>
-                  <div className="aspect-video w-full overflow-hidden rounded-xl shadow-lg">
-                    <YouTube
-                      videoId="ju6L9octAAs"
-                      opts={{
-                        width: "100%",
-                        height: "100%",
-                        playerVars: { autoplay: 0, rel: 0 },
-                      }}
-                      className="h-full w-full"
-                    />
+          <div className="divide-y divide-gray-200">
+            {relatedArticles.slice(0, 5).map((news, index) => (
+              <div
+                key={news.id || index}
+                className="cursor-pointer px-4 py-3 transition-colors hover:bg-gray-50"
+              >
+                <div className="flex gap-3">
+                  <div>
+                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-sm text-white">
+                      {index + 1}
+                    </span>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="line-clamp-3 text-sm font-medium leading-tight text-gray-900">
+                      {news.title}
+                    </h4>
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <span>{formatTime(news.publishedAt)}</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Sidebar */}
-           <div className="space-y-6">
-            <Weather />
-
-            <div className="overflow-hidden rounded-xl  shadow-lg">
-              <div className="border-b p-2 mb-2">
-                <h2 className="font-['Montserrat'] text-lg font-bold text-slate-800">
-                  Advertisements
-                </h2>
-              </div>
-              <div className="grid grid-cols-1 gap-4">
-                {adItem.map((ad, idx) => (
-                  <CardAd key={idx} data={ad} />
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
     </div>
-  );
+
+    {/* Main Article Content - Centered on Desktop, First on Mobile */}
+    <div className="order-1 md:order-2 md:col-span-6">
+      <div className="rounded-md bg-white">
+        <ArticleHeader
+          title={content.headline}
+          author={content.by}
+          publishedTime={content.uploaded_Time}
+          category={content.category || "News"}
+          imageUrl={content.image}
+          summary={content.summary}
+        />
+        <ArticleContent content={content.content} />
+      </div>
+    </div>
+
+    {/* Ads - Right on Desktop, Last on Mobile */}
+    <div className="order-3 md:order-3 md:col-span-3">
+      <div className="grid grid-cols-1 gap-4">
+        {adItem.map((ad, idx) => (
+          <CardAd key={idx} data={ad} />
+        ))}
+      </div>
+    </div>
+  </div>
+);
 }
 
-export default NewsArticle;
+export default NewsArtilcle;
