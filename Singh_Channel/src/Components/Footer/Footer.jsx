@@ -1,163 +1,175 @@
-import { Mail, MapPin, Phone } from "lucide-react";
-import React from "react";
+import { Mail, MapPin, Phone, ArrowUp } from "lucide-react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
+import { footerData } from "../../Constants/FooterData";
+
+const FooterSection = ({ title, children, className = "" }) => (
+  <div className={`space-y-4 ${className}`}>
+    <h4 className="inline-block border-b-2 border-sky-400 pb-2 text-lg font-semibold text-white">
+      {title}
+    </h4>
+    {children}
+  </div>
+);
+
+const ContactItem = ({ icon: Icon, children, href, type = "link" }) => (
+  <div className="group flex items-start space-x-3">
+    <Icon
+      size={18}
+      className="mt-0.5 flex-shrink-0 text-sky-400 transition-transform group-hover:scale-110"
+    />
+    {type === "link" ? (
+      <a
+        href={href}
+        className="flex-1 text-sm text-gray-300 transition-colors hover:text-sky-400"
+      >
+        {children}
+      </a>
+    ) : (
+      <p className="flex-1 text-sm text-gray-300">{children}</p>
+    )}
+  </div>
+);
+
+const SocialLink = ({ social }) => (
+  <a
+    href={social.url}
+    target="_blank"
+    rel="noopener noreferrer"
+    className={`group transition-all duration-200 hover:scale-110 ${social.color}`}
+    aria-label={social.name}
+  >
+    <img
+      src={social.icon}
+      alt={social.name}
+      className="h-6 w-6 transition-transform duration-200 group-hover:scale-110"
+    />
+  </a>
+);
 
 function Footer() {
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const { company, contact, socialMedia, quickLinks, categories } = footerData;
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <footer className="bg-slate-900 px-3 py-6 text-white sm:px-8">
-      <div className="mx-auto max-w-6xl">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          <div className="space-y-4">
-            <NavLink to="/" className="itmes-center group flex space-x-2">
+    <footer className="relative bg-slate-900 text-white">
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed right-6 bottom-6 z-50 rounded-full bg-sky-500 p-3 text-white shadow-lg transition-all duration-200 hover:scale-110 hover:bg-sky-600"
+          aria-label="Scroll to top"
+        >
+          <ArrowUp size={20} />
+        </button>
+      )}
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+          {/* Company Info */}
+          <div className="space-y-4 lg:col-span-2">
+            <NavLink to="/" className="group flex items-center space-x-2">
               <img
-                src="/logo.png"
+                src={company.logo}
                 alt="Logo"
-                className="h-8 w-8 rounded-full object-cover transition-transform duration-300 group-hover:scale-110"
+                className="h-8 w-8 rounded-full object-cover shadow-lg transition-transform duration-300 group-hover:scale-110"
               />
-              <span className="text-xl font-bold text-white transition-colors group-hover:text-sky-400 sm:block">
-                SINGH CHANNEL
+              <span className="text-2xl font-bold text-white transition-colors group-hover:text-sky-400 sm:block">
+                {company.name}
               </span>
             </NavLink>
-            <p className="text-sm text-gray-300">
-              Your trusted source for local news and events in Ratia and
-              surrounding areas with latest updates from your community.
+
+            <p className="max-w-md text-sm leading-relaxed text-gray-300">
+              {company.description}
             </p>
 
-            <div className="flex items-center">
-              <span className="text-sm text-gray-300">Follow us:</span>
-              <div className="ml-3 flex gap-3">
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="transition-opacity hover:opacity-75"
-                >
-                  <img
-                    src="/instagram.png"
-                    alt="Instagram"
-                    className="h-5 w-5"
-                  />
-                </a>
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="transition-opacity hover:opacity-75"
-                >
-                  <img src="/twitter.png" alt="Twitter" className="h-5 w-5" />
-                </a>
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="transition-opacity hover:opacity-75"
-                >
-                  <img src="/youtube.png" alt="Youtube" className="h-5 w-5" />
-                </a>
-                <a
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="transition-opacity hover:opacity-75"
-                >
-                  <img src="/facebook.png" alt="Facebook" className="h-5 w-5" />
-                </a>
+            {/* Social Links */}
+            <div className="space-y-3">
+              <h5 className="text-sm font-semibold tracking-wider text-gray-400 uppercase">
+                Follow Us
+              </h5>
+              <div className="flex gap-4">
+                {socialMedia.map((social, index) => (
+                  <SocialLink key={index} social={social} />
+                ))}
               </div>
             </div>
           </div>
-          <div className="space-y-4">
-            <h4 className="inline-block border-b border-sky-400 text-lg font-semibold">
-              Contact Us
-            </h4>
-            <div className="flex items-start space-x-3">
-              <MapPin size={18} className="text-sky-400 mt-0.5 flex-shrink-0" />
-              <p className="text-sm text-gray-300">
-                Main Market, Ratia, Fatehabad District, Haryana-125051
-              </p>
-            </div>
-            <div className="flex items-center space-x-3">
-              <Phone size={18} className="text-sky-400" />
-              <a
-                href="tel:+919729035945"
-                className="text-sm text-gray-300 transition-colors hover:text-sky-400"
-              >
-                +91 97290 35945
-              </a>
-            </div>
-            <div className="flex items-center space-x-3">
-              <Mail size={18} className="text-sky-400" />
-              <a
-                href="mailto:info@singhchannel.com"
-                className="text-sm text-gray-300 transition-colors hover:text-sky-400"
-              >
-                info@singhchannel.com
-              </a>
-            </div>
-          </div>
+          {/* Contact Info */}
 
-          <div className="space-y-4">
-            <h4 className="inline-block border-b border-sky-400 text-lg font-semibold">
-              Quick Links
-            </h4>
-            <ul className="space-y-2">
-              <li>
-                <NavLink
-                  to="/"
-                  className={({ isActive }) =>
-                    `text-sm transition-colors hover:text-sky-400 ${isActive ? "text-sky-400" : "text-gray-300"}`
-                  }
-                >
-                  Home
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/about"
-                  className={({ isActive }) =>
-                    `text-sm transition-colors hover:text-sky-400 ${isActive ? "text-sky-400" : "text-gray-300"}`
-                  }
-                >
-                  About us
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/privacy"
-                  className={({ isActive }) =>
-                    `text-sm transition-colors hover:text-sky-400 ${isActive ? "text-sky-400" : "text-gray-300"}`
-                  }
-                >
-                  Privacy Policy
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/terms"
-                  className={({ isActive }) =>
-                    `text-sm transition-colors hover:text-sky-400 ${isActive ? "text-sky-400" : "text-gray-300"}`
-                  }
-                >
-                  Terms of Service
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/advertise"
-                  className={({ isActive }) =>
-                    `text-sm transition-colors hover:text-sky-400 ${isActive ? "text-sky-400" : "text-gray-300"}`
-                  }
-                >
-                  Advertise with us
-                </NavLink>
-              </li>
+          <FooterSection title="Contact Us">
+            <div className="space-y-4">
+              <ContactItem icon={MapPin} type="text">
+                {contact.address}
+              </ContactItem>
+              <ContactItem icon={Phone} href={`tel:${contact.phone}`}>
+                {contact.phone}
+              </ContactItem>
+              <ContactItem icon={Mail} href={`mailto:${contact.email}`}>
+                {contact.email}
+              </ContactItem>
+            </div>
+          </FooterSection>
+
+          <FooterSection title="Quick Links">
+            <ul className="space-y-3">
+              {quickLinks.map((link, index) => (
+                <li key={index}>
+                  <NavLink
+                    to={link.path}
+                    className={({ isActive }) =>
+                      `block text-sm transition-all duration-200 hover:translate-x-1 hover:text-sky-400 ${
+                        isActive ? "text-sky-400" : "text-gray-300"
+                      }`
+                    }
+                  >
+                    {link.name}
+                  </NavLink>
+                </li>
+              ))}
             </ul>
-          </div>
+          </FooterSection>
         </div>
-        <div className="mt-8 border-t border-gray-700 pt-6 text-center">
-          <p className="text-xs text-gray-400">
-            &copy; {new Date().getFullYear()} SINGH CHANNEL. All rights
+        <div
+          className={`mt-12 flex flex-col items-center justify-between gap-4 border-t border-gray-700 pt-8 sm:flex-row`}
+        >
+          <p className="flex items-center gap-1 text-sm text-gray-400">
+            &copy; {new Date().getFullYear()} {company.name}. All rights
             reserved.
           </p>
+
+          <div className="flex items-center gap-4 text-xs text-gray-500">
+            <NavLink
+              to="/privacy"
+              className="transition-colors hover:text-sky-400"
+            >
+              Privacy
+            </NavLink>
+            <span>•</span>
+            <NavLink
+              to="/terms"
+              className="transition-colors hover:text-sky-400"
+            >
+              Terms
+            </NavLink>
+            <span>•</span>
+            <NavLink
+              to="/sitemap"
+              className="transition-colors hover:text-sky-400"
+            >
+              Sitemap
+            </NavLink>
+          </div>
         </div>
       </div>
     </footer>
