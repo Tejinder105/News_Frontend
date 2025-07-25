@@ -9,7 +9,6 @@ function CarouselItem({ item }) {
           alt={item.tag}
           className="h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
         />
-        {/* Optional: Tag Badge Overlay */}
         <span className="absolute top-2 left-2 rounded-md bg-gray-800/80 px-2 py-1 text-xs font-semibold uppercase tracking-wider text-white">
           {item.tag}
         </span>
@@ -17,17 +16,17 @@ function CarouselItem({ item }) {
 
       {/* Text Content */}
       <div className="flex flex-col gap-4  p-2">
-        <div className="space-y-2">
-          <h2 className="line-clamp-2 text-lg font-bold text-gray-900 transition-colors hover:text-blue-600 lg:text-2xl">
+        <div className="">
+          <h2 className=" line-clamp-2 text-lg font-bold text-gray-900 transition-colors hover:text-blue-600 lg:text-2xl">
             {item.headline}
           </h2>
-          <p className="line-clamp-3 text-sm text-gray-700 md:line-clamp-4 ">
-            {item.description}
-          </p>
+        </div>
+        <div className=" flex-1 line-clamp-3 text-sm text-gray-700 md:line-clamp-4 ">
+          {item.description}
         </div>
 
         {/* Footer (Author + Read More) */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-1 items-center justify-between">
           <div className="text-xs text-gray-500">
             <span>{item.time}</span> · <span>by {item.author}</span>
           </div>
