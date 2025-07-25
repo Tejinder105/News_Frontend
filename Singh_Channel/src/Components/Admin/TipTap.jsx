@@ -84,18 +84,7 @@ const TipTap = ({ value = "", onChange }) => {
         >
           <Heading3 size={16} />
         </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          active={editor.isActive("bulletList")}
-        >
-          <List size={16} />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          active={editor.isActive("orderedList")}
-        >
-          <ListOrdered size={16} />
-        </ToolbarButton>
+
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           active={editor.isActive("blockquote")}
