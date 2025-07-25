@@ -8,6 +8,7 @@ import {
   LogOut,
   X,
 } from "lucide-react";
+import Logo from "../Ui/Logo";
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 
@@ -41,20 +42,7 @@ function Sidebar({ open, setOpen }) {
   };
 
   return (
-    <div className="relative">
-      {/* Mobile Menu Button */}
-      {isMobile && !open && (
-        <div className="fixed top-4 left-4 z-50 md:hidden">
-          <button
-            onClick={() => setOpen(true)}
-            className="rounded-lg bg-blue-600 p-3 text-white shadow-lg transition-all duration-200 hover:bg-blue-700 hover:shadow-xl"
-          >
-            <MenuIcon size={20} />
-          </button>
-        </div>
-      )}
-
-      {/* Mobile Overlay */}
+    <>
       {isMobile && open && (
         <div
           className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
@@ -62,27 +50,24 @@ function Sidebar({ open, setOpen }) {
         />
       )}
 
-      {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-50 h-screen bg-slate-900 text-gray-100 shadow-2xl duration-300 ease-in-out md:z-10 ${
-          open ? "w-72" : "w-20"
-        } ${isMobile && !open ? "-translate-x-full" : ""}`}
+        className={`${
+          isMobile
+            ? `fixed top-0 left-0 z-50 h-screen border-r border-slate-800 bg-slate-900 text-gray-100 shadow-2xl duration-300 ease-in-out ${open ? "w-72" : "w-0"} ${!open ? "-translate-x-full" : "translate-x-0"}`
+            : `relative border-r border-slate-800 bg-slate-900 text-gray-100 shadow-xl duration-300 ease-in-out ${open ? "w-72" : "w-20"}`
+        } overflow-hidden`}
       >
-        {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-600/50 bg-slate-800 p-4">
           {open && (
             <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
-                <span className="text-sm font-bold text-white">SC</span>
+              <div className="flex  items-center justify-center rounded-lg">
+                <Logo size="normal" />
               </div>
-              <h1 className="text-xl font-bold whitespace-nowrap text-blue-400 transition-all duration-300 delay-200">
-                Singh Channel
-              </h1>
             </div>
           )}
           <button
             onClick={() => setOpen(!open)}
-            className="rounded-lg p-2 text-slate-400 transition-all duration-200 hover:bg-slate-700 hover:text-white"
+            className="rounded-lg p-2 text-slate-400 transition-all duration-200 hover:bg-slate-700 hover:text-white focus:ring-2 focus:ring-blue-400 focus:outline-none"
           >
             {isMobile ? <X size={20} /> : <PanelRightOpen size={20} />}
           </button>
@@ -95,14 +80,17 @@ function Sidebar({ open, setOpen }) {
               <NavLink
                 to={menu.link}
                 key={i}
+                end={menu.link === "/admin"}
                 className={({ isActive }) =>
-                  `group flex items-center gap-4 rounded-xl p-3 text-sm font-medium transition-all duration-200 ${
+                  `group flex items-center gap-4 rounded-xl p-3 text-sm font-medium transition-all duration-200 focus:ring-2 focus:ring-blue-400 focus:outline-none ${
                     isActive
-                      ? "bg-slate-700 text-white shadow-md"
-                      : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                      ? "border border-sky-400 bg-slate-800 text-sky-400 shadow-md"
+                      : "text-slate-300 hover:bg-slate-700 hover:text-sky-400"
                   }`
                 }
                 onClick={() => isMobile && setOpen(false)}
+                tabIndex={0}
+                aria-label={menu.name}
               >
                 <div
                   className={`flex-shrink-0 transition-all duration-200 ${
@@ -127,7 +115,9 @@ function Sidebar({ open, setOpen }) {
           <div className="mt-auto mb-6">
             <button
               onClick={handleLogout}
-              className="group flex w-full items-center gap-4 rounded-xl p-3 text-sm font-medium text-red-400 transition-all duration-200 hover:bg-red-500/20 hover:text-red-300 hover:shadow-md"
+              className="group flex w-full items-center gap-4 rounded-xl p-3 text-sm font-medium text-red-400 transition-all duration-200 hover:bg-red-500/20 hover:text-red-300 hover:shadow-md focus:ring-2 focus:ring-red-400 focus:outline-none"
+              tabIndex={0}
+              aria-label="Logout"
             >
               <div className="flex-shrink-0">
                 <LogOut size={20} />
@@ -144,7 +134,7 @@ function Sidebar({ open, setOpen }) {
           </div>
         </div>
       </aside>
-    </div>
+    </>
   );
 }
 
