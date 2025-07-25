@@ -3,7 +3,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import UserLayout from "./Layouts/UserLayout";
 import AdminLayout from "./Layouts/AdminLayout";
 import Home from "./Pages/Home";
-import Navigator from "./Pages/Navigator";
 import NewsArticle from "./Pages/NewsArticle";
 import Dashboard from "./Pages/Admin/Dashboard";
 import CreateArticle from "./Pages/Admin/CreateArticle";

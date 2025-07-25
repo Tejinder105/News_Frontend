@@ -5,7 +5,7 @@ export const items = [
     headline:
       "India Pushes Smart Farming to Tackle Climate Change and Food Security",
     description:
-      "In response to rising climate concerns, India is rolling out smart farming initiatives powered by AI, IoT, and satellite data to support farmers and improve crop yields.",
+      "In response to rising climate concerns, India is rolling out smart farming initiatives powered by AI, IoT, and satellite data to support farmers and improve crop yields. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.In response to rising climate concerns, India is rolling out smart farming initiatives powered by AI, IoT, and satellite data to support farmers and improve crop yields. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod In response to rising climate concerns, India is rolling out smart farming initiatives powered by AI, IoT, and satellite data to support farmers and improve crop yields. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
     link: "https://en.wikipedia.org/wiki/Agriculture",
     time: "2 hours ago",
     author: "Ananya Verma",
