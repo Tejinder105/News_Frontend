@@ -4,8 +4,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import Logo from "../Ui/Logo";
 import { navItems } from "../../Constants/Navigation";
 import Navigation from "./Navigation";
+import { useNavigate } from "react-router-dom";
 
 const MobileMenu = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
   return (
     <AnimatePresence>
       {isOpen && (
@@ -36,7 +38,21 @@ const MobileMenu = ({ isOpen, onClose }) => {
                 <X size={20} />
               </button>
             </div>
-            <Navigation variant="mobile" />
+            <nav className="flex flex-col gap-4">
+              <button
+                className="w-full text-left text-slate-800 dark:text-white font-semibold py-2 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800"
+                onClick={() => { navigate("/login"); onClose(); }}
+              >
+                Login
+              </button>
+              <button
+                className="w-full text-left text-slate-800 dark:text-white font-semibold py-2 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800"
+                onClick={() => { navigate("/signup"); onClose(); }}
+              >
+                Sign Up
+              </button>
+              <Navigation variant="mobile" />
+            </nav>
           </motion.div>
         </>
       )}
@@ -45,4 +61,3 @@ const MobileMenu = ({ isOpen, onClose }) => {
 };
 
 export default MobileMenu;
-

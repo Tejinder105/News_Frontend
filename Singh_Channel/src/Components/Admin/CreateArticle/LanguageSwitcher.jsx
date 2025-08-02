@@ -1,25 +1,25 @@
-import React from "react";
-import { ChevronDown } from "lucide-react";
+import React from 'react';
+import { ChevronDown } from 'lucide-react';
 
-export default function LanguageSelectors({
-  sourceLanguage,
-  handleSourceLanguageChange,
-  LANGUAGES,
-  previewLanguage,
-  handlePreviewLanguageChange,
-  completionStatus,
-}) {
+const LanguageSwitcher = ({ 
+  LANGUAGES, 
+  sourceLanguage, 
+  handlesrcLangChange, 
+  previewLanguage, 
+  handlePreviewLanguageChange, 
+  completionStatus 
+}) => {
   return (
     <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
       <div>
         <label className="mb-2 block text-sm font-medium text-gray-700">
           Source Language
         </label>
-        <div className="relative max-w-[200px]">
+        <div>
           <select
             value={sourceLanguage}
-            onChange={handleSourceLanguageChange}
-            className="block w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 shadow-sm transition-all duration-200 hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+            onChange={handlesrcLangChange}
+            className="block w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 shadow-sm transition-all duration-200 hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
           >
             {Object.entries(LANGUAGES).map(([code, lang]) => (
               <option key={code} value={code}>
@@ -27,9 +27,6 @@ export default function LanguageSelectors({
               </option>
             ))}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500">
-            <ChevronDown size={16} />
-          </div>
         </div>
       </div>
       <div>
@@ -60,5 +57,8 @@ export default function LanguageSelectors({
         </div>
       </div>
     </div>
+    
   );
-}
+};
+
+export default LanguageSwitcher;

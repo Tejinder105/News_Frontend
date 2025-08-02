@@ -104,11 +104,11 @@ class GeminiService {
     }
   }
 
-  async translateContent(articleObject, targetLanguage) {
+  async translateContent(articleObject, sourceLanguage, targetLanguage) {
     this.ensureService();
 
     const prompt = `
-    Translate the following article object to ${targetLanguage}. 
+    Translate the following article object from ${sourceLanguage} to ${targetLanguage}. 
     Maintain the original meaning, tone, structure, and ALL HTML formatting exactly as provided.
     
     IMPORTANT REQUIREMENTS:
@@ -116,7 +116,6 @@ class GeminiService {
     - Preserve exact formatting and structure
     - Only translate the text content, not HTML tags
     - Maintain the same object structure in response
-    - Detect the original language of the content
     
     Article to translate:
     ${JSON.stringify(articleObject, null, 2)}
@@ -126,7 +125,7 @@ class GeminiService {
       "headline": "translated headline here",
       "summary": "translated summary here", 
       "content": "translated content with preserved HTML formatting",
-      "originalLanguage": "detected language code (e.g., en, hi, es)",
+      "sourceLanguage": "${sourceLanguage}",
       "targetLanguage": "${targetLanguage}"
     }
     

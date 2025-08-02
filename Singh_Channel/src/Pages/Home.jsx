@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Carousel, Weather, CardAd, Card, Spinner } from "../Components";
 import { items } from "../carousel.js";
+import articleService from "../Services/articleService";
+import { toast } from "react-toastify";
 
-import { newsItem } from "../NewItem.js";
 const adItem = [
   {
     name: "Vintage Accessories",
@@ -41,12 +42,31 @@ const adItem = [
 function Home() {
   const [article, setArticle] = useState([]);
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    setTimeout(() => {
-      setArticle(newsItem);
-      setLoading(false);
-    }, 500);
-  }, []);
+  const [error, setError] = useState(null);
+
+  // useEffect(() => {
+  //   const fetchArticles = async () => {
+  //     try {
+  //       setLoading(true);
+  //       setError(null);
+  //       const response = await articleService.getArticles({
+  //         limit: 20,
+  //         sort: 'publishedAt',
+  //         order: 'desc'
+  //       });
+  //       setArticle(response.articles || response.data || response);
+  //     } catch (error) {
+  //       console.error('Error fetching articles:', error);
+  //       setError('Failed to load articles. Please try again later.');
+  //       toast.error('Failed to load articles');
+  //       setArticle([]);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchArticles();
+  // }, []);
 
   const breakingNews = article.filter((item) => item?.isBreaking);
 
@@ -57,11 +77,28 @@ function Home() {
           <div>
             <Spinner size="large" color="blue-500" />
           </div>
-          <p className="text-gray-600">Loading...</p>
+          <p className="text-gray-600">Loading articles...</p>
         </div>
       </div>
     );
   }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-100">
+        <div className="text-center">
+          <p className="text-red-500 mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-7xl bg-slate-100 px-2 py-3 sm:px-4 lg:px-6">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
@@ -85,7 +122,7 @@ function Home() {
             </div>
           )}
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-            {newsItem
+            {article
               .filter((item) => !item.isBreaking)
               .map((item) => (
                 <Card key={item.id} article={item} />

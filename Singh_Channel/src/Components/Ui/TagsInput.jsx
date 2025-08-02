@@ -4,7 +4,7 @@ import React, { useState } from "react";
 function TagsInput({
   onTagsChange,
   placeholder = "Add tags...",
-  maxTags = 10,
+  maxTags = 5,
 }) {
   const [tags, setTags] = useState([]);
   const [inputValue, setInputValue] = useState("");

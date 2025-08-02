@@ -8,6 +8,7 @@ import ResourceNotFound from "../Components/Ui/ResourceNotFound";
 import CardAd from "../Components/Ui/CardAd";
 import { newsItem } from "../NewItem.js";
 import { adItem } from "../AdItem.jsx";
+import articleService from '../Services/articleService';
 
 function NewsArtilcle() {
   const { id } = useParams();
@@ -30,18 +31,28 @@ function NewsArtilcle() {
   useEffect(() => {
     setLoading(true);
     setError(false);
-    fetch(`/Articles/${id}.json`)
-      .then((res) => {
-        if (!res.ok) throw new Error("File not found");
-        return res.json();
-      })
-      .then((data) => {
+    
+    // First try to fetch from the API
+    articleService.getArticle(id)
+      .then(data => {
         setContent(data);
         setLoading(false);
       })
       .catch(() => {
-        setError(true);
-        setLoading(false);
+        // Fallback to local JSON files if API fails
+        fetch(`/Articles/${id}.json`)
+          .then((res) => {
+            if (!res.ok) throw new Error("File not found");
+            return res.json();
+          })
+          .then((data) => {
+            setContent(data);
+            setLoading(false);
+          })
+          .catch(() => {
+            setError(true);
+            setLoading(false);
+          });
       });
   }, [id]);
 

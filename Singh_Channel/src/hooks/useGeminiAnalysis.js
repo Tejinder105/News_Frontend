@@ -51,7 +51,7 @@ function useGeminiAnalysis() {
   }, []);
 
   const translateContent = useCallback(
-    async (content, language = "punjabi") => {
+    async (content, sourceLanguage, targetLanguage) => {
       if (!geminiService.isAvailable()) {
         setError("Gemini service is not available");
         return null;
@@ -61,7 +61,11 @@ function useGeminiAnalysis() {
       setError(null);
 
       try {
-        const result = await geminiService.translateContent(content, language);
+        const result = await geminiService.translateContent(
+          content, 
+          sourceLanguage,
+          targetLanguage
+        );
         return result;
       } catch (err) {
         setError(err.message);
