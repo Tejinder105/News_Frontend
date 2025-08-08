@@ -7,6 +7,7 @@ import GeminiSuggestions from "/src/Components/Admin/GeminiSuggestions";
 import LanguageSwitcher from "/src/Components/Admin/CreateArticle/LanguageSwitcher";
 import AiTools from "/src/Components/Admin/CreateArticle/AiTools";
 import ImageUpload from "/src/Components/Admin/CreateArticle/ImageUpload";
+import {useAuth0} from "@auth0/auth0-react";
 import {
     Button,
     ContentForm,
@@ -17,6 +18,7 @@ import {
 import axios from "axios";
 
 export default function CreateArticle({ post }) {
+    const { getAccessTokenSilently } = useAuth0();
     const [tags, setTags] = useState(post?.tags || []);
     const [loading, setLoading] = useState(false);
     const [srcLang, setsrcLang] = useState("en");
@@ -137,16 +139,16 @@ export default function CreateArticle({ post }) {
         setLoading(true);
         const formData = new FormData();
         let headlineObj = data.headline;
-    if (typeof headlineObj === 'string') {
-      try {
-        headlineObj = JSON.parse(headlineObj); // Convert string to object if it’s a JSON string
-      } catch (e) {
-        console.error("Invalid JSON in headline:", headlineObj);
-        toast.error("Invalid headline format");
-        setLoading(false);
-        return;
-      }
-    }
+        if (typeof headlineObj === "string") {
+            try {
+                headlineObj = JSON.parse(headlineObj); // Convert string to object if it’s a JSON string
+            } catch (e) {
+                console.error("Invalid JSON in headline:", headlineObj);
+                toast.error("Invalid headline format");
+                setLoading(false);
+                return;
+            }
+        }
 
         console.log("Raw form data:", data);
 
@@ -156,7 +158,6 @@ export default function CreateArticle({ post }) {
             summary: JSON.stringify(data.summary),
             tags: JSON.stringify(tags),
         });
-       
 
         if (data.featured_image && data.featured_image.length > 0) {
             formData.append("featured_image", data.featured_image[0]);
@@ -196,10 +197,11 @@ export default function CreateArticle({ post }) {
                 : `${import.meta.env.VITE_API_URL}/api/v1/articles/newArticles`;
 
             const method = post ? "put" : "post";
-
+            const token = await getAccessTokenSilently();
             const response = await axios[method](url, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token}`,
                 },
             });
 

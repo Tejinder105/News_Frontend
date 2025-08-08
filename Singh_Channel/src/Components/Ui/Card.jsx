@@ -22,7 +22,7 @@ function Card( {article} ) {
           className="relative overflow-hidden h-40"
         >
           <img
-            src={article.imageUrl}
+            src={article.image}
             alt={article.title}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
@@ -53,7 +53,7 @@ function Card( {article} ) {
           <h3
             className={`leading-tight font-bold text-gray-900 transition-colors duration-300 group-hover:text-blue-600 text-base`}
           >
-            {article.title}
+            {article.headline.en}
           </h3>
           <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-gray-600">
             {article.description}
