@@ -3,6 +3,7 @@ import { Carousel, Weather, CardAd, Card, Spinner } from "../Components";
 import { items } from "../carousel.js";
 import articleService from "../Services/articleService";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const adItem = [
     {
@@ -45,41 +46,29 @@ function Home() {
     const [article, setArticle] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const language = useSelector((s) => s.language.current);
+
+    console.log("Current language in Home:", language); // Debug log
 
     useEffect(() => {
+        console.log("Fetching articles for language:", language); // Debug log
+        const controller = new AbortController();
         const fetchArticles = async () => {
             try {
                 setLoading(true);
                 setError(null);
-                const response = await articleService.getAllArticles(
-                    "en",
+                const { articles } = await articleService.getAllArticles(
+                    language,
                     1,
-                    20
+                    20,
+                    controller.signal
                 );
-
-                // Handle different response structures
-                let articlesData = [];
-                if (Array.isArray(response)) {
-                    articlesData = response;
-                } else if (
-                    response.articles &&
-                    Array.isArray(response.articles)
-                ) {
-                    articlesData = response.articles;
-                } else if (response.data && Array.isArray(response.data)) {
-                    articlesData = response.data;
-                } else if (
-                    response.data &&
-                    response.data.articles &&
-                    Array.isArray(response.data.articles)
-                ) {
-                    articlesData = response.data.articles;
-                }
-
-                console.log("Processed articles data:", articlesData);
-                setArticle(articlesData);
-            } catch (error) {
-                console.error("Error fetching articles:", error);
+                console.log("Fetched articles:", articles); // Debug log
+                setArticle(Array.isArray(articles) ? articles : []);
+            } catch (err) {
+                if (err.name === "CanceledError" || err.name === "AbortError")
+                    return;
+                console.error("Error fetching articles:", err);
                 setError("Failed to load articles. Please try again later.");
                 toast.error("Failed to load articles");
                 setArticle([]);
@@ -87,11 +76,10 @@ function Home() {
                 setLoading(false);
             }
         };
-
         fetchArticles();
-    }, []);
+        return () => controller.abort();
+    }, [language]);
 
-    // Add safety check for filter operations
     const breakingNews = Array.isArray(article)
         ? article.filter((item) => item?.isBreaking)
         : [];
