@@ -1,91 +1,138 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "../Ui/Button";
-import { Share, Share2 } from "lucide-react";
+import {
+  Share2,
+  Calendar,
+  User,
+  Clock,
+  Tag,
+  Bookmark,
+  BookmarkCheck,
+} from "lucide-react";
 
 const ArticleHeader = ({
   title,
   author,
   publishedTime,
-  category,
+  readTime,
   imageUrl,
   summary,
-  articleBody,
 }) => {
-  const calculateReadTime = (text) => {
-    if (!text || typeof text !== "string") {
-      return "0 min read";
+  const formatDate = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return dateString;
     }
-    const wordsPerMinute = 200;
-    const noOfWords = text.split(/\s/g).length;
-    const minutes = Math.ceil(noOfWords / wordsPerMinute);
-    return `${minutes} min read`;
+  };
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: title,
+          text: summary || `Read this article: ${title}`,
+          url: window.location.href,
+        });
+      } catch (error) {
+        console.error("Error sharing:", error);
+      }
+    } else {
+      await navigator.clipboard.writeText(window.location.href);
+      // You could add a toast notification here
+      alert("Link copied to clipboard!");
+    }
   };
 
   return (
-    <div className="pt-2 pb-4">
-      <div className="mx-auto max-w-4xl px-4">
-        {/* Title */}
-        <h1 className="mb-3 text-3xl font-bold text-gray-900 uppercase md:text-4xl">
-          {title}
-        </h1>
+    <header className="bg-white">
+      {/* Main Header Content */}
+      <div className="px-4 py-4 md:px-5 lg:px-6">
+        <div className="mx-auto max-w-4xl">
+          {/* Article Title */}
+          <h1 className="font-Inter mb-3 text-3xl leading-tight font-bold text-gray-900 md:text-4xl lg:text-2xl">
+            {title}
+          </h1>
 
-        {/* Author and Date */}
-        <div className="flex items-center justify-between text-sm text-gray-600 mb-2 ">
-          <div className="flex-col">
-            <div>
-              <span>{author}</span>
-              <span className="mx-2">|</span>
-              <span>Updated: {publishedTime}</span>
+          {/* Article Summary */}
+          {summary && (
+            <div className="mb-4">
+              <div className="rounded-r-xl border-l-4 border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 shadow-sm">
+                <p className="text-lg leading-relaxed text-gray-700">
+                  {summary}
+                </p>
+              </div>
             </div>
-            <div className="flex items-center text-sm text-gray-600">
-              <span>Read Time: {calculateReadTime(articleBody)}</span>
+          )}
+          
+          {/* Article Meta Information */}
+          <div className="flex flex-col  md:space-y-0 md:space-x-4 mb-2">
+            <div className="flex items-center space-x-4 text-sm text-gray-600">
+              {author && (
+                <div className="flex items-center space-x-1">
+                  <User className="h-4 w-4" />
+                  <span className="font-medium text-gray-900">{author}</span>
+                </div>
+              )}
+
+              {publishedTime && (
+                <div className="flex items-center space-x-1">
+                  <Calendar className="h-4 w-4" />
+                  <span>{formatDate(publishedTime)}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between pt-1 text-sm">
+              <div className="flex items-center space-x-1">
+                <Clock className="h-4 w-4" />
+                <span className="font-medium text-gray-900">{readTime}</span>
+              </div>
+
+              <Button
+                iconLeft={<Share2 size={14} color="blue" />}
+                type="button"
+                variant="outline"
+                onClick={handleShare}
+              >
+                Share
+              </Button>
             </div>
           </div>
-          <div>
-            {/* sharebutton */}
-            <Button
-              iconLeft={<Share2 size={16} color="white" />}
-              type="button"
-              className="rounded-md"
-              onClick={() => {
-                if (navigator.share) {
-                  navigator
-                    .share({
-                      title: document.title,
-                      text: "Check this out!",
-                      url: window.location.href,
-                    })
-                    .then(() => console.log("Shared successfully"))
-                    .catch((error) => console.error("Error sharing:", error));
-                } else {
-                  navigator.clipboard.writeText(window.location.href);
-                  alert("Link copied to clipboard (Share not supported)");
-                }
-              }}
-            >
-              Share
-            </Button>
-          </div>
+
+          {/* Featured Image */}
+          {imageUrl && (
+            <div className="mb-6">
+              <figure className="relative group">
+                <div className="relative overflow-hidden rounded-3xl bg-gray-100 shadow-2xl ring-1 ring-gray-200/50">
+                  <img
+                    src={imageUrl}
+                    alt={title}
+                    className="h-auto w-full object-cover transition-all duration-700 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                  
+                  {/* Image overlay with title on hover */}
+                  <div className="absolute bottom-0 left-0 right-0 p-8 text-white opacity-0 transition-all duration-300 group-hover:opacity-100">
+                    <h3 className="text-xl font-bold drop-shadow-2xl">
+                      {title}
+                    </h3>
+                  </div>
+                </div>
+              </figure>
+            </div>
+          )}
         </div>
-
-        {summary && (
-          <div className="rounded-lg bg-gray-50 p-4">
-            <h2 className="mb-2 text-lg font-bold">QUICK READ</h2>
-            <ul className="list-inside list-disc space-y-2 text-gray-700">
-              {summary.map((point, index) => (
-                <li key={index}>{point}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-        {/* Image */}
-        {imageUrl && (
-          <div className="">
-            <img src={imageUrl} alt={title} className="w-full rounded-lg" />
-          </div>
-        )}
       </div>
-    </div>
+    </header>
   );
 };
 
