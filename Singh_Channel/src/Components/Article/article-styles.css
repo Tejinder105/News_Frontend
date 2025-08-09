@@ -1,0 +1,277 @@
+/* Responsive Typography Utilities */
+
+/* Base responsive text scaling */
+.text-responsive-xs {
+    font-size: clamp(0.75rem, 2vw, 0.875rem);
+}
+.text-responsive-sm {
+    font-size: clamp(0.875rem, 2.5vw, 1rem);
+}
+.text-responsive-base {
+    font-size: clamp(1rem, 3vw, 1.125rem);
+}
+.text-responsive-lg {
+    font-size: clamp(1.125rem, 3.5vw, 1.25rem);
+}
+.text-responsive-xl {
+    font-size: clamp(1.25rem, 4vw, 1.5rem);
+}
+.text-responsive-2xl {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+}
+.text-responsive-3xl {
+    font-size: clamp(2rem, 6vw, 2.5rem);
+}
+.text-responsive-4xl {
+    font-size: clamp(2.5rem, 7vw, 3rem);
+}
+
+/* Enhanced article content styles */
+.article-typography {
+    font-family:
+        "Inter",
+        -apple-system,
+        BlinkMacSystemFont,
+        sans-serif;
+    line-height: 1.7;
+    color: #374151;
+}
+
+.article-typography h1 {
+    font-size: clamp(1.75rem, 5vw, 3rem);
+    line-height: 1.1;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1.5rem;
+    font-family: "Playfair Display", serif;
+}
+
+.article-typography h2 {
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    line-height: 1.2;
+    font-weight: 600;
+    color: #111827;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.article-typography h3 {
+    font-size: clamp(1.25rem, 3.5vw, 1.875rem);
+    line-height: 1.3;
+    font-weight: 600;
+    color: #111827;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.article-typography p {
+    font-size: clamp(1rem, 2.5vw, 1.125rem);
+    line-height: 1.75;
+    margin-bottom: 1.5rem;
+    color: #374151;
+}
+
+.article-typography blockquote {
+    font-size: clamp(1.125rem, 3vw, 1.25rem);
+    line-height: 1.6;
+    font-style: italic;
+    border-left: 4px solid #3b82f6;
+    background: linear-gradient(to right, #eff6ff, #f8fafc);
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    border-radius: 0 0.75rem 0.75rem 0;
+    position: relative;
+}
+
+.article-typography blockquote::before {
+    content: '"';
+    font-size: 4rem;
+    color: #3b82f6;
+    position: absolute;
+    left: 1rem;
+    top: 0.5rem;
+    font-family: "Playfair Display", serif;
+    opacity: 0.3;
+}
+
+/* Pull quote styles */
+.pull-quote {
+    font-size: clamp(1.25rem, 4vw, 1.875rem);
+    line-height: 1.4;
+    font-weight: 500;
+    color: #1f2937;
+    text-align: center;
+    padding: 2rem;
+    margin: 2.5rem 0;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 1rem;
+    position: relative;
+    font-style: italic;
+}
+
+.pull-quote::before,
+.pull-quote::after {
+    content: '"';
+    font-size: 3rem;
+    color: #3b82f6;
+    font-family: "Playfair Display", serif;
+    position: absolute;
+    opacity: 0.6;
+}
+
+.pull-quote::before {
+    top: 0.5rem;
+    left: 1rem;
+}
+
+.pull-quote::after {
+    bottom: 0.5rem;
+    right: 1rem;
+    transform: rotate(180deg);
+}
+
+/* Mobile-first responsive design */
+@media (max-width: 640px) {
+    .article-typography {
+        padding: 1rem;
+    }
+
+    .article-typography p {
+        font-size: 1.063rem; /* 17px for better mobile readability */
+        line-height: 1.8;
+    }
+
+    .article-typography h1 {
+        font-size: 1.875rem;
+        line-height: 1.1;
+        margin-bottom: 1rem;
+    }
+
+    .article-typography blockquote {
+        padding: 1rem 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .pull-quote {
+        font-size: 1.375rem;
+        padding: 1.5rem;
+        margin: 2rem 0;
+    }
+}
+
+/* Tablet styles */
+@media (min-width: 641px) and (max-width: 1024px) {
+    .article-typography {
+        padding: 1.5rem;
+    }
+
+    .article-typography p {
+        font-size: 1.125rem;
+        line-height: 1.75;
+    }
+
+    .article-typography h1 {
+        font-size: 2.5rem;
+    }
+}
+
+/* Desktop styles */
+@media (min-width: 1025px) {
+    .article-typography {
+        padding: 2rem 3rem;
+    }
+
+    .article-typography p {
+        font-size: 1.125rem;
+        line-height: 1.7;
+    }
+
+    .article-typography h1 {
+        font-size: 3rem;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .article-typography {
+        color: #d1d5db;
+    }
+
+    .article-typography h1,
+    .article-typography h2,
+    .article-typography h3 {
+        color: #f9fafb;
+    }
+
+    .article-typography p {
+        color: #d1d5db;
+    }
+
+    .article-typography blockquote {
+        background: linear-gradient(to right, #1e3a8a, #1e40af);
+        color: #e5e7eb;
+    }
+}
+
+/* Print styles */
+@media print {
+    .article-typography {
+        font-size: 12pt;
+        line-height: 1.5;
+        color: black;
+    }
+
+    .article-typography h1 {
+        font-size: 20pt;
+        page-break-after: avoid;
+    }
+
+    .article-typography h2,
+    .article-typography h3 {
+        page-break-after: avoid;
+    }
+
+    .article-typography p,
+    .article-typography blockquote {
+        page-break-inside: avoid;
+    }
+}
+
+/* Accessibility improvements */
+.article-typography *:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Smooth scrolling for anchor links */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Loading animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Hover effects for interactive elements */
+.hover-lift {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
