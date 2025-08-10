@@ -131,6 +131,7 @@ function NewsArtilcle() {
                   content={content.content}
                   title={content.headline}
                   author={content.author}
+                  youtubeLink={content.youtube_link}
                 />
               </article>
 

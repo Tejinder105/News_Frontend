@@ -6,8 +6,6 @@ import Home from "./Pages/Home";
 import NewsArticle from "./Pages/NewsArticle";
 import Dashboard from "./Pages/Admin/Dashboard";
 import CreateArticle from "./Pages/Admin/CreateArticle";
-import Login from "./Pages/Login";
-import SignUp from "./Pages/SignUp";
 const router = createBrowserRouter([
   {
     path: "/",

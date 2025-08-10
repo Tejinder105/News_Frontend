@@ -18,6 +18,15 @@ const swipeConfidenceThreshold = 1000;
 const swipePower = (offset, velocity) => Math.abs(offset) * velocity;
 
 function Carousel({ autoSlide = false, autoSlideInterval = 3000, items }) {
+  // Add safety checks for empty or invalid items
+  if (!items || !Array.isArray(items) || items.length === 0) {
+    return (
+      <div className="sm:[300px] relative flex h-[400px] max-w-5xl items-center justify-center overflow-hidden rounded-2xl bg-white shadow-lg md:h-[300px]">
+        <p className="text-gray-500">No featured news available</p>
+      </div>
+    );
+  }
+
   const [[index, direction], setIndex] = useState([0, 0]);
   const currentIndex = wrap(0, items.length, index);
 

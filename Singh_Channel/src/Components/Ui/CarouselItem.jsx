@@ -1,44 +1,65 @@
 import React from "react";
-import { ArrowRight  } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 function CarouselItem({ item }) {
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+    const diffInDays = Math.floor(diffInHours / 24);
+
+    if (diffInHours < 1) return "Just now";
+    else if (diffInHours < 24) return `${diffInHours} hours ago`;
+    else if (diffInDays === 1) return "Yesterday";
+    else if (diffInDays === 2) return "2 days ago";
+    else {
+      return date.toLocaleDateString("en-IN", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    }
+  };
   return (
     <div className="group grid h-full w-full grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-[2fr_3fr]">
       <div className="relative h-full w-full overflow-hidden rounded-lg">
         <img
-          src={item.image}
-          alt={item.tag}
+          src={item.image || "/placeholder-image.jpg"}
+          alt={item.tag || item.category || "News"}
           className="h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+          onError={(e) => {
+            e.target.src = "/placeholder-image.jpg";
+          }}
         />
-        <span className="absolute top-2 left-2 rounded-md bg-gray-800/80 px-2 py-1 text-xs font-semibold uppercase tracking-wider text-white">
-          {item.tag}
+        <span className="absolute top-2 left-2 rounded-md bg-gray-800/80 px-2 py-1 text-xs font-semibold tracking-wider text-white uppercase">
+          {item.tag || item.category || "News"}
         </span>
       </div>
 
       {/* Text Content */}
-      <div className="flex flex-col gap-4  p-2">
+      <div className="flex flex-col gap-4 p-2">
         <div className="">
-          <h2 className=" line-clamp-2 text-lg font-bold text-gray-900 transition-colors hover:text-blue-600 lg:text-2xl">
+          <h2 className="line-clamp-2 text-lg font-bold text-gray-900 transition-colors hover:text-blue-600 lg:text-2xl">
             {item.headline}
           </h2>
         </div>
-        <div className=" flex-1 line-clamp-3 text-sm text-gray-700 md:line-clamp-4 ">
-          {item.description}
+        <div className="line-clamp-3 flex-1 text-sm text-gray-700 md:line-clamp-4">
+          {item.summary}
         </div>
 
         {/* Footer (Author + Read More) */}
         <div className="flex flex-1 items-center justify-between">
           <div className="text-xs text-gray-500">
-            <span>{item.time}</span> · <span>by {item.author}</span>
+            <span>{formatTime(item.updatedAt)}</span> ·{" "}
+            <span>by {item.author || "Unknown author"}</span>
           </div>
-          <a
-            href={item.link}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to={`/article/${item.slug}`}
             className="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline"
           >
             Read More
-           <ArrowRight size={16} className="ml-1" />
-          </a>
+            <ArrowRight size={16} className="ml-1" />
+          </Link>
         </div>
       </div>
     </div>

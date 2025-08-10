@@ -2,7 +2,18 @@ import React, { useState, useEffect } from "react";
 import YouTube from "react-youtube";
 import { Clock, Share2, BookOpen, Quote } from "lucide-react";
 
-const ArticleContent = ({ content, title, author }) => {
+const extractYouTubeVideoId = (url) => {
+  if (!url || typeof url !== "string") return null;
+
+  // Regular expression to match various YouTube URL formats
+  const youtubeRegex =
+    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+
+  const match = url.match(youtubeRegex);
+  return match ? match[1] : null;
+};
+
+const ArticleContent = ({ content, title, author, youtubeLink }) => {
   const [readingProgress, setReadingProgress] = useState(0);
   const [estimatedReadTime, setEstimatedReadTime] = useState(0);
   const [showProgressBar, setShowProgressBar] = useState(false);
@@ -111,6 +122,9 @@ const ArticleContent = ({ content, title, author }) => {
     }
   };
 
+  // Extract video ID from YouTube link
+  const videoId = extractYouTubeVideoId(youtubeLink);
+
   return (
     <>
       {/* Main Content */}
@@ -154,31 +168,31 @@ const ArticleContent = ({ content, title, author }) => {
       )}
 
       {/* Enhanced Related Video Section */}
-      <div className="bg-white px-4 py-4 md:px-5 lg:px-6">
-        <div className="mx-auto max-w-4xl">
-          <div className="relative overflow-hidden rounded-2xl bg-gray-900 shadow-2xl">
-            <div className="aspect-video">
-              <YouTube
-                videoId="ju6L9octAAs"
-                opts={{
-                  width: "100%",
-                  height: "100%",
-                  playerVars: {
-                    autoplay: 0,
-                    rel: 0,
-                    modestbranding: 1,
-                    showinfo: 0,
-                  },
-                }}
-                className="h-full w-full"
-              />
-            </div>
+      {videoId && (
+        <div className="bg-white px-4 py-4 md:px-5 lg:px-6">
+          <div className="mx-auto max-w-4xl">
+            <div className="relative overflow-hidden rounded-2xl bg-gray-900 shadow-2xl">
+              <div className="aspect-video">
+                <YouTube
+                  videoId={videoId}
+                  opts={{
+                    width: "100%",
+                    height: "100%",
+                    playerVars: {
+                      autoplay: 0,
+                      rel: 0,
+                      modestbranding: 1,
+                      showinfo: 0,
+                    },
+                  }}
+                  className="h-full w-full"
+                />
+              </div>
 
-            {/* Video Overlay Info */}
-            <div className="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent p-6"></div>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 };
