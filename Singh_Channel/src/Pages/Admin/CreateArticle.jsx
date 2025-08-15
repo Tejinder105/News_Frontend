@@ -64,8 +64,8 @@ export default function CreateArticle({ post }) {
         pu: post?.summary?.pu || "",
         hi: post?.summary?.hi || "",
       },
-      is_featured: post?.is_featured || false,
-      is_breaking: post?.is_breaking || false,
+      is_featured: post?.isfeatured || false,
+      is_breaking: post?.isBreaking || false,
       youtube_link: post?.youtube_link || "",
     },
   });
@@ -136,6 +136,40 @@ export default function CreateArticle({ post }) {
     return () => subscription.unsubscribe();
   }, [watch, LANGUAGES]);
 
+  // Update tags when post prop changes (for edit mode)
+  useEffect(() => {
+    if (post?.tags) {
+      setTags(post.tags);
+    }
+  }, [post]);
+
+  // Reset form when post prop changes (for edit mode)
+  useEffect(() => {
+    if (post) {
+      reset({
+        headline: {
+          en: post?.headline?.en || "",
+          pu: post?.headline?.pu || "",
+          hi: post?.headline?.hi || "",
+        },
+        slug: post?.slug || "",
+        content: {
+          en: post?.content?.en || "",
+          pu: post?.content?.pu || "",
+          hi: post?.content?.hi || "",
+        },
+        summary: {
+          en: post?.summary?.en || "",
+          pu: post?.summary?.pu || "",
+          hi: post?.summary?.hi || "",
+        },
+        is_featured: post?.is_featured || false,
+        is_breaking: post?.is_breaking || false,
+        youtube_link: post?.youtube_link || "",
+      });
+    }
+  }, [post, reset]);
+
   const submit = async (data) => {
     setLoading(true);
     const formData = new FormData();
@@ -151,15 +185,6 @@ export default function CreateArticle({ post }) {
       }
     }
 
-    console.log("Raw form data:", data);
-
-    console.log("Stringified data:", {
-      headline: JSON.stringify(data.headline),
-      content: JSON.stringify(data.content),
-      summary: JSON.stringify(data.summary),
-      tags: JSON.stringify(tags),
-    });
-
     if (data.featured_image && data.featured_image.length > 0) {
       formData.append("featured_image", data.featured_image[0]);
     } else if (!post) {
@@ -171,7 +196,7 @@ export default function CreateArticle({ post }) {
     // Append all form data
     formData.append("headline", JSON.stringify(data.headline));
     formData.append("slug", data.slug);
-    formData.append("content", JSON.stringify(data.content)); // Fixed: stringify content
+    formData.append("content", JSON.stringify(data.content));
     formData.append("summary", JSON.stringify(data.summary));
     formData.append("is_featured", data.is_featured);
     formData.append("is_breaking", data.is_breaking);
@@ -194,7 +219,7 @@ export default function CreateArticle({ post }) {
 
     try {
       const url = post
-        ? `${import.meta.env.VITE_API_URL}/api/v1/articles/newArticles${post._id}`
+        ? `${import.meta.env.VITE_API_URL}/api/v1/admin/articles/${post._id}`
         : `${import.meta.env.VITE_API_URL}/api/v1/articles/newArticles`;
 
       const method = post ? "put" : "post";
@@ -429,33 +454,35 @@ export default function CreateArticle({ post }) {
             />
 
             {/* Tags Section */}
-            <div className="mb-2 group relative overflow-hidden rounded-xl border-2 border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 transition-all duration-300 hover:border-blue-300 hover:shadow-md">
+            <div className="group relative mb-2 overflow-hidden rounded-xl border-2 border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 transition-all duration-300 hover:border-blue-300 hover:shadow-md">
               <div className="mb-3 flex items-center space-x-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                  <Tags/>
+                  <Tags />
                 </div>
                 <div>
                   <h4 className="text-sm font-semibold text-gray-800 sm:text-base">
                     Article Tags
                   </h4>
-                 
                 </div>
               </div>
-              <TagsInput onTagsChange={handleTagsChange} maxTags={5} />
+              <TagsInput 
+                onTagsChange={handleTagsChange} 
+                maxTags={5} 
+                initialTags={post?.tags || []}
+              />
               <div className="absolute -top-8 -right-8 h-16 w-16 rounded-full bg-blue-200 opacity-20 transition-all duration-300 group-hover:scale-110"></div>
             </div>
 
             {/* YouTube Link Section */}
             <div className="group relative overflow-hidden rounded-xl border-2 border-gray-200 bg-gradient-to-r from-slate-50 to-gray-50 p-4 transition-all duration-300 hover:border-gray-300 hover:shadow-md">
-              <div className=" flex items-center space-x-3">
+              <div className="flex items-center space-x-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-600">
-                  <Video/>
+                  <Video />
                 </div>
-               
-                  <h4 className="text-sm font-semibold text-gray-800 sm:text-base">
-                    YouTube Video
-                  </h4>
-              
+
+                <h4 className="text-sm font-semibold text-gray-800 sm:text-base">
+                  YouTube Video
+                </h4>
               </div>
               <Input
                 placeholder="https://youtube.com/watch?v=..."
@@ -467,8 +494,6 @@ export default function CreateArticle({ post }) {
             </div>
 
             <div className="mt-4 space-y-4 sm:mt-6">
-             
-
               {/* Featured Article */}
               <div className="group relative overflow-hidden rounded-xl border-2 border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-2 transition-all duration-300 hover:border-blue-300 hover:shadow-md">
                 <div className="flex items-center justify-between">
@@ -480,7 +505,11 @@ export default function CreateArticle({ post }) {
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <Toggle {...register("is_featured")} variant="featured" />
+                    <Toggle 
+                      checked={watch("is_featured")}
+                      onChange={(e) => setValue("is_featured", e.target.checked)}
+                      variant="featured" 
+                    />
                   </div>
                 </div>
                 <div className="absolute -top-8 -right-8 h-16 w-16 rounded-full bg-blue-200 opacity-20 transition-all duration-300 group-hover:scale-110"></div>
@@ -497,7 +526,11 @@ export default function CreateArticle({ post }) {
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <Toggle {...register("is_breaking")} variant="breaking" />
+                    <Toggle 
+                      checked={watch("is_breaking")}
+                      onChange={(e) => setValue("is_breaking", e.target.checked)}
+                      variant="breaking" 
+                    />
                   </div>
                 </div>
                 <div className="absolute -top-8 -right-8 h-16 w-16 rounded-full bg-blue-300 opacity-20 transition-all duration-300 group-hover:scale-110"></div>
