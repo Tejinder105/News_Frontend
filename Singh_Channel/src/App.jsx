@@ -6,6 +6,8 @@ import Home from "./Pages/Home";
 import NewsArticle from "./Pages/NewsArticle";
 import Dashboard from "./Pages/Admin/Dashboard";
 import CreateArticle from "./Pages/Admin/CreateArticle";
+import AllArticle from "./Pages/Admin/AllArticle";
+import EditArticle from "./Pages/Admin/EditArticle";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -33,6 +35,15 @@ const router = createBrowserRouter([
         path: "createarticles",
         element: <CreateArticle />,
       },
+      {
+        path:"allarticles",
+        element:<AllArticle/>
+      },
+      {
+        path: "edit-article/:id",
+        element: <EditArticle />
+      }
+
     ],
   },
 ]);

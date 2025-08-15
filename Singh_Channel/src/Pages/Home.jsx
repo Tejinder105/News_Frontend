@@ -45,10 +45,7 @@ function Home() {
   const [error, setError] = useState(null);
   const language = useSelector((s) => s.language.current);
 
-  console.log("Current language in Home:", language); // Debug log
-
   useEffect(() => {
-    console.log("Fetching articles for language:", language); // Debug log
     const controller = new AbortController();
     const fetchArticles = async () => {
       try {
@@ -60,7 +57,6 @@ function Home() {
           20,
           controller.signal
         );
-        console.log("Fetched articles:", articles); // Debug log
         setArticle(Array.isArray(articles) ? articles : []);
       } catch (err) {
         if (err.name === "CanceledError" || err.name === "AbortError") return;

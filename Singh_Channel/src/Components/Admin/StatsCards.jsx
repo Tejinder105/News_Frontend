@@ -17,8 +17,8 @@ function StatsCards({stat, isLoading}) {
     )
   }
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md">
+      <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-gray-600">{stat.name}</p>
           <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
