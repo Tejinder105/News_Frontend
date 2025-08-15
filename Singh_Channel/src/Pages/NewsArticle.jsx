@@ -5,6 +5,7 @@ import ArticleHeader from "../Components/Article/ArticleHeader";
 import ArticleContent from "../Components/Article/ArticleContent";
 import SkeletonArticle from "../Components/Article/SkeletonArticle";
 import ResourceNotFound from "../Components/Ui/ResourceNotFound";
+import RelatedArticles from "../Components/Article/RelatedArticles";
 import { ReadingProgress } from "../Components/Article/ArticleAnimations";
 
 import CardAd from "../Components/Ui/CardAd";
@@ -62,10 +63,6 @@ function NewsArtilcle() {
       });
   }, [id, language]);
 
-  const relatedArticles = useMemo(() => {
-    return newsItem.filter((item) => item.id !== id);
-  }, [id]);
-
   const calculateReadTime = (text) => {
     if (!text || typeof text !== "string") return "0 min read";
     const wordsPerMinute = 200;
@@ -85,34 +82,12 @@ function NewsArtilcle() {
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-6">
             <aside className="order-1 hidden lg:col-span-3 lg:block">
               <div className="sticky top-6 space-y-4">
-                <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-                  <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-3 py-3">
-                    <h3 className="flex items-center text-lg font-semibold text-white">
-                      Related Stories
-                    </h3>
-                  </div>
-                  <div className="divide-y divide-gray-100">
-                    {relatedArticles.slice(0, 5).map((news, index) => (
-                      <div
-                        key={news.id || index}
-                        className="group cursor-pointer px-3 py-4 transition-all duration-200 hover:bg-blue-50"
-                      >
-                        <div className="flex gap-2">
-                          <div className="flex-shrink-0">
-                            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-sm font-semibold text-white shadow-sm">
-                              {index + 1}
-                            </span>
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <h4 className="line-clamp-3 text-sm leading-tight font-medium text-gray-900 transition-colors group-hover:text-blue-700">
-                              {news.title}
-                            </h4>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <RelatedArticles 
+                  tags={content.tags || []} 
+                  currentArticleId={content._id} 
+                  language={language} 
+                  limit={5} 
+                />
               </div>
             </aside>
 
@@ -137,35 +112,12 @@ function NewsArtilcle() {
 
               {/* Mobile Related Articles */}
               <div className="mt-8 lg:hidden">
-                <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-                  <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-3 py-4">
-                    <h3 className="text-lg font-semibold text-white">
-                      Related Stories
-                    </h3>
-                  </div>
-                  <div className="divide-y divide-gray-100">
-                    {relatedArticles.slice(0, 3).map((news, index) => (
-                      <div
-                        key={news.id || index}
-                        className="cursor-pointer px-3 py-4 transition-colors hover:bg-gray-50"
-                      >
-                        <div className="flex gap-3">
-                          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-sm font-medium text-white">
-                            {index + 1}
-                          </span>
-                          <div className="min-w-0 flex-1">
-                            <h4 className="line-clamp-2 text-sm font-medium text-gray-900">
-                              {news.title}
-                            </h4>
-                            <p className="mt-1 text-xs text-gray-500">
-                              {formatTime(news.publishedAt)}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <RelatedArticles 
+                  tags={content.tags || []} 
+                  currentArticleId={content._id} 
+                  language={language} 
+                  limit={3} 
+                />
               </div>
             </main>
 
