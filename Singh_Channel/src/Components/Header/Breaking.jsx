@@ -1,27 +1,51 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import articleService from "../../Services/articleService";
+import { useSelector } from "react-redux";
 
 function Breaking() {
-  const BreakingNews = [
-    "रतिया में आज शाम को बिजली की आपूर्ति 4 घंटे के लिए बाधित रहेगी",
-    "फतेहाबाद जिले में नई कृषि योजना का शुभारंभ",
-    "रतिया नगर पालिका की बैठक कल आयोजित की जाएगी",
-  ];
+  const [breakingNews, setBreakingNews] = useState([]);
+  const language = useSelector((s) => s.language.current);
+
+  useEffect(() => {
+    const fetchBreakingNews = async () => {
+      try {
+        const { BreakingNews } = await articleService.getBreakingNews(
+          language,
+          3
+        );
+        setBreakingNews(Array.isArray(BreakingNews) ? BreakingNews : []);
+      } catch (error) {
+        console.error("Error fetching breaking news:", error);
+      }
+    };
+    fetchBreakingNews();
+  }, [language]);
   return (
     <div className="bg-black py-1 text-white">
       <div className="relative mx-auto flex max-w-7xl items-center overflow-hidden px-4 sm:px-6 lg:px-8">
-        <div className="z-10 bg-black pr-3">
-          <span className="inline-block rounded-full bg-red-600 px-3 py-0.5 text-xs font-bold tracking-wider uppercase">
+        {/* Breaking tag */}
+        <div className="relative z-20 mr-4">
+          <span className="inline-block rounded-full bg-red-600 px-3 py-1 text-xs font-bold tracking-wider uppercase">
             BREAKING
           </span>
         </div>
 
-        <div className="animate-marquee absolute right-0 whitespace-nowrap">
-          {BreakingNews.map((news, index) => (
-            <span key={index} className="px-3 text-sm font-semibold">
-              <span className="mx-2 text-red-400">•</span>
-              {news}
-            </span>
-          ))}
+        {/* Scrolling text */}
+        <div className="flex-1 overflow-hidden">
+          <div className="animate-marquee whitespace-nowrap">
+            {breakingNews.length > 0 ? (
+              breakingNews.map((news, index) => (
+                <span key={index} className="mr-8 text-sm font-semibold">
+                  <span className="mr-2 text-red-400">•</span>
+                  {news}
+                </span>
+              ))
+            ) : (
+              <span className="text-sm font-semibold">
+                No breaking news available
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </div>
