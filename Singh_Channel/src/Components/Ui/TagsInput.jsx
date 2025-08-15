@@ -1,9 +1,14 @@
 import { X } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-function TagsInput({ onTagsChange, placeholder = "Add tags...", maxTags = 5 }) {
-  const [tags, setTags] = useState([]);
+function TagsInput({ onTagsChange, placeholder = "Add tags...", maxTags = 5, initialTags = [] }) {
+  const [tags, setTags] = useState(initialTags);
   const [inputValue, setInputValue] = useState("");
+
+  // Update tags when initialTags prop changes
+  useEffect(() => {
+    setTags(initialTags);
+  }, [initialTags]);
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);

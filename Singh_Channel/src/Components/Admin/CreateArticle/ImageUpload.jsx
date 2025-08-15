@@ -1,14 +1,24 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Upload, X, AlertCircle } from "lucide-react";
-function ImageUpload({ register, errors, isEditMode, post }) {
+function ImageUpload({ register, errors, post }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(
     
-    post?.featured_image || null
+    post?.image || null
   );
   const [dragActive, setDragActive] = useState(false);
   const [uploadError, setUploadError] = useState("");
   const fileInputRef = useRef(null);
+
+  // Update image preview when post changes
+  useEffect(() => {
+    if (post?.image) {
+      setImagePreview(post.image);
+      setSelectedImage(null); // Reset selected image when editing existing post
+    } else {
+      setImagePreview(null);
+    }
+  }, [post]);
 
   const validateFile = (file) => {
     const maxSize = 5 * 1024 * 1024; // 5MB
@@ -192,8 +202,6 @@ function ImageUpload({ register, errors, isEditMode, post }) {
             <span>{errors.featured_image?.message || uploadError}</span>
           </div>
         )}
-
-        {/* Upload Instructions */}
       </div>
     </>
   );
