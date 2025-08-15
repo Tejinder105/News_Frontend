@@ -19,7 +19,7 @@ function Sidebar({ open, setOpen }) {
     { name: "Dashboard", link: "/admin", icon: <LayoutDashboard size={20} /> },
     {
       name: "All Articles",
-      link: "/admin/allArticles",
+      link: "/admin/allarticles",
       icon: <Newspaper size={20} />,
     },
     {
