@@ -1,5 +1,5 @@
 import React from "react";
-import { User, Menu } from "lucide-react";
+import { User, Menu, LogOut, LogIn } from "lucide-react";
 import Button from "../Ui/Button";
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -18,47 +18,33 @@ const HeaderActions = ({ isMenuOpen, onMenuToggle }) => {
             <div className="hidden lg:flex">
                 {isAuthenticated ? (
                     <Button
-                        variant="outline"
-                        size="small"
-                        iconLeft={
-                            <User
-                                size={16}
-                                className="text-white"
-                                strokeWidth={3}
-                            />
-                        }
-                        className="border-slate-600 transition-colors duration-300 hover:border-sky-400"
+                        variant="header-auth-logout"
+                        size="sm"
+                        iconLeft={<LogOut size={16} strokeWidth={2} />}
+                        className="transition-all duration-300 hover:shadow-lg"
                         onClick={logout}
                     >
-                        <span className="text-sm">Logout</span>
+                        <span className="font-medium">Logout</span>
                     </Button>
                 ) : (
                     <Button
-                        variant="outline"
-                        size="small"
-                        iconLeft={
-                            <User
-                                size={16}
-                                className="text-white"
-                                strokeWidth={3}
-                            />
-                        }
-                        className="border-slate-600 transition-colors duration-300 hover:border-sky-400"
+                        variant="header-auth-login"
+                        size="sm"
+                        iconLeft={<LogIn size={16} strokeWidth={2} />}
+                        className="transition-all duration-300 hover:shadow-lg"
                         onClick={() => login()}
                     >
-                        <span className="text-sm">Login</span>
+                        <span className="font-medium">Login</span>
                     </Button>
                 )}
             </div>
             {!isMenuOpen && (
                 <Button
-                    className="p-2 transition-colors duration-200 hover:bg-slate-700 lg:hidden"
+                    variant="icon-dark"
                     onClick={onMenuToggle}
-                    aria-label="Open Menu"
-                    variant="ghost"
-                >
-                    <Menu className="text-white" size={20} />
-                </Button>
+                    className="lg:hidden"
+                    iconLeft={<Menu size={20} />}
+                />
             )}
         </div>
     );

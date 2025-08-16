@@ -9,6 +9,7 @@ import {
   X,
 } from "lucide-react";
 import Logo from "../Ui/Logo";
+import Button from "../Ui/Button";
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 
@@ -65,12 +66,12 @@ function Sidebar({ open, setOpen }) {
               </div>
             </div>
           )}
-          <button
+          <Button
+            variant="icon-dark"
             onClick={() => setOpen(!open)}
-            className="rounded-lg p-2 text-slate-400 transition-all duration-200 hover:bg-slate-700 hover:text-white focus:ring-2 focus:ring-blue-400 focus:outline-none"
-          >
-            {isMobile ? <X size={20} /> : <PanelRightOpen size={20} />}
-          </button>
+            iconLeft={isMobile ? <X size={20} /> : <PanelRightOpen size={20} />}
+            className="text-slate-400 hover:text-white"
+          />
         </div>
 
         {/* Navigation */}
@@ -113,24 +114,24 @@ function Sidebar({ open, setOpen }) {
 
           {/* Logout Button */}
           <div className="mt-auto mb-6">
-            <button
+            <Button
+              variant="danger"
+              size="md"
+              className={`w-full transition-all duration-200 ${
+                !open ? "justify-center px-3" : "justify-start"
+              }`}
+              iconLeft={<LogOut size={20} />}
               onClick={handleLogout}
-              className="group flex w-full items-center gap-4 rounded-xl p-3 text-sm font-medium text-red-400 transition-all duration-200 hover:bg-red-500/20 hover:text-red-300 hover:shadow-md focus:ring-2 focus:ring-red-400 focus:outline-none"
-              tabIndex={0}
-              aria-label="Logout"
             >
-              <div className="flex-shrink-0">
-                <LogOut size={20} />
-              </div>
-              <span
-                style={{ transitionDelay: "200ms" }}
-                className={`whitespace-nowrap transition-all duration-300 ${
-                  !open ? "translate-x-8 overflow-hidden opacity-0" : ""
-                }`}
-              >
-                Logout
-              </span>
-            </button>
+              {open && (
+                <span
+                  style={{ transitionDelay: "200ms" }}
+                  className="whitespace-nowrap transition-all duration-300"
+                >
+                  Logout
+                </span>
+              )}
+            </Button>
           </div>
         </div>
       </aside>

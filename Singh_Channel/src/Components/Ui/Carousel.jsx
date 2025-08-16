@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { AnimatePresence, motion, wrap } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import CarouselItem from "./CarouselItem";
+import Button from "./Button";
 const variants = {
   enter: (direction) => ({
     x: direction > 0 ? "100%" : "-100%",
@@ -18,7 +19,6 @@ const swipeConfidenceThreshold = 1000;
 const swipePower = (offset, velocity) => Math.abs(offset) * velocity;
 
 function Carousel({ autoSlide = false, autoSlideInterval = 3000, items }) {
-  // Add safety checks for empty or invalid items
   if (!items || !Array.isArray(items) || items.length === 0) {
     return (
       <div className="sm:[300px] relative flex h-[400px] max-w-5xl items-center justify-center overflow-hidden rounded-2xl bg-white shadow-lg md:h-[300px]">
@@ -66,20 +66,18 @@ function Carousel({ autoSlide = false, autoSlideInterval = 3000, items }) {
       </AnimatePresence>
 
       {/* Navigation Buttons */}
-      <button
+      <Button
+        variant="overlay"
         onClick={() => paginate(-1)}
-        className="absolute top-1/2 left-2 z-10 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm hover:bg-black/50"
-        aria-label="Previous"
-      >
-        <ChevronLeft size={24} />
-      </button>
-      <button
+        className="absolute top-1/2 left-2 z-10 -translate-y-1/2"
+        iconLeft={<ChevronLeft size={24} />}
+      />
+      <Button
+        variant="overlay"
         onClick={() => paginate(1)}
-        className="absolute top-1/2 right-2 z-10 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm hover:bg-black/50"
-        aria-label="Next"
-      >
-        <ChevronRight size={24} />
-      </button>
+        className="absolute top-1/2 right-2 z-10 -translate-y-1/2"
+        iconLeft={<ChevronRight size={24} />}
+      />
 
       {/* Dots */}
       <div className="absolute right-0 bottom-4 left-0 flex justify-center gap-2">

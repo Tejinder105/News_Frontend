@@ -1,77 +1,106 @@
-import React, { useState, useEffect } from "react";
-import { CloudRain, Cloud, Sun, Thermometer, RefreshCw, MapPin, Droplets, Wind, Eye } from "lucide-react";
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  CloudRain,
+  Cloud,
+  Sun,
+  Thermometer,
+  RefreshCw,
+  MapPin,
+  Droplets,
+  Wind,
+  Eye,
+} from "lucide-react";
+import Button from "./Button";
 
 function Weather() {
   const [weatherData, setWeatherData] = useState(null);
-  const [lat, setLat] = useState(null);
-  const [lon, setLon] = useState(null);
+  const [location, setLocation] = useState({ lat: null, lon: null });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [lastUpdated, setLastUpdated] = useState(null);
-  const api = "3c11adf205c44902b3b94958250906"; // Move to .env in production
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setLat(latitude);
-          setLon(longitude);
-        },
-        (err) => {
-          setError("Permission denied or location unavailable.");
-          setLoading(false);
-        }
-      );
-    } else {
-      setError("Geolocation is not supported by this browser.");
-      setLoading(false);
-    }
-  }, []);
+  const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 
-  useEffect(() => {
-    if (lat !== null && lon !== null) {
-      fetchWeather();
-    }
-  }, [lat, lon]);
+  const fetchWeather = useCallback(async () => {
+    if (!location.lat || !location.lon) return;
 
-  const fetchWeather = async () => {
     setLoading(true);
     setError(null);
+
     try {
       const response = await fetch(
-        `https://api.weatherapi.com/v1/current.json?key=${api}&q=${lat},${lon}&aqi=no`
+        `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${location.lat},${location.lon}&aqi=no`
       );
-      if (!response.ok) throw new Error("Network response was not ok");
+
+      if (!response.ok) {
+        throw new Error(`Weather API error: ${response.status}`);
+      }
+
       const data = await response.json();
       setWeatherData(data);
-      console.log(data);
-      setLastUpdated(new Date());
-    } catch (error) {
-      setError(`Failed to fetch weather data: ${error.message}`);
+    } catch (err) {
+      setError(`Failed to fetch weather: ${err.message}`);
+      console.error("Weather fetch error:", err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [location, API_KEY]);
 
-  const refreshWeather = () => {
-    if (lat && lon) fetchWeather();
-  };
+  const getLocation = useCallback(() => {
+    setError(null);
+    setLoading(true);
 
-  const getWeatherIcon = (condition) => {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported by your browser");
+      setLoading(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocation({
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        });
+      },
+      (err) => {
+        setError(`Location permission denied: ${err.message}`);
+        setLoading(false);
+      },
+      { timeout: 10000 }
+    );
+  }, []);
+
+  useEffect(() => {
+    getLocation();
+  }, [getLocation]);
+
+  useEffect(() => {
+    if (location.lat && location.lon) {
+      fetchWeather();
+    }
+  }, [location, fetchWeather]);
+
+  const WeatherIcon = ({ condition }) => {
     const conditionLower = condition.toLowerCase();
+
     if (conditionLower.includes("rain"))
       return <CloudRain className="h-8 w-8 text-blue-500" />;
     if (conditionLower.includes("cloud"))
       return <Cloud className="h-8 w-8 text-gray-500" />;
     if (conditionLower.includes("sun") || conditionLower.includes("clear"))
       return <Sun className="h-8 w-8 text-yellow-500" />;
+
     return <Cloud className="h-8 w-8 text-gray-500" />;
   };
 
-  if (loading) {
+  const retryLocation = () => {
+    setWeatherData(null);
+    getLocation();
+  };
+
+  if (loading && !weatherData) {
     return (
-      <div className="rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100 p-4 shadow-sm">
+      <div className="rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100 px-4 py-2 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-800">
             <Thermometer className="h-5 w-5 text-blue-600" />
@@ -96,28 +125,30 @@ function Weather() {
           <Thermometer className="h-5 w-5 text-blue-600" />
           Weather
         </h3>
-        <div
-          onClick={refreshWeather}
-          className="transition-color rounded-lg p-1.5 duration-200 hover:bg-blue-100"
-        >
-          <RefreshCw className="h-4 w-4 text-blue-600" />
-        </div>
-        {error && !weatherData && (
-          <div className="py-4 text-center">
-            <div className="mb-1 text-sm text-red-500">{error}</div>
-            <button
-              onClick={refreshWeather}
-              className="text-xs text-blue-600 underline hover:text-blue-800"
-            >
-              Try Again
-            </button>
-          </div>
-        )}
+
+        <Button
+          variant="icon"
+          onClick={fetchWeather}
+          disabled={loading}
+          loading={loading}
+          iconLeft={!loading && <RefreshCw className="h-4 w-4 text-blue-600" />}
+        />
       </div>
 
-      {weatherData && (
+      {error && !weatherData ? (
+        <div className="py-4 text-center">
+          <div className="mb-2 text-sm text-red-500">{error}</div>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={retryLocation}
+          >
+            Retry Location
+          </Button>
+        </div>
+      ) : weatherData ? (
         <div className="space-y-2">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-2">
             <div className="flex items-center gap-3">
               {weatherData.current.condition.icon ? (
                 <img
@@ -126,79 +157,73 @@ function Weather() {
                   className="h-12 w-12"
                 />
               ) : (
-                getWeatherIcon(weatherData.current.condition.text)
+                <WeatherIcon condition={weatherData.current.condition.text} />
               )}
-              <div>
-                <div className="text-2xl font-bold text-gray-800">
-                  {Math.round(weatherData.current.temp_c)}°C
-                </div>
-                <div className="text-sm text-gray-600 capitalize">
-                  {weatherData.current.condition.text}
+              <div className="flex flex-col items-start gap-1">
+                <div className="flex items-center justify-between w-full gap-2">
+                  <div className="flex flex-col">
+                    <div className="text-2xl leading-tight font-bold text-gray-800">
+                      {Math.round(weatherData.current.temp_c)}°C
+                    </div>
+                    <div className="text-sm text-gray-600 capitalize">
+                      {weatherData.current.condition.text}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 text-sm text-gray-600">
+                    <MapPin className="h-4 w-4 text-gray-500" />
+                    <span>
+                      {weatherData.location.name}, {weatherData.location.region}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <MapPin className="h-4 w-4" />
-            <span>
-              {weatherData.location.name}, {weatherData.location.region}
-            </span>
-          </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <div className="flex items-center gap-2 rounded-lg bg-white/50 p-2">
-              <Droplets className="h-4 w-4 text-blue-500" />
-              <div>
-                <div className="text-xs text-gray-500">Humidity</div>
-                <div className="text-sm font-medium">
-                  {weatherData.current.humidity}%
-                </div>
-              </div>
-            </div>
+            <WeatherMetric
+              icon={<Droplets className="h-4 w-4 text-blue-500" />}
+              label="Humidity"
+              value={`${weatherData.current.humidity}%`}
+            />
 
-            <div className="flex items-center gap-2 rounded-lg bg-white/50 p-2">
-              <Wind className="h-4 w-4 text-gray-500" />
-              <div>
-                <div className="text-xs text-gray-500">Wind</div>
-                <div className="text-sm font-medium">
-                  {Math.round(weatherData.current.wind_kph)} km/h
-                </div>
-              </div>
-            </div>
+            <WeatherMetric
+              icon={<Wind className="h-4 w-4 text-gray-500" />}
+              label="Wind"
+              value={`${Math.round(weatherData.current.wind_kph)} km/h`}
+            />
 
-            <div className="flex items-center gap-2 rounded-lg bg-white/50 p-2">
-              <Eye className="h-4 w-4 text-purple-500" />
-              <div>
-                <div className="text-xs text-gray-500">Visibility</div>
-                <div className="text-sm font-medium">
-                  {weatherData.current.vis_km} km
-                </div>
-              </div>
-            </div>
+            <WeatherMetric
+              icon={<Eye className="h-4 w-4 text-purple-500" />}
+              label="Visibility"
+              value={`${weatherData.current.vis_km} km`}
+            />
 
-            <div className="flex items-center gap-2 rounded-lg bg-white/50 p-2">
-              <Thermometer className="h-4 w-4 text-red-500" />
-              <div>
-                <div className="text-xs text-gray-500">Feels like</div>
-                <div className="text-sm font-medium">
-                  {weatherData.current.feelslike_c}°C
-                </div>
-              </div>
-            </div>
+            <WeatherMetric
+              icon={<Thermometer className="h-4 w-4 text-red-500" />}
+              label="Feels like"
+              value={`${weatherData.current.feelslike_c}°C`}
+            />
           </div>
-          {lastUpdated && (
-            <div className="border-t border-blue-200 pt-2 text-center text-xs text-gray-500">
-              Updated: {lastUpdated.toLocaleTimeString()}
-            </div>
-          )}
 
-          {error && weatherData && (
+          {error && (
             <div className="text-center text-xs text-orange-600">{error}</div>
           )}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
+
+// Extracted metric component
+const WeatherMetric = ({ icon, label, value }) => (
+  <div className="flex items-center gap-2 rounded-lg bg-white/50 p-2">
+    {icon}
+    <div>
+      <div className="text-xs text-gray-500">{label}</div>
+      <div className="text-sm font-medium">{value}</div>
+    </div>
+  </div>
+);
 
 export default Weather;

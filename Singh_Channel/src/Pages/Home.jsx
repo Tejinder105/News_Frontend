@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { Carousel, Weather, CardAd, Card, Spinner } from "../Components";
+import React, { useEffect, useState } from "react";
+import { Carousel, Weather, CardAd, Card, Spinner, Button } from "../Components";
 import articleService from "../Services/articleService";
-import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 
 const adItem = [
@@ -62,7 +61,6 @@ function Home() {
         if (err.name === "CanceledError" || err.name === "AbortError") return;
         console.error("Error fetching articles:", err);
         setError("Failed to load articles. Please try again later.");
-        toast.error("Failed to load articles");
         setArticle([]);
       } finally {
         setLoading(false);
@@ -104,12 +102,12 @@ function Home() {
       <div className="flex min-h-screen items-center justify-center bg-slate-100">
         <div className="text-center">
           <p className="mb-4 text-red-500">{error}</p>
-          <button
+          <Button
+            variant="primary"
             onClick={() => window.location.reload()}
-            className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
           >
             Retry
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -132,14 +130,14 @@ function Home() {
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {breakingNews.slice(0, 10).map((item) => (
-                  <Card key={item._id || item.id || item.slug} article={item} />
+                {breakingNews.slice(0, 3).map((item) => (
+                  <Card key={item.slug} article={item} />
                 ))}
               </div>
             </div>
           )}
 
-          {/* Regular News Section */}
+          
           <div className="mb-8">
             <div className="mb-4 flex items-baseline">
               <h2 className="flex items-center gap-2 text-lg font-bold text-gray-900 sm:text-xl">
@@ -155,7 +153,7 @@ function Home() {
                   .filter((item) => !item.isBreaking)
                   .map((item) => (
                     <Card
-                      key={item._id || item.id || item.slug}
+                      key={item.slug}
                       article={item}
                     />
                   ))}

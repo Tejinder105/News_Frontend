@@ -2,6 +2,7 @@ import { Mail, MapPin, Phone, ArrowUp } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { footerData } from "../../Constants/FooterData";
+import Button from "../Ui/Button";
 
 const FooterSection = ({ title, children, className = "" }) => (
   <div className={`space-y-4 ${className}`}>
@@ -66,13 +67,12 @@ function Footer() {
   return (
     <footer className="relative bg-slate-900 text-white">
       {showScrollTop && (
-        <button
+        <Button
+          variant="fab"
           onClick={scrollToTop}
-          className="fixed right-6 bottom-6 z-50 rounded-full bg-sky-500 p-3 text-white shadow-lg transition-all duration-200 hover:scale-110 hover:bg-sky-600"
-          aria-label="Scroll to top"
-        >
-          <ArrowUp size={20} />
-        </button>
+          className="fixed right-6 bottom-6 z-50"
+          iconLeft={<ArrowUp size={20} />}
+        />
       )}
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">

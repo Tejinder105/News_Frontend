@@ -1,12 +1,7 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
-import { Spinner } from "/src/Components";
 import useGeminiAnalysis from "/src/hooks/useGeminiAnalysis";
-import GeminiSuggestions from "/src/Components/Admin/GeminiSuggestions";
-import LanguageSwitcher from "/src/Components/Admin/CreateArticle/LanguageSwitcher";
-import AiTools from "/src/Components/Admin/CreateArticle/AiTools";
-import ImageUpload from "/src/Components/Admin/CreateArticle/ImageUpload";
 import { useAuth0 } from "@auth0/auth0-react";
 import {
   Button,
@@ -14,6 +9,11 @@ import {
   TagsInput,
   Toggle,
   Input,
+  Spinner,
+  GeminiSuggestions,
+  ImageUpload,
+  AiTools,
+  LanguageSwitcher,
 } from "../../Components";
 import axios from "axios";
 import { Tags, Video } from "lucide-react";
@@ -64,9 +64,9 @@ export default function CreateArticle({ post }) {
         pu: post?.summary?.pu || "",
         hi: post?.summary?.hi || "",
       },
-      is_featured: post?.isfeatured || false,
-      is_breaking: post?.isBreaking || false,
-      youtube_link: post?.youtube_link || "",
+      isFeatured: post?.isFeatured || false,
+      isBreaking: post?.isBreaking || false,
+      youtubeLink: post?.youtubeLink || "",
     },
   });
 
@@ -465,9 +465,9 @@ export default function CreateArticle({ post }) {
                   </h4>
                 </div>
               </div>
-              <TagsInput 
-                onTagsChange={handleTagsChange} 
-                maxTags={5} 
+              <TagsInput
+                onTagsChange={handleTagsChange}
+                maxTags={5}
                 initialTags={post?.tags || []}
               />
               <div className="absolute -top-8 -right-8 h-16 w-16 rounded-full bg-blue-200 opacity-20 transition-all duration-300 group-hover:scale-110"></div>
@@ -505,10 +505,12 @@ export default function CreateArticle({ post }) {
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <Toggle 
+                    <Toggle
                       checked={watch("is_featured")}
-                      onChange={(e) => setValue("is_featured", e.target.checked)}
-                      variant="featured" 
+                      onChange={(e) =>
+                        setValue("is_featured", e.target.checked)
+                      }
+                      variant="featured"
                     />
                   </div>
                 </div>
@@ -526,10 +528,12 @@ export default function CreateArticle({ post }) {
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <Toggle 
+                    <Toggle
                       checked={watch("is_breaking")}
-                      onChange={(e) => setValue("is_breaking", e.target.checked)}
-                      variant="breaking" 
+                      onChange={(e) =>
+                        setValue("is_breaking", e.target.checked)
+                      }
+                      variant="breaking"
                     />
                   </div>
                 </div>

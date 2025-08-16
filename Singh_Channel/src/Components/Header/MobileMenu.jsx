@@ -1,10 +1,11 @@
 import React from "react";
-import { X } from "lucide-react";
+import { X, LogIn, UserPlus } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import Logo from "../Ui/Logo";
 import { navItems } from "../../Constants/Navigation";
 import Navigation from "./Navigation";
 import { useNavigate } from "react-router-dom";
+import Button from "../Ui/Button";
 
 const MobileMenu = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
@@ -30,28 +31,34 @@ const MobileMenu = ({ isOpen, onClose }) => {
           >
             <div className="mb-4 flex items-center justify-between border-b border-slate-700 pb-3">
               <Logo size="small" />
-              <button
+              <Button
+                variant="icon-dark"
                 onClick={onClose}
-                aria-label="Close menu"
-                className="text-white"
-              >
-                <X size={20} />
-              </button>
+                iconLeft={<X size={20} />}
+              />
             </div>
             <nav className="flex flex-col gap-4">
-              <button
-                className="w-full text-left text-slate-800 dark:text-white font-semibold py-2 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800"
+              <Button
+                variant="auth-login"
+                size="md"
+                className="w-full justify-center"
+                iconLeft={<LogIn size={18} />}
                 onClick={() => { navigate("/login"); onClose(); }}
               >
                 Login
-              </button>
-              <button
-                className="w-full text-left text-slate-800 dark:text-white font-semibold py-2 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800"
+              </Button>
+              <Button
+                variant="auth-outline-login"
+                size="md"
+                className="w-full justify-center"
+                iconLeft={<UserPlus size={18} />}
                 onClick={() => { navigate("/signup"); onClose(); }}
               >
                 Sign Up
-              </button>
-              <Navigation variant="mobile" />
+              </Button>
+              <div className="border-t border-slate-700 pt-4 mt-4">
+                <Navigation variant="mobile" />
+              </div>
             </nav>
           </motion.div>
         </>

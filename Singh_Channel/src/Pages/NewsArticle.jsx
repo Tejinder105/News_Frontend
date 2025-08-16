@@ -1,40 +1,24 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import ArticleHeader from "../Components/Article/ArticleHeader";
-import ArticleContent from "../Components/Article/ArticleContent";
-import SkeletonArticle from "../Components/Article/SkeletonArticle";
-import ResourceNotFound from "../Components/Ui/ResourceNotFound";
-import RelatedArticles from "../Components/Article/RelatedArticles";
-import { ReadingProgress } from "../Components/Article/ArticleAnimations";
-
-import CardAd from "../Components/Ui/CardAd";
-import { newsItem } from "../NewItem.js";
+import {
+  ArticleHeader,
+  ArticleContent,
+  SkeletonArticle,
+  RelatedArticles,
+  ResourceNotFound,
+  ReadingProgress,
+  CardAd,
+} from "../Components";
 import { adItem } from "../AdItem.jsx";
 import articleService from "../Services/articleService";
 
-function NewsArtilcle() {
+function NewsArticle() {
   const { id } = useParams();
   const language = useSelector((s) => s.language.current);
   const [content, setContent] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-
-  const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
-
-    if (diffInHours < 1) return "Just now";
-    else if (diffInHours < 24) return `${diffInHours} hours ago`;
-    else if (diffInHours < 48) return "Yesterday";
-    else if (diffInHours < 168)
-      return `${Math.floor(diffInHours / 24)} days ago`;
-    return date.toLocaleDateString("en-IN", {
-      month: "short",
-      day: "numeric",
-    });
-  };
 
   useEffect(() => {
     setLoading(true);
@@ -46,26 +30,16 @@ function NewsArtilcle() {
         setContent(data);
         setLoading(false);
       })
-      .catch(() => {
-        fetch(`/Articles/${id}.json`)
-          .then((res) => {
-            if (!res.ok) throw new Error("File not found");
-            return res.json();
-          })
-          .then((data) => {
-            setContent(data);
-            setLoading(false);
-          })
-          .catch(() => {
-            setError(true);
-            setLoading(false);
-          });
+      .catch((err) => {
+        console.error("Error fetching article:", err);
+        setError(true);
+        setLoading(false);
       });
   }, [id, language]);
 
   const calculateReadTime = (text) => {
     if (!text || typeof text !== "string") return "0 min read";
-    const wordsPerMinute = 200;
+    const wordsPerMinute = 150;
     const noOfWords = text.replace(/<[^>]*>/g, "").split(/\s/g).length;
     const minutes = Math.ceil(noOfWords / wordsPerMinute);
     return `${minutes} min read`;
@@ -82,11 +56,11 @@ function NewsArtilcle() {
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-6">
             <aside className="order-1 hidden lg:col-span-3 lg:block">
               <div className="sticky top-6 space-y-4">
-                <RelatedArticles 
-                  tags={content.tags || []} 
-                  currentArticleId={content._id} 
-                  language={language} 
-                  limit={5} 
+                <RelatedArticles
+                  tags={content.tags || []}
+                  currentArticleSlug={content.slug}
+                  language={language}
+                  limit={5}
                 />
               </div>
             </aside>
@@ -110,13 +84,12 @@ function NewsArtilcle() {
                 />
               </article>
 
-              {/* Mobile Related Articles */}
-              <div className="mt-8 lg:hidden">
-                <RelatedArticles 
-                  tags={content.tags || []} 
-                  currentArticleId={content._id} 
-                  language={language} 
-                  limit={3} 
+              <div className="mt-4 lg:hidden">
+                <RelatedArticles
+                  tags={content.tags || []}
+                  currentArticleSlug={content.slug}
+                  language={language}
+                  limit={3}
                 />
               </div>
             </main>
@@ -149,4 +122,4 @@ function NewsArtilcle() {
   );
 }
 
-export default NewsArtilcle;
+export default NewsArticle;

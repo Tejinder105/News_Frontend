@@ -35,32 +35,23 @@ function Topbar() {
       </div>
       <div className="flex items-center gap-1">
         <Button
+          variant={selectedLanguage === "en" ? "language-active" : "language"}
+          size="xs"
           onClick={() => handleLanguageChange("en")}
-          className={`h-6 rounded px-2 py-0 text-[11px] leading-none font-medium transition-all duration-200 ${
-            selectedLanguage === "en"
-              ? "bg-blue-600 text-white shadow-sm"
-              : "bg-transparent text-gray-300 hover:bg-gray-800 hover:text-white"
-          }`}
         >
           English
         </Button>
         <Button
+          variant={selectedLanguage === "hi" ? "language-active" : "language"}
+          size="xs"
           onClick={() => handleLanguageChange("hi")}
-          className={`h-6 rounded px-2 py-0 text-[11px] leading-none font-medium transition-all duration-200 ${
-            selectedLanguage === "hi"
-              ? "bg-blue-600 text-white shadow-sm"
-              : "bg-transparent text-gray-300 hover:bg-gray-800 hover:text-white"
-          }`}
         >
           हिंदी
         </Button>
         <Button
+          variant={selectedLanguage === "pu" ? "language-active" : "language"}
+          size="xs"
           onClick={() => handleLanguageChange("pu")}
-          className={`h-6 rounded px-2 py-0 text-[11px] leading-none font-medium transition-all duration-200 ${
-            selectedLanguage === "pu"
-              ? "bg-blue-600 text-white shadow-sm"
-              : "bg-transparent text-gray-300 hover:bg-gray-800 hover:text-white"
-          }`}
         >
           ਪੰਜਾਬੀ
         </Button>

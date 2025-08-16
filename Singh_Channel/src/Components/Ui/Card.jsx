@@ -17,7 +17,6 @@ function Card({ article }) {
         else if (diffInDays === 1) return "Yesterday";
         else if (diffInDays === 2) return "2 days ago";
         else {
-            // For 3 days or older, show the actual date with year
             return date.toLocaleDateString("en-IN", {
                 month: "short",
                 day: "numeric",
@@ -67,7 +66,7 @@ function Card({ article }) {
                     <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
                         <span className="flex items-center gap-1">
                             <Clock size={10} />
-                            {formatTime(article.updatedAt)}
+                            {formatTime(article.publishedAt)}
                         </span>
                         {article.views > 0 && (
                             <span className="flex items-center gap-1">

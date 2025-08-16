@@ -31,9 +31,6 @@ function CarouselItem({ item }) {
             e.target.src = "/placeholder-image.jpg";
           }}
         />
-        <span className="absolute top-2 left-2 rounded-md bg-gray-800/80 px-2 py-1 text-xs font-semibold tracking-wider text-white uppercase">
-          {item.tag || item.category || "News"}
-        </span>
       </div>
 
       {/* Text Content */}
@@ -50,8 +47,8 @@ function CarouselItem({ item }) {
         {/* Footer (Author + Read More) */}
         <div className="flex flex-1 items-center justify-between">
           <div className="text-xs text-gray-500">
-            <span>{formatTime(item.updatedAt)}</span> ·{" "}
-            <span>by {item.author || "Unknown author"}</span>
+            <span>{formatTime(item.publishedAt)}</span> ·{" "}
+            <span>by {item.author || "Gurcharan Singh"}</span>
           </div>
           <Link
             to={`/article/${item.slug}`}

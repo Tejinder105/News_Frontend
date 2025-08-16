@@ -1,14 +1,6 @@
 import React, { useState } from "react";
 import Button from "../Ui/Button";
-import {
-  Share2,
-  Calendar,
-  User,
-  Clock,
-  Tag,
-  Bookmark,
-  BookmarkCheck,
-} from "lucide-react";
+import { Share2, Calendar, User, Clock } from "lucide-react";
 
 const ArticleHeader = ({
   title,
@@ -46,22 +38,17 @@ const ArticleHeader = ({
       }
     } else {
       await navigator.clipboard.writeText(window.location.href);
-      // You could add a toast notification here
       alert("Link copied to clipboard!");
     }
   };
 
   return (
     <header className="bg-white">
-      {/* Main Header Content */}
       <div className="px-4 py-4 md:px-5 lg:px-6">
         <div className="mx-auto max-w-4xl">
-          {/* Article Title */}
           <h1 className="font-Inter mb-3 text-3xl leading-tight font-bold text-gray-900 md:text-4xl lg:text-2xl">
             {title}
           </h1>
-
-          {/* Article Summary */}
           {summary && (
             <div className="mb-4">
               <div className="rounded-r-xl border-l-4 border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 shadow-sm">
@@ -71,9 +58,8 @@ const ArticleHeader = ({
               </div>
             </div>
           )}
-          
-          {/* Article Meta Information */}
-          <div className="flex flex-col  md:space-y-0 md:space-x-4 mb-2">
+
+          <div className="mb-2 flex flex-col md:space-y-0 md:space-x-4">
             <div className="flex items-center space-x-4 text-sm text-gray-600">
               {author && (
                 <div className="flex items-center space-x-1">
@@ -106,11 +92,9 @@ const ArticleHeader = ({
               </Button>
             </div>
           </div>
-
-          {/* Featured Image */}
           {imageUrl && (
             <div className="mb-6">
-              <figure className="relative group">
+              <figure className="group relative">
                 <div className="relative overflow-hidden rounded-3xl bg-gray-100 shadow-2xl ring-1 ring-gray-200/50">
                   <img
                     src={imageUrl}
@@ -119,10 +103,9 @@ const ArticleHeader = ({
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-                  
-                  {/* Image overlay with title on hover */}
-                  <div className="absolute bottom-0 left-0 right-0 p-8 text-white opacity-0 transition-all duration-300 group-hover:opacity-100">
-                    <h3 className="text-xl font-bold drop-shadow-2xl">
+
+                  <div className="absolute right-0 bottom-0 left-0 p-8 opacity-0 transition-all duration-300 group-hover:opacity-100">
+                    <h3 className="text-xl font-bold drop-shadow-2xl text-white">
                       {title}
                     </h3>
                   </div>
