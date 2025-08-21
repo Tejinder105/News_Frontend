@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     current: "en",
-    selectedLanguage: "en", // For backward compatibility with Topbar
     available: {
         en: { code: "en", name: "English" },
         hi: { code: "hi", name: "हिंदी" },
@@ -16,7 +15,6 @@ const languageSlice = createSlice({
     reducers: {
         setLanguage(state, action) {
             state.current = action.payload;
-            state.selectedLanguage = action.payload;
         },
     },
 });
