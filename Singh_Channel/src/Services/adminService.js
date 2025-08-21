@@ -1,9 +1,4 @@
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true,
-});
+import api from "./apiClient";
 
 const getDashboardStats = async () => {
   try {
@@ -67,18 +62,8 @@ const getAllArticlesForAdmin = async ({
   }
 };
 
-// Keep the public articles endpoint for backward compatibility
-const getAllArticles = async ({ page = 1, limit = 10, language = "en" } = {}) => {
-  try {
-    const res = await api.get("/api/v1/article/getarticles", {
-      params: { page, limit, language },
-    });
-    return res.data.data;
-  } catch (error) {
-    console.error("Get all articles service error:", error);
-    throw error;
-  }
-};
+// Note: Public articles endpoints live in articleService.js
+// Avoid duplicating them here to reduce drift.
 
 // Delete article
 const deleteArticle = async (articleId, token) => {
@@ -130,7 +115,6 @@ export default {
   getDashboardStats,
   getRecentActivities,
   getDashboardData,
-  getAllArticles,
   getAllArticlesForAdmin,
   deleteArticle,
   getArticleForEdit,
