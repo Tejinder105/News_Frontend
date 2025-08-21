@@ -9,6 +9,7 @@ import {
   ResourceNotFound,
   ReadingProgress,
   CardAd,
+  Panel,
 } from "../Components";
 import { adItem } from "../AdItem.jsx";
 import articleService from "../Services/articleService";
@@ -67,7 +68,7 @@ function NewsArticle() {
 
             {/* Main Article Content */}
             <main className="order-1 lg:order-2 lg:col-span-6">
-              <article className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+              <Panel variant="article" className="article">
                 <ArticleHeader
                   title={content.headline}
                   author={content.author}
@@ -82,7 +83,7 @@ function NewsArticle() {
                   author={content.author}
                   youtubeLink={content.youtube_link}
                 />
-              </article>
+              </Panel>
 
               <div className="mt-4 lg:hidden">
                 <RelatedArticles
