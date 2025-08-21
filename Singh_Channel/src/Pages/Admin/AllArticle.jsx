@@ -3,6 +3,7 @@ import { Eye, Edit, Trash2, Search, Filter } from "lucide-react";
 import adminService from "../../Services/adminService";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
+import { Panel } from "../../Components";
 
 // Debounce hook
 const useDebounce = (value, delay) => {
@@ -294,7 +295,7 @@ function AllArticle() {
             <div className="py-8 text-center text-gray-500">No articles found.</div>
           ) : (
             articles.map((article) => (
-              <div key={article.slug} className="mb-4 rounded-lg border bg-white p-4 shadow">
+              <Panel key={article.slug} variant="card" className="mb-4">
                 <div className="mb-2 flex items-center justify-between">
                   <div className="flex-1">
                     <span className="font-semibold text-gray-900">{article.headline}</span>
@@ -350,7 +351,7 @@ function AllArticle() {
                     )}
                   </button>
                 </div>
-              </div>
+              </Panel>
             ))
           )}
         </div>

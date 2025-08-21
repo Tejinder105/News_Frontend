@@ -3,12 +3,13 @@ import { Upload, X, AlertCircle } from "lucide-react";
 function ImageUpload({ register, errors, post }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(
-    
     post?.image || null
   );
   const [dragActive, setDragActive] = useState(false);
   const [uploadError, setUploadError] = useState("");
   const fileInputRef = useRef(null);
+
+  console.log("ImageUpload component rendered with:", { post, errors });
 
   // Update image preview when post changes
   useEffect(() => {
@@ -27,11 +28,10 @@ function ImageUpload({ register, errors, post }) {
       "image/jpg",
       "image/png",
       "image/gif",
-      "image/webp",
     ];
 
     if (!allowedTypes.includes(file.type)) {
-      return "Please select a valid image file (JPG, PNG, GIF, WebP)";
+      return "Please select a valid image file (JPG, PNG, GIF)";
     }
 
     if (file.size > maxSize) {
@@ -80,16 +80,23 @@ function ImageUpload({ register, errors, post }) {
     }
   };
   const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     console.log("Upload area clicked, opening file dialog...");
     console.log("File input ref:", fileInputRef.current);
 
     // Try to get the file input element directly if ref fails
     const fileInput =
-      fileInputRef.current || document.getElementById("featured_image");
+      fileInputRef.current || document.getElementById("featuredImage");
 
     if (fileInput) {
       console.log("Triggering file input click...");
-      fileInput.click();
+      try {
+        fileInput.click();
+        console.log("File input click triggered successfully");
+      } catch (error) {
+        console.error("Error clicking file input:", error);
+      }
     } else {
       console.error("File input element not found");
     }
@@ -108,11 +115,11 @@ function ImageUpload({ register, errors, post }) {
     <>
       <input
         ref={fileInputRef}
-        id="featured_image"
+        id="featuredImage"
         type="file"
-        accept="image/*"
+        accept="image/jpeg,image/jpg,image/png,image/gif"
         className="hidden"
-        {...register("featured_image", {
+        {...register("featuredImage", {
           required: !post && "Featured image is required",
           onChange: (e) => {
             console.log("File input onChange triggered:", e.target.files);
@@ -128,13 +135,29 @@ function ImageUpload({ register, errors, post }) {
       />
 
       <div className="mb-4 sm:mb-6">
-        <label
-          className="mb-2 block cursor-pointer text-xs font-medium text-gray-700 sm:text-sm"
-          htmlFor="featured_image"
-          onClick={handleClick}
-        >
-          Featured Image
-        </label>
+        <div className="flex items-center justify-between mb-2">
+          <label
+            className="cursor-pointer text-xs font-medium text-gray-700 sm:text-sm"
+            htmlFor="featuredImage"
+          >
+            Featured Image
+          </label>
+          {/* Debug button - remove this later */}
+          <button
+            type="button"
+            onClick={() => {
+              console.log("Debug button clicked");
+              const input = document.getElementById("featuredImage");
+              console.log("Found input:", input);
+              if (input) {
+                input.click();
+              }
+            }}
+            className="text-xs bg-gray-200 px-2 py-1 rounded"
+          >
+            Test Upload
+          </button>
+        </div>
 
         {/* Image Preview */}
         {imagePreview ? (
@@ -159,7 +182,7 @@ function ImageUpload({ register, errors, post }) {
         ) : (
           /* Upload Area */
           <label
-            htmlFor="featured_image"
+            htmlFor="featuredImage"
             className={`flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed px-3 py-6 transition-colors sm:px-6 sm:py-10 ${
               dragActive
                 ? "border-blue-400 bg-blue-50"
@@ -169,6 +192,7 @@ function ImageUpload({ register, errors, post }) {
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
             onDrop={handleDrop}
+            onClick={handleClick}
           >
             <div className="text-center">
               <div
@@ -189,17 +213,17 @@ function ImageUpload({ register, errors, post }) {
                 <span className="hidden sm:inline"> or drag and drop</span>
               </p>
               <p className="mt-1 text-xs text-gray-500">
-                PNG, JPG, GIF, WebP up to 5MB
+                PNG, JPG, GIF up to 5MB
               </p>
             </div>
           </label>
         )}
 
         {/* Error Messages */}
-        {(errors.featured_image || uploadError) && (
+        {(errors.featuredImage || uploadError) && (
           <div className="mt-2 flex items-center gap-2 text-sm text-red-600">
             <AlertCircle size={16} />
-            <span>{errors.featured_image?.message || uploadError}</span>
+            <span>{errors.featuredImage?.message || uploadError}</span>
           </div>
         )}
       </div>

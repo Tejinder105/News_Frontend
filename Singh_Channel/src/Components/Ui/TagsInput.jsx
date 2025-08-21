@@ -5,16 +5,19 @@ function TagsInput({ onTagsChange, placeholder = "Add tags...", maxTags = 5, ini
   const [tags, setTags] = useState(initialTags);
   const [inputValue, setInputValue] = useState("");
 
-  // Update tags when initialTags prop changes
+  // Sync with external state changes
   useEffect(() => {
     setTags(initialTags);
   }, [initialTags]);
 
   const handleInputChange = (e) => {
-    setInputValue(e.target.value);
+    const value = e.target.value;
+    setInputValue(value);
+    console.log("Input value changed:", value);
   };
 
   const handleInputKeyDown = (e) => {
+    console.log("Key pressed:", e.key, "Input value:", inputValue);
     if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
       addTag();
@@ -30,6 +33,11 @@ function TagsInput({ onTagsChange, placeholder = "Add tags...", maxTags = 5, ini
       setTags(newTags);
       setInputValue("");
       onTagsChange && onTagsChange(newTags);
+    } else if (tags.includes(trimmedValue)) {
+      // Provide feedback for duplicate tags
+      console.warn("Tag already exists:", trimmedValue);
+    } else if (tags.length >= maxTags) {
+      console.warn("Maximum tags reached");
     }
   };
 
@@ -73,6 +81,8 @@ function TagsInput({ onTagsChange, placeholder = "Add tags...", maxTags = 5, ini
           placeholder={tags.length === 0 ? placeholder : ""}
           className="min-w-[120px] flex-1 border-none bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none disabled:cursor-not-allowed disabled:opacity-50"
           disabled={tags.length >= maxTags}
+          autoComplete="off"
+          style={{ minHeight: '24px' }} // Ensure minimum height
         />
       </div>
       {tags.length >= maxTags && (

@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
 import useGeminiAnalysis from "/src/hooks/useGeminiAnalysis";
 import { useAuth0 } from "@auth0/auth0-react";
+import { LANGUAGES } from "../../Constants/Languages";
 import {
   Button,
   ContentForm,
@@ -14,9 +15,11 @@ import {
   ImageUpload,
   AiTools,
   LanguageSwitcher,
+  Panel,
 } from "../../Components";
-import axios from "axios";
+import api from "/src/Services/apiClient";
 import { Tags, Video } from "lucide-react";
+import { toSlug } from "/src/utils/slug";
 
 export default function CreateArticle({ post }) {
   const { getAccessTokenSilently } = useAuth0();
@@ -30,12 +33,6 @@ export default function CreateArticle({ post }) {
   const [completionStatus, setCompletionStatus] = useState({});
 
   const status = useRef("draft");
-
-  const LANGUAGES = {
-    en: { name: "English", code: "en" },
-    pu: { name: "Punjabi", code: "pu" },
-    hi: { name: "Hindi", code: "hi" },
-  };
 
   const {
     register,
@@ -81,17 +78,7 @@ export default function CreateArticle({ post }) {
     clearAnalysis,
   } = useGeminiAnalysis();
 
-  const slugTransform = useCallback((value) => {
-    if (value && typeof value === "string") {
-      return value
-        .trim()
-        .toLowerCase()
-        .replace(/[^\w\s-]/g, "")
-        .replace(/\s+/g, "-")
-        .replace(/--+/g, "-");
-    }
-    return "";
-  }, []);
+  const slugTransform = useCallback((value) => toSlug(value), []);
 
   // Watch for headline changes to update slug
   useEffect(() => {
@@ -163,9 +150,9 @@ export default function CreateArticle({ post }) {
           pu: post?.summary?.pu || "",
           hi: post?.summary?.hi || "",
         },
-        is_featured: post?.is_featured || false,
-        is_breaking: post?.is_breaking || false,
-        youtube_link: post?.youtube_link || "",
+        isFeatured: post?.isFeatured || false,
+        isBreaking: post?.isBreaking || false,
+        youtubeLink: post?.youtubeLink || "",
       });
     }
   }, [post, reset]);
@@ -185,8 +172,14 @@ export default function CreateArticle({ post }) {
       }
     }
 
-    if (data.featured_image && data.featured_image.length > 0) {
-      formData.append("featured_image", data.featured_image[0]);
+    if (data.featuredImage && data.featuredImage.length > 0) {
+      const file = data.featuredImage[0];
+      // Backend expects different field names for create vs update
+      if (post) {
+        formData.append("featured_image", file);
+      } else {
+        formData.append("featuredImage", file);
+      }
     } else if (!post) {
       toast.error("Please select a featured image");
       setLoading(false);
@@ -198,9 +191,14 @@ export default function CreateArticle({ post }) {
     formData.append("slug", data.slug);
     formData.append("content", JSON.stringify(data.content));
     formData.append("summary", JSON.stringify(data.summary));
-    formData.append("is_featured", data.is_featured);
-    formData.append("is_breaking", data.is_breaking);
-    formData.append("youtube_link", data.youtube_link);
+    formData.append("isFeatured", data.isFeatured);
+    formData.append("isBreaking", data.isBreaking);
+    // Field name differs on update API (youtube_link) vs create (youtubeLink)
+    if (post) {
+      formData.append("youtube_link", data.youtubeLink);
+    } else {
+      formData.append("youtubeLink", data.youtubeLink);
+    }
     formData.append("tags", JSON.stringify(tags));
     formData.append("status", status.current);
 
@@ -209,22 +207,22 @@ export default function CreateArticle({ post }) {
       slug: data.slug,
       content: data.content,
       summary: data.summary,
-      is_featured: data.is_featured,
-      is_breaking: data.is_breaking,
-      youtube_link: data.youtube_link,
+      isFeatured: data.isFeatured,
+      isBreaking: data.isBreaking,
+      youtubeLink: data.youtubeLink,
       tags,
       status: status.current,
-      featured_image: data.featured_image,
+      featuredImage: data.featuredImage,
     });
 
     try {
       const url = post
-        ? `${import.meta.env.VITE_API_URL}/api/v1/admin/articles/${post._id}`
-        : `${import.meta.env.VITE_API_URL}/api/v1/articles/newArticles`;
+        ? `/api/v1/admin/articles/${post._id}`
+        : `/api/v1/articles/newArticles`;
 
       const method = post ? "put" : "post";
       const token = await getAccessTokenSilently();
-      const response = await axios[method](url, formData, {
+      const response = await api[method](url, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -243,12 +241,12 @@ export default function CreateArticle({ post }) {
             slug: "",
             content: { en: "", pu: "", hi: "" },
             summary: { en: "", pu: "", hi: "" },
-            is_featured: false,
-            is_breaking: false,
-            youtube_link: "",
-            featured_image: null,
+            isFeatured: false,
+            isBreaking: false,
+            youtubeLink: "",
+            featuredImage: null,
           });
-          setTags([]);
+          setTags([]); // Clear tags after successful creation
         }
       } else {
         toast.error("Unexpected response from server");
@@ -374,7 +372,7 @@ export default function CreateArticle({ post }) {
 
   const handleTagsChange = (newTags) => {
     setTags(newTags);
-    console.log("Updated Tags:", tags);
+    console.log("Updated Tags:", newTags); // Log the new tags instead of old state
   };
 
   const onApplyHeadline = (headline) =>
@@ -401,7 +399,7 @@ export default function CreateArticle({ post }) {
         onSubmit={handleSubmit(submit)}
         className="flex min-h-screen flex-col gap-6 bg-gray-50 py-4 pl-4 md:flex-row"
       >
-        <div className="flex-shrink-0 rounded-xl border border-gray-100 bg-white p-6 shadow-sm md:w-2/3">
+        <Panel variant="admin-form" className="flex-shrink-0 md:w-2/3">
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-2xl font-bold text-gray-800">
               {post ? "Edit Article" : "Create New Article"}
@@ -410,7 +408,7 @@ export default function CreateArticle({ post }) {
 
           <LanguageSwitcher
             LANGUAGES={LANGUAGES}
-            srcLang={srcLang}
+            sourceLanguage={srcLang}
             handlesrcLangChange={handlesrcLangChange}
             previewLanguage={previewLanguage}
             handlePreviewLanguageChange={handlePreviewLanguageChange}
@@ -443,13 +441,12 @@ export default function CreateArticle({ post }) {
             onApplyContent={onApplyContent}
             onApplyTranslation={onApplyTranslation}
           />
-        </div>
+        </Panel>
         <div className="flex w-full flex-col">
-          <div className="mb-6 rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+          <Panel variant="admin-form" className="mb-6">
             <ImageUpload
               register={register}
               errors={errors}
-              isEditMode={!!post}
               post={post}
             />
 
@@ -468,7 +465,7 @@ export default function CreateArticle({ post }) {
               <TagsInput
                 onTagsChange={handleTagsChange}
                 maxTags={5}
-                initialTags={post?.tags || []}
+                initialTags={tags}
               />
               <div className="absolute -top-8 -right-8 h-16 w-16 rounded-full bg-blue-200 opacity-20 transition-all duration-300 group-hover:scale-110"></div>
             </div>
@@ -487,8 +484,8 @@ export default function CreateArticle({ post }) {
               <Input
                 placeholder="https://youtube.com/watch?v=..."
                 className="mb-1 text-sm"
-                {...register("youtube_link")}
-                error={errors.youtube_link}
+                {...register("youtubeLink")}
+                error={errors.youtubeLink}
               />
               <div className="absolute -top-8 -right-8 h-16 w-16 rounded-full bg-gray-200 opacity-20 transition-all duration-300 group-hover:scale-110"></div>
             </div>
@@ -506,9 +503,9 @@ export default function CreateArticle({ post }) {
                   </div>
                   <div className="flex items-center">
                     <Toggle
-                      checked={watch("is_featured")}
+                      checked={watch("isFeatured")}
                       onChange={(e) =>
-                        setValue("is_featured", e.target.checked)
+                        setValue("isFeatured", e.target.checked)
                       }
                       variant="featured"
                     />
@@ -529,9 +526,9 @@ export default function CreateArticle({ post }) {
                   </div>
                   <div className="flex items-center">
                     <Toggle
-                      checked={watch("is_breaking")}
+                      checked={watch("isBreaking")}
                       onChange={(e) =>
-                        setValue("is_breaking", e.target.checked)
+                        setValue("isBreaking", e.target.checked)
                       }
                       variant="breaking"
                     />
@@ -540,11 +537,11 @@ export default function CreateArticle({ post }) {
                 <div className="absolute -top-8 -right-8 h-16 w-16 rounded-full bg-blue-300 opacity-20 transition-all duration-300 group-hover:scale-110"></div>
               </div>
             </div>
-          </div>
+          </Panel>
 
-          {/* Tags Section */}
+          {/* Button Section */}
 
-          <div className="mb-6 flex w-full gap-2 rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+          <Panel variant="admin-form" className="mb-6 flex w-full gap-2">
             <Button
               type="submit"
               onClick={() => (status.current = "draft")}
@@ -573,7 +570,7 @@ export default function CreateArticle({ post }) {
                 <>{post ? "Update Article" : "Publish Article"}</>
               )}
             </button>
-          </div>
+          </Panel>
         </div>
       </form>
       <ToastContainer position="bottom-right" autoClose={3000} />
