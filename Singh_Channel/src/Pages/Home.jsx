@@ -1,48 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Carousel, Weather, CardAd, Card, Spinner, Button } from "../Components";
+import { Carousel, Weather, CardAd, Card, Spinner, Button, SectionHeading } from "../Components";
 import articleService from "../Services/articleService";
 import { useSelector } from "react-redux";
-
-const adItem = [
-  {
-    name: "Vintage Accessories",
-    image: "/shop.jpg",
-    tag: "Shop Now",
-    headline: "Discover Unique Vintage Accessories",
-    description: "Curated vintage accessories to add nostalgia to your style.",
-    link: "https://example.com/shop",
-  },
-  {
-    name: "Alpine Top",
-    image: "/school.jpg",
-    tag: "Learn More",
-    headline: "Alpine Top: Elevate Your Style",
-    description: "The Alpine Top blends comfort and style for any occasion.",
-    link: "https://example.com/alpine-top",
-  },
-  {
-    name: "Punjabi Jutti House",
-    image: "/jutti.jpg",
-    tag: "Shop Now",
-    headline: "Punjabi Jutti House: Traditional Footwear",
-    description: "Handcrafted Punjabi Juttis reflecting rich heritage.",
-    link: "https://example.com/jutti-house",
-  },
-  {
-    name: "Retro Fashion",
-    image: "/clothes.jpg",
-    tag: "Shop Now",
-    headline: "Retro Fashion: Timeless Styles",
-    description: "Classic retro fashion and accessories that never age.",
-    link: "https://example.com/retro-fashion",
-  },
-];
+import { adItem } from "../AdItem.jsx";
 
 function Home() {
   const [article, setArticle] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const language = useSelector((s) => s.language.current);
+  
+  // Use breaking news from shared state instead of filtering locally
+  const breakingNews = useSelector((state) => state.breakingNews.breakingNews);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -69,10 +38,6 @@ function Home() {
     fetchArticles();
     return () => controller.abort();
   }, [language]);
-
-  const breakingNews = Array.isArray(article)
-    ? article.filter((item) => item?.isBreaking)
-    : [];
 
   const featuredNews = Array.isArray(article)
     ? article.filter((item) => item?.isfeatured)
@@ -121,12 +86,8 @@ function Home() {
 
           {breakingNews.length > 0 && (
             <div className="mb-8">
-              <div className="mb-4 flex items-baseline">
-                <h2 className="flex items-center gap-2 text-lg font-bold text-gray-900 sm:text-xl">
-                  <div className="h-2 w-2 animate-pulse rounded-full bg-red-600" />
-                  Breaking News
-                </h2>
-                <div className="mt-1 ml-4 h-px flex-1 bg-red-600" />
+              <div className="mb-4">
+                <SectionHeading title="Breaking News" color="red" animated />
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -139,12 +100,8 @@ function Home() {
 
           
           <div className="mb-8">
-            <div className="mb-4 flex items-baseline">
-              <h2 className="flex items-center gap-2 text-lg font-bold text-gray-900 sm:text-xl">
-                <div className="h-2 w-2 rounded-full bg-blue-600" />
-                Latest News
-              </h2>
-              <div className="mt-1 ml-4 h-px flex-1 bg-blue-600" />
+            <div className="mb-4">
+              <SectionHeading title="Latest News" color="blue" />
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
