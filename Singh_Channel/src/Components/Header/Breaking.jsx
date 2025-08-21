@@ -1,25 +1,17 @@
-import React, { useEffect, useState } from "react";
-import articleService from "../../Services/articleService";
+import React from "react";
 import { useSelector } from "react-redux";
 
 function Breaking() {
-  const [breakingNews, setBreakingNews] = useState([]);
-  const language = useSelector((s) => s.language.current);
+  const { breakingNews, loading, error } = useSelector((state) => state.breakingNews);
+  
+  // Extract headlines from breaking news articles
+  const headlines = breakingNews.map((article) => article.headline || article.title);
 
-  useEffect(() => {
-    const fetchBreakingNews = async () => {
-      try {
-        const { BreakingNews } = await articleService.getBreakingNews(
-          language,
-          3
-        );
-        setBreakingNews(Array.isArray(BreakingNews) ? BreakingNews : []);
-      } catch (error) {
-        console.error("Error fetching breaking news:", error);
-      }
-    };
-    fetchBreakingNews();
-  }, [language]);
+  // Don't render if no content and not loading
+  if (!loading && headlines.length === 0 && !error) {
+    return null;
+  }
+
   return (
     <div className="bg-black py-1 text-white">
       <div className="relative mx-auto flex max-w-7xl items-center overflow-hidden px-4 sm:px-6 lg:px-8">
@@ -33,11 +25,19 @@ function Breaking() {
         {/* Scrolling text */}
         <div className="flex-1 overflow-hidden">
           <div className="animate-marquee whitespace-nowrap">
-            {breakingNews.length > 0 ? (
-              breakingNews.map((news, index) => (
+            {loading ? (
+              <span className="text-sm font-semibold">
+                Loading breaking news...
+              </span>
+            ) : error ? (
+              <span className="text-sm font-semibold text-red-300">
+                Unable to load breaking news
+              </span>
+            ) : headlines.length > 0 ? (
+              headlines.map((headline, index) => (
                 <span key={index} className="mr-8 text-sm font-semibold">
                   <span className="mr-2 text-red-400">•</span>
-                  {news}
+                  {headline}
                 </span>
               ))
             ) : (
