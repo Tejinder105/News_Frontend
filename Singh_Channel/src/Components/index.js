@@ -13,8 +13,6 @@ import Toggle from "./Ui/Toggle";
 import TagsInput from "./Ui/TagsInput";
 import GeminiSuggestions from "./Admin/GeminiSuggestions";
 import ImageUpload from "./Admin/CreateArticle/ImageUpload";
-import SettingPanel from "./Admin/CreateArticle/SettingPanel";
-import ActionButtons from "./Admin/CreateArticle/ActionButtons";
 import ContentForm from "./Admin/CreateArticle/ContentForm";
 import RelatedArticles from "./Article/RelatedArticles";
 import SkeletonArticle from "./Article/SkeletonArticle";
@@ -23,6 +21,11 @@ import { ReadingProgress } from "./Article/ArticleAnimations";
 import ArticleContent from "./Article/ArticleContent";
 import AiTools from "./Admin/CreateArticle/AiTools";
 import LanguageSwitcher from "./Admin/CreateArticle/LanguageSwitcher";
+import Panel from "./Ui/Panel";
+import SectionHeading from "./Ui/SectionHeading";
+
+// Re-export hooks
+export { useBreakingNews } from "../hooks/useBreakingNews";
 
 export {
   Button,
@@ -40,8 +43,6 @@ export {
   TagsInput,
   GeminiSuggestions,
   ImageUpload,
-  SettingPanel,
-  ActionButtons,
   ContentForm,
   RelatedArticles,
   SkeletonArticle,
@@ -49,5 +50,7 @@ export {
   ReadingProgress,
   ArticleContent,
   AiTools,
-  LanguageSwitcher
+  LanguageSwitcher,
+  Panel,
+  SectionHeading
 };
