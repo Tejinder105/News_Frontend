@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { navItems } from "../../Constants/Navigation";
 import { useAuth0 } from "@auth0/auth0-react";
-import axios from "axios";
+import api from "../../Services/apiClient";
 
 const Navigation = ({ classname = "", variant = "desktop" }) => {
     const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
@@ -45,14 +45,11 @@ const Navigation = ({ classname = "", variant = "desktop" }) => {
                 try {
                     const token = await getAccessTokenSilently();
 
-                    const response = await axios.get(
-                        "http://localhost:8000/api/v1/users/profile",
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
-                    );
+                    const response = await api.get("/api/v1/users/profile", {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
 
                     const profile = response.data;
                     console.log(profile);
