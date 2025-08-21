@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
-import YouTube from "react-youtube";
 import { BookOpen } from "lucide-react";
 import DOMPurify from "dompurify";
+import LazyYouTubeEmbed from "./LazyYouTubeEmbed";
 
 const extractYouTubeVideoId = (url) => {
   if (!url || typeof url !== "string") return null;
@@ -31,20 +31,7 @@ const YouTubeEmbed = ({ videoId }) => (
     <div className="mx-auto max-w-4xl">
       <div className="relative overflow-hidden rounded-2xl bg-gray-900 shadow-2xl">
         <div className="aspect-video">
-          <YouTube
-            videoId={videoId}
-            opts={{
-              width: "100%",
-              height: "100%",
-              playerVars: {
-                autoplay: 0,
-                rel: 0,
-                modestbranding: 1,
-                showinfo: 0,
-              },
-            }}
-            className="h-full w-full"
-          />
+          <LazyYouTubeEmbed videoId={videoId} />
         </div>
       </div>
     </div>

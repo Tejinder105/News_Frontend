@@ -1,9 +1,10 @@
 import React from "react";
+import Panel from "./Panel";
 
 
 function CardAd({ data }) {
   return (
-    <div className="rounded-md overflow-hidden bg-white shadow-md hover:shadow-lg transition-shadow"> 
+    <Panel variant="ad" padding={false}> 
       <div className="w-full">
         <img
           src={data.image}
@@ -31,7 +32,7 @@ function CardAd({ data }) {
         </a>
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }
 

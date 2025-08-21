@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Button from "../Ui/Button";
 import { Share2, Calendar, User, Clock } from "lucide-react";
+import { formatDateTime } from "../../utils/date";
 
 const ArticleHeader = ({
   title,
@@ -10,21 +11,6 @@ const ArticleHeader = ({
   imageUrl,
   summary,
 }) => {
-  const formatDate = (dateString) => {
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } catch {
-      return dateString;
-    }
-  };
-
   const handleShare = async () => {
     if (navigator.share) {
       try {
@@ -71,7 +57,7 @@ const ArticleHeader = ({
               {publishedTime && (
                 <div className="flex items-center space-x-1">
                   <Calendar className="h-4 w-4" />
-                  <span>{formatDate(publishedTime)}</span>
+                  <span>{formatDateTime(publishedTime)}</span>
                 </div>
               )}
             </div>

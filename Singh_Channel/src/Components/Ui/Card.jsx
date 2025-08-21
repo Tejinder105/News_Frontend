@@ -2,30 +2,15 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { MapPin, Clock, Eye } from "lucide-react";
 import { useSelector } from "react-redux";
+import { formatRelativeTime } from "../../utils/date";
+import Panel from "./Panel";
 
 function Card({ article }) {
     const language = useSelector((s) => s.language.current);
 
-    const formatTime = (dateString) => {
-        const date = new Date(dateString);
-        const now = new Date();
-        const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
-        const diffInDays = Math.floor(diffInHours / 24);
-
-        if (diffInHours < 1) return "Just now";
-        else if (diffInHours < 24) return `${diffInHours} hours ago`;
-        else if (diffInDays === 1) return "Yesterday";
-        else if (diffInDays === 2) return "2 days ago";
-        else {
-            return date.toLocaleDateString("en-IN", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-            });
-        }
-    };
+    
     return (
-        <div className="group cursor-pointer overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:border-blue-200 hover:shadow-md">
+        <Panel variant="card" padding={false}>
             <Link to={`/article/${article.slug}`} className="block">
                 <div className="relative h-40 overflow-hidden">
                     <img
@@ -66,7 +51,7 @@ function Card({ article }) {
                     <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
                         <span className="flex items-center gap-1">
                             <Clock size={10} />
-                            {formatTime(article.publishedAt)}
+                            {formatRelativeTime(article.publishedAt)}
                         </span>
                         {article.views > 0 && (
                             <span className="flex items-center gap-1">
@@ -79,7 +64,7 @@ function Card({ article }) {
                     </div>
                 </div>
             </Link>
-        </div>
+        </Panel>
     );
 }
 

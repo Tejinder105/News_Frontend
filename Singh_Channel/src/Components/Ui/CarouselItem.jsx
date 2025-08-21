@@ -1,25 +1,9 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { formatRelativeTime } from "../../utils/date";
 function CarouselItem({ item }) {
-  const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
-    const diffInDays = Math.floor(diffInHours / 24);
-
-    if (diffInHours < 1) return "Just now";
-    else if (diffInHours < 24) return `${diffInHours} hours ago`;
-    else if (diffInDays === 1) return "Yesterday";
-    else if (diffInDays === 2) return "2 days ago";
-    else {
-      return date.toLocaleDateString("en-IN", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      });
-    }
-  };
+  
   return (
     <div className="group grid h-full w-full grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-[2fr_3fr]">
       <div className="relative h-full w-full overflow-hidden rounded-lg">
@@ -47,7 +31,7 @@ function CarouselItem({ item }) {
         {/* Footer (Author + Read More) */}
         <div className="flex flex-1 items-center justify-between">
           <div className="text-xs text-gray-500">
-            <span>{formatTime(item.publishedAt)}</span> ·{" "}
+            <span>{formatRelativeTime(item.publishedAt)}</span> ·{" "}
             <span>by {item.author || "Gurcharan Singh"}</span>
           </div>
           <Link

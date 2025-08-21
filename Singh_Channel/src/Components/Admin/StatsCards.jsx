@@ -1,10 +1,11 @@
 import React from "react";
+import Panel from "../Ui/Panel";
 
 function StatsCards({stat, isLoading}) {
 
   if(isLoading){
     return(
-      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
+      <Panel variant="stats" size="lg">
        <div className="animate-pulse">
           <div className="flex items-center justify-between mb-4">
             <div className="w-10 h-10 bg-gray-200 rounded-lg"/>
@@ -13,11 +14,11 @@ function StatsCards({stat, isLoading}) {
           <div className="w-16 h-8 bg-gray-200 rounded mb-2"/>
           <div className="w-24 h-4 bg-gray-200 rounded"/>
         </div>
-      </div>
+      </Panel>
     )
   }
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md">
+    <Panel variant="stats">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-gray-600">{stat.name}</p>
@@ -29,7 +30,7 @@ function StatsCards({stat, isLoading}) {
           {stat.icon}
         </div>
       </div>
-    </div>
+    </Panel>
   );
 }
 
