@@ -142,21 +142,6 @@ function ImageUpload({ register, errors, post }) {
           >
             Featured Image
           </label>
-          {/* Debug button - remove this later */}
-          <button
-            type="button"
-            onClick={() => {
-              console.log("Debug button clicked");
-              const input = document.getElementById("featuredImage");
-              console.log("Found input:", input);
-              if (input) {
-                input.click();
-              }
-            }}
-            className="text-xs bg-gray-200 px-2 py-1 rounded"
-          >
-            Test Upload
-          </button>
         </div>
 
         {/* Image Preview */}

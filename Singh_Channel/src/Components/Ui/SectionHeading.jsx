@@ -11,7 +11,6 @@ const SectionHeading = ({
   children,
   ...props
 }) => {
-  // Color variants for dots and lines
   const colorStyles = {
     red: {
       dot: "bg-red-600",

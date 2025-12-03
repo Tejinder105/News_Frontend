@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
-import useGeminiAnalysis from "/src/hooks/useGeminiAnalysis";
+import useAiAnalysis from "/src/hooks/useGeminiAnalysis";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LANGUAGES } from "../../Constants/Languages";
 import {
@@ -25,7 +25,7 @@ export default function CreateArticle({ post }) {
   const { getAccessTokenSilently } = useAuth0();
   const [tags, setTags] = useState(post?.tags || []);
   const [loading, setLoading] = useState(false);
-  const [srcLang, setsrcLang] = useState("en");
+  const [sourceLanguage, setSourceLanguage] = useState("en");
   const [previewLanguage, setPreviewLanguage] = useState(
     post?.language || "en"
   );
@@ -70,13 +70,16 @@ export default function CreateArticle({ post }) {
   const {
     isAnalyzing,
     analysis,
-    error: geminiError,
+    error: aiError,
     analyzeContent,
     generateHeadlines,
     translateContent,
     generateTags,
+    batchTranslate,
     clearAnalysis,
-  } = useGeminiAnalysis();
+    isAuthenticated,
+    isAuthLoading,
+  } = useAiAnalysis();
 
   const slugTransform = useCallback((value) => toSlug(value), []);
 
@@ -93,15 +96,15 @@ export default function CreateArticle({ post }) {
 
   // Update preview language when source language changes
   useEffect(() => {
-    setPreviewLanguage(srcLang);
-  }, [srcLang]);
+    setPreviewLanguage(sourceLanguage);
+  }, [sourceLanguage]);
 
-  // Handle Gemini errors
+  // Handle AI errors
   useEffect(() => {
-    if (geminiError) {
-      toast.error(geminiError);
+    if (aiError) {
+      toast.error(aiError);
     }
-  }, [geminiError]);
+  }, [aiError]);
 
   // Watch for content changes to update completion status
   useEffect(() => {
@@ -123,14 +126,12 @@ export default function CreateArticle({ post }) {
     return () => subscription.unsubscribe();
   }, [watch, LANGUAGES]);
 
-  // Update tags when post prop changes (for edit mode)
   useEffect(() => {
     if (post?.tags) {
       setTags(post.tags);
     }
   }, [post]);
 
-  // Reset form when post prop changes (for edit mode)
   useEffect(() => {
     if (post) {
       reset({
@@ -174,7 +175,6 @@ export default function CreateArticle({ post }) {
 
     if (data.featuredImage && data.featuredImage.length > 0) {
       const file = data.featuredImage[0];
-      // Backend expects different field names for create vs update
       if (post) {
         formData.append("featured_image", file);
       } else {
@@ -246,14 +246,13 @@ export default function CreateArticle({ post }) {
             youtubeLink: "",
             featuredImage: null,
           });
-          setTags([]); // Clear tags after successful creation
+          setTags([]); 
         }
       } else {
         toast.error("Unexpected response from server");
       }
     } catch (error) {
       console.error("Submit error:", error);
-      // Log detailed error information
       if (error.response) {
         console.error("Error response data:", error.response);
       } else if (error.request) {
@@ -268,22 +267,27 @@ export default function CreateArticle({ post }) {
   };
 
   const handleGenerateTranslations = async () => {
-    if (previewLanguage !== srcLang) {
+    if (previewLanguage !== sourceLanguage) {
       toast.error("Please switch to source language first");
       return;
     }
 
     const targetLanguages = Object.keys(LANGUAGES).filter(
-      (lang) => lang !== srcLang
+      (lang) => lang !== sourceLanguage
     );
+
+    if (targetLanguages.length === 0) {
+      toast.error("No target languages found for translation");
+      return;
+    }
 
     setTranslating(true);
 
     try {
       const sourceTexts = {
-        headline: getValues(`headline.${srcLang}`),
-        summary: getValues(`summary.${srcLang}`),
-        content: getValues(`content.${srcLang}`),
+        headline: getValues(`headline.${sourceLanguage}`),
+        summary: getValues(`summary.${sourceLanguage}`),
+        content: getValues(`content.${sourceLanguage}`),
       };
 
       if (!sourceTexts.content || sourceTexts.content.trim() === "") {
@@ -291,18 +295,20 @@ export default function CreateArticle({ post }) {
         return;
       }
 
-      for (const lang of targetLanguages) {
-        toast.info(`Translating to ${LANGUAGES[lang].name}...`);
+      toast.info("Starting batch translation...");
 
-        // Single API call for the current target language
-        const translatedResult = await translateContent(
-          sourceTexts,
-          srcLang,
-          lang
-        );
+      // Use the new batch translate feature for better performance
+      const batchResult = await batchTranslate(
+        sourceTexts,
+        sourceLanguage,
+        targetLanguages
+      );
 
-        if (translatedResult) {
-          // Explicitly set each field. This is clear and safe.
+      if (batchResult) {
+        const { translations, errors, successCount, errorCount } = batchResult;
+
+        // Apply successful translations
+        Object.entries(translations).forEach(([lang, translatedResult]) => {
           setValue(`headline.${lang}`, translatedResult.headline || "", {
             shouldValidate: true,
           });
@@ -312,24 +318,35 @@ export default function CreateArticle({ post }) {
           setValue(`content.${lang}`, translatedResult.content || "", {
             shouldValidate: true,
           });
+        });
 
-          toast.success(`Translation to ${LANGUAGES[lang].name} completed!`);
-        } else {
-          toast.error(`Failed to translate to ${LANGUAGES[lang].name}`);
+        // Show results
+        if (successCount > 0) {
+          toast.success(`Successfully translated to ${successCount} language(s)!`);
         }
+
+        if (errorCount > 0) {
+          console.warn("Translation errors:", errors);
+          toast.warning(`Failed to translate to ${errorCount} language(s). Check console for details.`);
+        }
+
+        if (successCount === 0) {
+          toast.error("All translations failed. Please try again.");
+        }
+      } else {
+        toast.error("Batch translation failed. Please try again.");
       }
-      toast.success("All translations completed!");
     } catch (error) {
       console.error("Translation error:", error);
-      toast.error("Failed to generate translations");
+      toast.error(`Translation failed: ${error.message}`);
     } finally {
       setTranslating(false);
     }
   };
 
-  const handlesrcLangChange = (e) => {
+  const handleSourceLanguageChange = (e) => {
     const newSourceLang = e.target.value;
-    setsrcLang(newSourceLang);
+    setSourceLanguage(newSourceLang);
     setPreviewLanguage(newSourceLang);
   };
 
@@ -363,10 +380,20 @@ export default function CreateArticle({ post }) {
       toast.error("Please write some content first to generate tags");
       return;
     }
-    const generatedTags = await generateTags(content, previewLanguage);
-    if (generatedTags && generatedTags.length > 0) {
-      setTags([...new Set([...tags, ...generatedTags])]);
-      toast.success("Tags generated and added!");
+    
+    try {
+      const result = await generateTags(content, 10);
+      if (result && result.tags && Array.isArray(result.tags) && result.tags.length > 0) {
+        // Merge with existing tags and remove duplicates
+        const newTags = [...new Set([...tags, ...result.tags])];
+        setTags(newTags);
+        toast.success(`Generated ${result.tags.length} new tags!`);
+      } else {
+        toast.warning("No tags were generated. Please try with different content.");
+      }
+    } catch (error) {
+      console.error("Tag generation error:", error);
+      toast.error(`Failed to generate tags: ${error.message}`);
     }
   };
 
@@ -408,8 +435,8 @@ export default function CreateArticle({ post }) {
 
           <LanguageSwitcher
             LANGUAGES={LANGUAGES}
-            sourceLanguage={srcLang}
-            handlesrcLangChange={handlesrcLangChange}
+            sourceLanguage={sourceLanguage}
+            handleSourceLanguageChange={handleSourceLanguageChange}
             previewLanguage={previewLanguage}
             handlePreviewLanguageChange={handlePreviewLanguageChange}
             completionStatus={completionStatus}
@@ -418,6 +445,8 @@ export default function CreateArticle({ post }) {
           <AiTools
             translating={translating}
             isAnalyzing={isAnalyzing}
+            isAuthenticated={isAuthenticated}
+            isAuthLoading={isAuthLoading}
             handleGenerateTranslations={handleGenerateTranslations}
             handleAnalyzeContent={handleAnalyzeContent}
             handleGenerateHeadlines={handleGenerateHeadlines}

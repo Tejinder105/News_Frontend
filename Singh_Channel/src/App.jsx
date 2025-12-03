@@ -4,6 +4,7 @@ import UserLayout from "./Layouts/UserLayout";
 import AdminLayout from "./Layouts/AdminLayout";
 import Home from "./Pages/Home";
 import NewsArticle from "./Pages/NewsArticle";
+import Events from "./Pages/Events";
 import Dashboard from "./Pages/Admin/Dashboard";
 import CreateArticle from "./Pages/Admin/CreateArticle";
 import AllArticle from "./Pages/Admin/AllArticle";
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+      },
+      {
+        path: "/events",
+        element: <Events />,
       },
       {
         path: "/article/:id",

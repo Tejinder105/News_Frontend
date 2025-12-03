@@ -1,3 +1,4 @@
+import axios from "axios";
 import api from "./apiClient";
 
 const normalizeArticlesResponse = (res) => {
@@ -11,12 +12,10 @@ const getAllArticles = async (
   language = "en",
   page = 1,
   limit = 20,
-  signal
 ) => {
   try {
-    const res = await api.get(`/api/v1/articles/getarticles`, {
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/articles/getarticles`, {
       params: { language, page, limit },
-      signal,
     });
     const normalized = normalizeArticlesResponse(res);
     return normalized;
