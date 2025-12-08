@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Button from "../Ui/Button";
 import { Share2, Calendar, User, Clock } from "lucide-react";
-import { formatDateTime } from "../../utils/date";
+import { formatDateTime } from "../../Utils/date";
 import LikeButton from "./LikeButton";
 
 const ArticleHeader = ({

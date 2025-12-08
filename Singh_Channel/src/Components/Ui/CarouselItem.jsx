@@ -1,7 +1,7 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { formatRelativeTime } from "../../utils/date";
+import { formatRelativeTime } from "../../Utils/date";
 function CarouselItem({ item }) {
 
   return (

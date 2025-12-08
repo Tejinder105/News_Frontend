@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { toSlug } from "/src/utils/slug";
+import { toSlug } from "/src/Utils/slug";
 import { LANGUAGES } from "../Constants/Languages";
 
 // Helper to handle legacy string data

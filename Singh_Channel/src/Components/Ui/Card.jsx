@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { MapPin, Clock, Eye } from "lucide-react";
 import { useSelector } from "react-redux";
-import { formatRelativeTime } from "../../utils/date";
+import { formatRelativeTime } from "../../Utils/date";
 import Panel from "./Panel";
 
 function Card({ article, imageHeight = "h-40", showImage = true, showSummary = true, headlineClasses = "text-base leading-tight font-bold" }) {

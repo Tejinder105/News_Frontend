@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Card from "../Ui/Card";
 import CardAd from "../Ui/CardAd";
 import { adItem } from "../../AdItem";
-import { formatRelativeTime } from "../../utils/date";
+import { formatRelativeTime } from "../../Utils/date";
 
 const CityNewsLayout = ({ articles }) => {
     if (!articles || articles.length === 0) return null;
