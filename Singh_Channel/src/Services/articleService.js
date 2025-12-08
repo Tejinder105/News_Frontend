@@ -15,7 +15,7 @@ const getAllArticles = async (
   tag = null,
   signal = null
 ) => {
-  const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/articles/getarticles`, {
+  const res = await api.get(`/api/v1/articles/getarticles`, {
     params: { language, page, limit, tag },
     signal,
   });
