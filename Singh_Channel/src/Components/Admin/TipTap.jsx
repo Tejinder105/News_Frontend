@@ -18,7 +18,7 @@ import {
 const ToolbarButton = ({ onClick, active, disabled, children }) => (
   <button
     type="button"
-    className={`mx-1 h-9 rounded-lg border px-3 text-sm font-medium transition focus:ring-2 focus:ring-blue-200 focus:outline-none ${active ? "border-blue-600 bg-blue-600 text-white" : "border-gray-200 bg-gray-100 text-gray-700 hover:bg-blue-50"} ${disabled ? "cursor-not-allowed opacity-50" : ""} `}
+    className={`mx-1 h-9 rounded-sm border px-3 text-sm font-medium transition focus:ring-2 focus:ring-blue-200 focus:outline-none ${active ? "border-blue-600 bg-blue-600 text-white" : "border-gray-200 bg-gray-100 text-gray-700 hover:bg-blue-50"} ${disabled ? "cursor-not-allowed opacity-50" : ""} `}
     onClick={onClick}
     disabled={disabled}
   >
@@ -45,7 +45,7 @@ const TipTap = ({ value = "", onChange }) => {
   if (!editor) return null;
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+    <div className="rounded-sm border border-gray-200 bg-white p-4 shadow-sm">
       {/* Toolbar */}
       <div className="mb-3 flex flex-wrap items-center gap-1">
         <ToolbarButton
@@ -106,7 +106,7 @@ const TipTap = ({ value = "", onChange }) => {
       </div>
 
       {/* Editor content */}
-      <div className="min-h-[180px] rounded-lg border bg-white p-3">
+      <div className="min-h-[180px] rounded-sm border bg-white p-3">
         <EditorContent editor={editor} />
       </div>
     </div>

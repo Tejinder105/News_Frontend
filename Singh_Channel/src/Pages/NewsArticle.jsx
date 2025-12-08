@@ -10,6 +10,7 @@ import {
   ReadingProgress,
   CardAd,
   Panel,
+  CommentSection,
 } from "../Components";
 import { adItem } from "../AdItem.jsx";
 import articleService from "../Services/articleService";
@@ -76,6 +77,7 @@ function NewsArticle() {
                   imageUrl={content.image}
                   summary={content.summary || content.description}
                   readTime={calculateReadTime(content.content)}
+                  articleId={content._id}
                 />
                 <ArticleContent
                   content={content.content}
@@ -83,6 +85,7 @@ function NewsArticle() {
                   author={content.author}
                   youtubeLink={content.youtube_link}
                 />
+                <CommentSection articleId={content._id} />
               </Panel>
 
               <div className="mt-4 lg:hidden">

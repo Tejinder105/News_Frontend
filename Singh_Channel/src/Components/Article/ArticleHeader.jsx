@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Button from "../Ui/Button";
 import { Share2, Calendar, User, Clock } from "lucide-react";
 import { formatDateTime } from "../../utils/date";
+import LikeButton from "./LikeButton";
 
 const ArticleHeader = ({
   title,
@@ -10,6 +11,7 @@ const ArticleHeader = ({
   readTime,
   imageUrl,
   summary,
+  articleId,
 }) => {
   const handleShare = async () => {
     if (navigator.share) {
@@ -36,65 +38,78 @@ const ArticleHeader = ({
             {title}
           </h1>
           {summary && (
-            <div className="mb-4">
-              <div className="rounded-r-xl border-l-4 border-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 shadow-sm">
-                <p className="text-lg leading-relaxed text-gray-700">
+            <div className="mb-6">
+              <div className="relative overflow-hidden rounded-lg bg-gray-50 border-l-4 border-gray-900 p-6">
+                <h3 className="mb-2 text-sm font-bold uppercase tracking-wider text-gray-400">
+                  Key Takeaways
+                </h3>
+                <p className="text-lg italic leading-relaxed text-gray-700 font-serif">
                   {summary}
                 </p>
               </div>
             </div>
           )}
 
-          <div className="mb-2 flex flex-col md:space-y-0 md:space-x-4">
-            <div className="flex items-center space-x-4 text-sm text-gray-600">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-y border-gray-100 py-4">
+            <div className="flex items-center space-x-6">
               {author && (
-                <div className="flex items-center space-x-1">
-                  <User className="h-4 w-4" />
-                  <span className="font-medium text-gray-900">{author}</span>
+                <div className="flex items-center space-x-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-500">
+                    <User className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                      Written By
+                    </p>
+                    <p className="font-medium text-gray-900">{author}</p>
+                  </div>
                 </div>
               )}
 
               {publishedTime && (
-                <div className="flex items-center space-x-1">
-                  <Calendar className="h-4 w-4" />
-                  <span>{formatDateTime(publishedTime)}</span>
+                <div className="hidden sm:block">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                    Published
+                  </p>
+                  <p className="text-sm font-medium text-gray-900">
+                    {formatDateTime(publishedTime)}
+                  </p>
                 </div>
               )}
             </div>
 
-            <div className="flex items-center justify-between pt-1 text-sm">
-              <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-1 text-gray-500">
                 <Clock className="h-4 w-4" />
-                <span className="font-medium text-gray-900">{readTime}</span>
+                <span className="text-sm font-medium">{readTime}</span>
               </div>
 
-              <Button
-                iconLeft={<Share2 size={14} color="blue" />}
-                type="button"
-                variant="outline"
-                onClick={handleShare}
-              >
-                Share
-              </Button>
+              <div className="h-4 w-px bg-gray-200"></div>
+
+              <div className="flex items-center space-x-2">
+                {articleId && <LikeButton articleId={articleId} />}
+                <Button
+                  iconLeft={<Share2 size={16} />}
+                  type="button"
+                  variant="ghost"
+                  className="text-gray-500 hover:text-blue-600"
+                  onClick={handleShare}
+                >
+                  Share
+                </Button>
+              </div>
             </div>
           </div>
           {imageUrl && (
             <div className="mb-6">
               <figure className="group relative">
-                <div className="relative overflow-hidden rounded-3xl bg-gray-100 shadow-2xl ring-1 ring-gray-200/50">
+                <div className="relative overflow-hidden rounded-2xl shadow-lg">
                   <img
                     src={imageUrl}
                     alt={title}
-                    className="h-auto w-full object-cover transition-all duration-700 group-hover:scale-105"
+                    className="h-auto w-full object-cover transition-all duration-700 hover:scale-105"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
-
-                  <div className="absolute right-0 bottom-0 left-0 p-8 opacity-0 transition-all duration-300 group-hover:opacity-100">
-                    <h3 className="text-xl font-bold drop-shadow-2xl text-white">
-                      {title}
-                    </h3>
-                  </div>
                 </div>
               </figure>
             </div>

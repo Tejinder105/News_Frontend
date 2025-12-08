@@ -17,10 +17,10 @@ function Button({
     "inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50";
 
   const sizeStyles = {
-    xs: "px-2 py-1 text-xs gap-1 rounded",
-    sm: "px-3 py-1 text-sm gap-1.5 rounded-lg",
-    md: "px-3 py-2 text-sm gap-2 rounded-lg",
-    lg: "px-4 py-2 text-base gap-2 rounded-lg",
+    xs: "px-2 py-1 text-xs gap-1 rounded-sm",
+    sm: "px-3 py-1 text-sm gap-1.5 rounded-sm",
+    md: "px-3 py-2 text-sm gap-2 rounded-sm",
+    lg: "px-4 py-2 text-base gap-2 rounded-sm",
   };
 
   const variantStyles = {
@@ -40,9 +40,9 @@ function Button({
     language: "bg-transparent text-gray-300 hover:bg-gray-800 hover:text-white",
     "language-active": "bg-blue-600 text-white shadow-sm",
 
-    icon: "bg-transparent hover:bg-gray-100 text-gray-600 p-1.5 rounded-lg",
+    icon: "bg-transparent hover:bg-gray-100 text-gray-600 p-1.5 rounded-sm",
     "icon-dark":
-      "bg-transparent hover:bg-white/10 text-white/80 hover:text-white p-1.5 rounded-lg",
+      "bg-transparent hover:bg-white/10 text-white/80 hover:text-white p-1.5 rounded-sm",
 
     overlay:
       "bg-black/30 text-white hover:bg-black/50 backdrop-blur-sm rounded-full p-2",

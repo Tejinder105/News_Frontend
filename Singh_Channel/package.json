@@ -41,6 +41,7 @@
     "react-router-dom": "^7.6.2",
     "react-toastify": "^11.0.5",
     "react-youtube": "^10.1.0",
+    "recharts": "^3.5.1",
     "redux": "^5.0.1",
     "tailwindcss": "^4.1.10",
     "tinymce": "^7.9.1"

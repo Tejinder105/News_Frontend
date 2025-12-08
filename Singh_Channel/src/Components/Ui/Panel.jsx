@@ -10,16 +10,16 @@ const Panel = ({
   ...props
 }) => {
   // Base styles that all panels share
-  const baseStyles = "bg-white border border-gray-100 overflow-hidden transition-all duration-300";
+  const baseStyles = "bg-white border border-gray-200 overflow-hidden transition-all duration-300";
 
   // Variant-specific styles
   const variantStyles = {
-    card: "rounded-lg shadow-sm",
-    "admin-form": "rounded-xl border-gray-100 shadow-sm",
-    article: "rounded-2xl shadow-sm",
-    stats: "rounded-xl border-gray-200 shadow-sm",
-    ad: "rounded-md shadow-md",
-    minimal: "rounded-lg shadow-sm border-gray-200",
+    card: "rounded-sm shadow-sm",
+    "admin-form": "rounded-sm border-gray-100 shadow-sm",
+    article: "rounded-sm shadow-sm",
+    stats: "rounded-sm border-gray-200 shadow-sm",
+    ad: "rounded-sm shadow-md",
+    minimal: "rounded-sm shadow-sm border-gray-200",
   };
 
   // Size-specific styles

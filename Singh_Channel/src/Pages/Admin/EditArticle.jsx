@@ -23,7 +23,7 @@ export default function EditArticle() {
         // Transform field names to match form expectations
         const transformedArticle = {
           ...articleData,
-          is_featured: articleData.isfeatured,
+          is_featured: articleData.isFeatured,
           is_breaking: articleData.isBreaking,
           featured_image: articleData.image, // Map image field
         };

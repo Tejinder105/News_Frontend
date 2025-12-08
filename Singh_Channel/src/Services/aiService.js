@@ -21,11 +21,11 @@ class AiService {
    */
   handleError(error) {
     console.error("AI Service Error:", error);
-    
+
     if (error.response) {
       const { status, data } = error.response;
       const message = data?.message || "An error occurred with the AI service";
-      
+
       switch (status) {
         case 400:
           throw new Error(`Invalid request: ${message}`);
@@ -59,7 +59,7 @@ class AiService {
     try {
       const token = await this.getAccessTokenSilently({
         authorizationParams: {
-          audience: process.env.REACT_APP_AUTH0_AUDIENCE || import.meta.env.VITE_AUTH0_AUDIENCE,
+          audience: import.meta.env.VITE_AUTH0_AUDIENCE,
         },
       });
 

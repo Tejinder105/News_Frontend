@@ -7,6 +7,8 @@ import {
   Menu as MenuIcon,
   LogOut,
   X,
+  Calendar,
+  CalendarPlus,
 } from "lucide-react";
 import Logo from "../Ui/Logo";
 import Button from "../Ui/Button";
@@ -28,6 +30,7 @@ function Sidebar({ open, setOpen }) {
       link: "/admin/createarticles",
       icon: <FilePlus2 size={20} />,
     },
+
     { name: "Settings", link: "/admin/settings", icon: <Settings size={20} /> },
   ];
 
@@ -52,11 +55,10 @@ function Sidebar({ open, setOpen }) {
       )}
 
       <aside
-        className={`${
-          isMobile
-            ? `fixed top-0 left-0 z-50 h-screen border-r border-slate-800 bg-slate-900 text-gray-100 shadow-2xl duration-300 ease-in-out ${open ? "w-72" : "w-0"} ${!open ? "-translate-x-full" : "translate-x-0"}`
-            : `relative border-r border-slate-800 bg-slate-900 text-gray-100 shadow-xl duration-300 ease-in-out ${open ? "w-72" : "w-20"}`
-        } overflow-hidden`}
+        className={`${isMobile
+          ? `fixed top-0 left-0 z-50 h-screen border-r border-slate-800 bg-slate-900 text-gray-100 shadow-2xl duration-300 ease-in-out ${open ? "w-72" : "w-0"} ${!open ? "-translate-x-full" : "translate-x-0"}`
+          : `relative border-r border-slate-800 bg-slate-900 text-gray-100 shadow-xl duration-300 ease-in-out ${open ? "w-72" : "w-20"}`
+          } overflow-hidden`}
       >
         <div className="flex items-center justify-between border-b border-slate-600/50 bg-slate-800 p-4">
           {open && (
@@ -83,10 +85,9 @@ function Sidebar({ open, setOpen }) {
                 key={i}
                 end={menu.link === "/admin"}
                 className={({ isActive }) =>
-                  `group flex items-center gap-4 rounded-xl p-3 text-sm font-medium transition-all duration-200 focus:ring-2 focus:ring-blue-400 focus:outline-none ${
-                    isActive
-                      ? "border border-sky-400 bg-slate-800 text-sky-400 shadow-md"
-                      : "text-slate-300 hover:bg-slate-700 hover:text-sky-400"
+                  `group flex items-center gap-4 rounded-xl p-3 text-sm font-medium transition-all duration-200 focus:ring-2 focus:ring-blue-400 focus:outline-none ${isActive
+                    ? "border border-blue-400 bg-slate-800 text-blue-400 shadow-md"
+                    : "text-slate-300 hover:bg-slate-700 hover:text-blue-400"
                   }`
                 }
                 onClick={() => isMobile && setOpen(false)}
@@ -94,17 +95,15 @@ function Sidebar({ open, setOpen }) {
                 aria-label={menu.name}
               >
                 <div
-                  className={`flex-shrink-0 transition-all duration-200 ${
-                    open ? "scale-100" : "scale-110"
-                  }`}
+                  className={`flex-shrink-0 transition-all duration-200 ${open ? "scale-100" : "scale-110"
+                    }`}
                 >
                   {menu.icon}
                 </div>
                 <span
                   style={{ transitionDelay: `${i * 50}ms` }}
-                  className={`whitespace-nowrap transition-all duration-300 ${
-                    !open ? "translate-x-8 overflow-hidden opacity-0" : ""
-                  }`}
+                  className={`whitespace-nowrap transition-all duration-300 ${!open ? "translate-x-8 overflow-hidden opacity-0" : ""
+                    }`}
                 >
                   {menu.name}
                 </span>
@@ -117,9 +116,8 @@ function Sidebar({ open, setOpen }) {
             <Button
               variant="danger"
               size="md"
-              className={`w-full transition-all duration-200 ${
-                !open ? "justify-center px-3" : "justify-start"
-              }`}
+              className={`w-full transition-all duration-200 ${!open ? "justify-center px-3" : "justify-start"
+                }`}
               iconLeft={<LogOut size={20} />}
               onClick={handleLogout}
             >

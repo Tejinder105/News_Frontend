@@ -3,10 +3,10 @@ import languageReducer from "./languageSlice";
 import breakingNewsReducer from "./breakingNewsSlice";
 
 const store = configureStore({
-    reducer: {
-        language: languageReducer,
-        breakingNews: breakingNewsReducer,
-    },
+  reducer: {
+    language: languageReducer,
+    breakingNews: breakingNewsReducer,
+  },
 });
 
 export default store;

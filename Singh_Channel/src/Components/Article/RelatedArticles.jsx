@@ -47,19 +47,18 @@ const RelatedArticles = ({
   if (loading) {
     return (
       <Panel variant="article" padding={false}>
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3">
-          <h3 className="flex items-center text-lg font-semibold text-white">
-            <Tag className="mr-2 h-5 w-5" />
+        <div className="border-b border-gray-100 px-4 py-4">
+          <h3 className="font-serif text-lg font-bold text-gray-900">
             Related Stories
           </h3>
         </div>
         <div className="p-4">
-          {[...Array(3)].map((_, index) => (
-            <div key={index} className="mb-4 last:mb-0">
-              <div className="animate-pulse space-y-2">
-                <div className="h-4 w-3/4 rounded bg-gray-200"></div>
-                <div className="h-3 w-1/2 rounded bg-gray-200"></div>
-                <div className="h-3 w-full rounded bg-gray-200"></div>
+          {[...Array(5)].map((_, index) => (
+            <div key={index} className="mb-4 flex gap-3 last:mb-0">
+              <div className="h-16 w-24 flex-shrink-0 animate-pulse rounded-md bg-gray-200"></div>
+              <div className="flex-1 space-y-2 py-1">
+                <div className="h-3 w-full animate-pulse rounded bg-gray-200"></div>
+                <div className="h-3 w-2/3 animate-pulse rounded bg-gray-200"></div>
               </div>
             </div>
           ))}
@@ -68,62 +67,37 @@ const RelatedArticles = ({
     );
   }
 
-  if (error) {
-    return (
-      <Panel variant="article" padding={false}>
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3">
-          <h3 className="flex items-center text-lg font-semibold text-white">
-            <Tag className="mr-2 h-5 w-5" />
-            Related Stories
-          </h3>
-        </div>
-        <div className="p-4 text-center text-sm text-gray-500">{error}</div>
-      </Panel>
-    );
-  }
-
-  if (!relatedArticles || relatedArticles.length === 0) {
-    return (
-      <Panel variant="article" padding={false}>
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3">
-          <h3 className="flex items-center text-lg font-semibold text-white">
-            <Tag className="mr-2 h-5 w-5" />
-            Related Stories
-          </h3>
-        </div>
-        <div className="p-4 text-center text-sm text-gray-500">
-          No related articles found
-        </div>
-      </Panel>
-    );
+  if (error || !relatedArticles || relatedArticles.length === 0) {
+    return null;
   }
 
   return (
     <Panel variant="article" padding={false}>
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2.5">
-        <h3 className="flex items-center text-base font-semibold text-white">
-          <Tag className="mr-2 h-4 w-4" />
+      <div className="border-b border-gray-100 px-4 py-4">
+        <h3 className="font-serif text-lg font-bold text-gray-900">
           Related Stories
         </h3>
       </div>
       <div className="divide-y divide-gray-100">
-        {relatedArticles.map((article, index) => (
+        {relatedArticles.map((article) => (
           <Link
             key={article.slug}
             to={`/article/${article.slug}`}
-            className="group block cursor-pointer px-4 py-3 transition-all duration-200 hover:bg-blue-50"
+            className="group flex gap-3 p-4 items-start transition-colors hover:bg-gray-50"
           >
-            <div className="flex flex-col items-start gap-3">
-              <div className="flex items-center gap-3">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-xs font-semibold text-white shadow-sm">
-                  {index + 1}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <h4 className="line-clamp-2 text-sm leading-tight font-medium text-gray-900 transition-colors group-hover:text-blue-700">
-                    {article.headline}
-                  </h4>
-                </div>
-              </div>
+            {article.image && (
+              <img
+                src={article.image}
+                alt={article.headline}
+                className="h-16 w-24 flex-shrink-0 rounded-md object-cover shadow-sm transition-opacity group-hover:opacity-90"
+                loading="lazy"
+              />
+            )}
+            <div className="flex flex-col min-w-0">
+              <h4 className="-mt-1 line-clamp-3 font-serif text-sm font-medium leading-snug text-gray-900 transition-colors group-hover:text-blue-700">
+                {article.headline}
+              </h4>
+              <p className="mt-1 text-xs text-gray-500">Read more</p>
             </div>
           </Link>
         ))}

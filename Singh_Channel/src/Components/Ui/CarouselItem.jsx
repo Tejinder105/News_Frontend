@@ -3,10 +3,10 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatRelativeTime } from "../../utils/date";
 function CarouselItem({ item }) {
-  
+
   return (
     <div className="group grid h-full w-full grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-[2fr_3fr]">
-      <div className="relative h-full w-full overflow-hidden rounded-lg">
+      <div className="relative h-full w-full overflow-hidden rounded-sm">
         <img
           src={item.image || "/placeholder-image.jpg"}
           alt={item.tag || item.category || "News"}
@@ -20,7 +20,7 @@ function CarouselItem({ item }) {
       {/* Text Content */}
       <div className="flex flex-col gap-4 p-2">
         <div className="">
-          <h2 className="line-clamp-2 text-lg font-bold text-gray-900 transition-colors hover:text-blue-600 lg:text-2xl">
+          <h2 className="font-serif line-clamp-2 text-lg font-bold text-gray-900 transition-colors hover:text-blue-600 lg:text-3xl">
             {item.headline}
           </h2>
         </div>

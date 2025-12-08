@@ -21,7 +21,7 @@ const swipePower = (offset, velocity) => Math.abs(offset) * velocity;
 function Carousel({ autoSlide = false, autoSlideInterval = 3000, items }) {
   if (!items || !Array.isArray(items) || items.length === 0) {
     return (
-      <div className="sm:[300px] relative flex h-[400px] max-w-5xl items-center justify-center overflow-hidden rounded-2xl bg-white shadow-lg md:h-[300px]">
+      <div className="sm:[300px] relative flex h-[400px] max-w-5xl items-center justify-center overflow-hidden rounded-sm bg-white shadow-lg md:h-[300px]">
         <p className="text-gray-500">No featured news available</p>
       </div>
     );
@@ -41,7 +41,7 @@ function Carousel({ autoSlide = false, autoSlideInterval = 3000, items }) {
   }, [autoSlide, autoSlideInterval, paginate]);
 
   return (
-    <div className="sm:[300px] relative h-[400px] max-w-5xl overflow-hidden rounded-2xl bg-white shadow-lg md:h-[300px]">
+    <div className="sm:[300px] relative h-[400px] max-w-5xl overflow-hidden rounded-sm bg-white shadow-lg md:h-[300px]">
       <AnimatePresence initial={false} custom={direction}>
         <motion.div
           key={index}
@@ -85,9 +85,8 @@ function Carousel({ autoSlide = false, autoSlideInterval = 3000, items }) {
           <button
             key={i}
             onClick={() => setIndex([i, i > currentIndex ? 1 : -1])}
-            className={`h-2 w-2 rounded-full transition-all ${
-              i === currentIndex ? "w-5 bg-gray-900" : "bg-gray-900/50"
-            }`}
+            className={`h-2 w-2 rounded-full transition-all ${i === currentIndex ? "w-5 bg-gray-900" : "bg-gray-900/50"
+              }`}
             aria-label={`Slide ${i + 1}`}
           />
         ))}

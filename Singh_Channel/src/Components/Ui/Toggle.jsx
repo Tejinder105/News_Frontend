@@ -14,23 +14,12 @@ const Toggle = forwardRef(
     ref
   ) => {
     const getVariantStyles = () => {
-      switch (variant) {
-        case "featured":
-          return {
-            bg: "peer-checked:bg-blue-600 peer-checked:shadow-blue-200",
-            ring: "peer-focus:ring-blue-300",
-          };
-        case "breaking":
-          return {
-            bg: "peer-checked:bg-blue-700 peer-checked:shadow-blue-300",
-            ring: "peer-focus:ring-blue-400",
-          };
-        default:
-          return {
-            bg: "peer-checked:bg-blue-600 peer-checked:shadow-blue-200",
-            ring: "peer-focus:ring-blue-300",
-          };
-      }
+      // Standardize to blue-600 for consistency, can differentiate later if strictly needed
+      return {
+        bg: "peer-checked:bg-blue-600",
+        ring: "peer-focus:ring-blue-500/30",
+        shadow: "peer-checked:shadow-blue-200"
+      };
     };
 
     const styles = getVariantStyles();
@@ -50,11 +39,11 @@ const Toggle = forwardRef(
           {...props}
         />
         <div
-          className={`peer peer-focus:ring-opacity-50 h-7 w-12 rounded-full bg-gray-300 shadow-inner transition-all duration-300 ease-in-out peer-checked:shadow-lg peer-focus:ring-4 ${styles.bg} ${styles.ring}`}
+          className={`peer h-6 w-11 rounded-full bg-gray-200 transition-all duration-300 ease-in-out after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:shadow-sm after:transition-all after:content-[''] hover:bg-gray-300 peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-focus:ring-4 ${styles.ring}`}
         ></div>
-        <div className="absolute top-0.5 left-0.5 h-6 w-6 rounded-full bg-white shadow-md transition-all duration-300 ease-in-out peer-checked:translate-x-5 peer-checked:shadow-lg"></div>
+
         {label && (
-          <span className="ml-3 font-medium text-gray-700">{label}</span>
+          <span className="ml-3 font-medium text-gray-700 select-none">{label}</span>
         )}
       </label>
     );

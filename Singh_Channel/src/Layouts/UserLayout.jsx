@@ -6,9 +6,7 @@ import { useBreakingNews } from "../hooks/useBreakingNews";
 function UserLayout() {
   const location = useLocation();
   const navigate = useNavigate();
-  
-  // Initialize breaking news at the layout level
-  // This ensures it's available to all child components
+
   useBreakingNews();
 
   return (

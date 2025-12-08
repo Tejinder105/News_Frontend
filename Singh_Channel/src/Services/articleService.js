@@ -12,16 +12,15 @@ const getAllArticles = async (
   language = "en",
   page = 1,
   limit = 20,
+  tag = null,
+  signal = null
 ) => {
-  try {
-    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/articles/getarticles`, {
-      params: { language, page, limit },
-    });
-    const normalized = normalizeArticlesResponse(res);
-    return normalized;
-  } catch (error) {
-    throw error;
-  }
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/articles/getarticles`, {
+    params: { language, page, limit, tag },
+    signal,
+  });
+  const normalized = normalizeArticlesResponse(res);
+  return normalized;
 };
 
 const getArticle = async (identifier, language = "en") => {

@@ -18,13 +18,13 @@ const SectionHeading = ({
       text: "text-gray-900",
     },
     blue: {
-      dot: "bg-blue-600", 
+      dot: "bg-blue-600",
       line: "bg-blue-600",
       text: "text-gray-900",
     },
     green: {
       dot: "bg-green-600",
-      line: "bg-green-600", 
+      line: "bg-green-600",
       text: "text-gray-900",
     },
     purple: {
@@ -54,14 +54,14 @@ const SectionHeading = ({
     },
     md: {
       title: "text-lg font-bold",
-      dot: "h-2 w-2", 
+      dot: "h-2 w-2",
       gap: "gap-2",
       line: "h-px mt-1 ml-3",
     },
     lg: {
       title: "text-lg font-bold sm:text-xl",
       dot: "h-2 w-2",
-      gap: "gap-2", 
+      gap: "gap-2",
       line: "h-px mt-1 ml-4",
     },
     xl: {

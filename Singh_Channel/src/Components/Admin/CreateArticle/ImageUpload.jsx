@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Upload, X, AlertCircle } from "lucide-react";
-function ImageUpload({ register, errors, post }) {
+function ImageUpload({ register, error, post, watch }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(
     post?.image || null
@@ -9,15 +9,30 @@ function ImageUpload({ register, errors, post }) {
   const [uploadError, setUploadError] = useState("");
   const fileInputRef = useRef(null);
 
-  console.log("ImageUpload component rendered with:", { post, errors });
+  // Watch for form reset
+  const featuredImageValue = watch ? watch("featuredImage") : null;
 
-  // Update image preview when post changes
+  useEffect(() => {
+    // If not editing an existing post, and the form field is empty/null, clear the preview
+    // This handles the form reset() case
+    if (!post && (!featuredImageValue || featuredImageValue.length === 0)) {
+      setImagePreview(null);
+      setSelectedImage(null);
+    }
+  }, [featuredImageValue, post]);
+
   useEffect(() => {
     if (post?.image) {
       setImagePreview(post.image);
       setSelectedImage(null); // Reset selected image when editing existing post
     } else {
-      setImagePreview(null);
+      // Only force clear if also no local preview? 
+      // This runs on mount or post change.
+      // If we are in create mode, post is null. 
+      // Do not force clear here as it might conflict with file selection if post prop updates (unlikely in create mode)
+      // Actually the original logic was:
+      // } else { setImagePreview(null); }
+      // This is fine for initial load.
     }
   }, [post]);
 
@@ -82,18 +97,14 @@ function ImageUpload({ register, errors, post }) {
   const handleClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log("Upload area clicked, opening file dialog...");
-    console.log("File input ref:", fileInputRef.current);
 
     // Try to get the file input element directly if ref fails
     const fileInput =
       fileInputRef.current || document.getElementById("featuredImage");
 
     if (fileInput) {
-      console.log("Triggering file input click...");
       try {
         fileInput.click();
-        console.log("File input click triggered successfully");
       } catch (error) {
         console.error("Error clicking file input:", error);
       }
@@ -113,40 +124,46 @@ function ImageUpload({ register, errors, post }) {
 
   return (
     <>
-      <input
-        ref={fileInputRef}
-        id="featuredImage"
-        type="file"
-        accept="image/jpeg,image/jpg,image/png,image/gif"
-        className="hidden"
-        {...register("featuredImage", {
-          required: !post && "Featured image is required",
-          onChange: (e) => {
-            console.log("File input onChange triggered:", e.target.files);
-            if (e.target.files && e.target.files[0]) {
-              console.log("Selected file:", e.target.files[0]);
-              handleFileSelect(e.target.files[0]);
-            } else {
-              console.log("No file selected");
-            }
-          },
-        })}
-        aria-label="Upload featured image"
-      />
-
-      <div className="mb-4 sm:mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <label
-            className="cursor-pointer text-xs font-medium text-gray-700 sm:text-sm"
-            htmlFor="featuredImage"
-          >
-            Featured Image
-          </label>
+      <div className="group relative mb-6 overflow-hidden rounded-sm border border-gray-200 bg-white p-4 transition-all duration-300 hover:border-blue-300 hover:shadow-md">
+        <div className="mb-3 flex items-center space-x-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-sm bg-blue-50 text-blue-600">
+            <Upload className="h-5 w-5" />
+          </div>
+          <div>
+            <h4 className="text-sm font-semibold font-serif text-gray-800 sm:text-base">
+              Featured Image
+            </h4>
+          </div>
         </div>
+
+        <input
+          id="featuredImage"
+          type="file"
+          accept="image/jpeg,image/jpg,image/png,image/gif"
+          className="hidden"
+          {...(() => {
+            const { ref: registerRef, ...rest } = register("featuredImage", {
+              required: !post && "Featured image is required",
+              onChange: (e) => {
+                if (e.target.files && e.target.files[0]) {
+                  handleFileSelect(e.target.files[0]);
+                }
+              },
+            });
+            return {
+              ...rest,
+              ref: (e) => {
+                registerRef(e);
+                fileInputRef.current = e;
+              },
+            };
+          })()}
+          aria-label="Upload featured image"
+        />
 
         {/* Image Preview */}
         {imagePreview ? (
-          <div className="relative mb-4">
+          <div className="relative">
             <img
               src={imagePreview}
               alt="Preview"
@@ -168,11 +185,10 @@ function ImageUpload({ register, errors, post }) {
           /* Upload Area */
           <label
             htmlFor="featuredImage"
-            className={`flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed px-3 py-6 transition-colors sm:px-6 sm:py-10 ${
-              dragActive
-                ? "border-blue-400 bg-blue-50"
-                : "border-gray-300 hover:border-gray-400"
-            }`}
+            className={`flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed px-3 py-6 transition-colors sm:px-6 sm:py-10 ${dragActive
+              ? "border-blue-400 bg-blue-50"
+              : "border-gray-300 hover:border-gray-400"
+              }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
@@ -181,9 +197,8 @@ function ImageUpload({ register, errors, post }) {
           >
             <div className="text-center">
               <div
-                className={`mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-full sm:mb-3 sm:h-12 sm:w-12 ${
-                  dragActive ? "bg-blue-200" : "bg-blue-100"
-                }`}
+                className={`mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-full sm:mb-3 sm:h-12 sm:w-12 ${dragActive ? "bg-blue-200" : "bg-blue-100"
+                  }`}
               >
                 <Upload
                   size={16}
@@ -205,10 +220,10 @@ function ImageUpload({ register, errors, post }) {
         )}
 
         {/* Error Messages */}
-        {(errors.featuredImage || uploadError) && (
+        {(error || uploadError) && (
           <div className="mt-2 flex items-center gap-2 text-sm text-red-600">
             <AlertCircle size={16} />
-            <span>{errors.featuredImage?.message || uploadError}</span>
+            <span>{error?.message || uploadError}</span>
           </div>
         )}
       </div>
@@ -216,4 +231,4 @@ function ImageUpload({ register, errors, post }) {
   );
 }
 
-export default ImageUpload;
+export default React.memo(ImageUpload);

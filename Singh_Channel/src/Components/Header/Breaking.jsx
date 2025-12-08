@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 function Breaking() {
   const { breakingNews, loading, error } = useSelector((state) => state.breakingNews);
-  
+
   // Extract headlines from breaking news articles
   const headlines = breakingNews.map((article) => article.headline || article.title);
 
@@ -24,24 +24,37 @@ function Breaking() {
 
         {/* Scrolling text */}
         <div className="flex-1 overflow-hidden">
-          <div className="animate-marquee whitespace-nowrap">
+          <div className="animate-marquee-seamless">
             {loading ? (
-              <span className="text-sm font-semibold">
+              <span className="text-sm font-semibold pl-4">
                 Loading breaking news...
               </span>
             ) : error ? (
-              <span className="text-sm font-semibold text-red-300">
+              <span className="text-sm font-semibold text-red-300 pl-4">
                 Unable to load breaking news
               </span>
             ) : headlines.length > 0 ? (
-              headlines.map((headline, index) => (
-                <span key={index} className="mr-8 text-sm font-semibold">
-                  <span className="mr-2 text-red-400">•</span>
-                  {headline}
-                </span>
-              ))
+              <>
+                <div className="flex shrink-0 items-center gap-8 pr-8">
+                  {headlines.map((headline, index) => (
+                    <span key={`1-${index}`} className="text-sm font-semibold flex items-center">
+                      <span className="mr-2 text-red-400">•</span>
+                      {headline}
+                    </span>
+                  ))}
+                </div>
+                {/* Duplicate for seamless effect */}
+                <div className="flex shrink-0 items-center gap-8 pr-8">
+                  {headlines.map((headline, index) => (
+                    <span key={`2-${index}`} className="text-sm font-semibold flex items-center">
+                      <span className="mr-2 text-red-400">•</span>
+                      {headline}
+                    </span>
+                  ))}
+                </div>
+              </>
             ) : (
-              <span className="text-sm font-semibold">
+              <span className="text-sm font-semibold pl-4">
                 No breaking news available
               </span>
             )}

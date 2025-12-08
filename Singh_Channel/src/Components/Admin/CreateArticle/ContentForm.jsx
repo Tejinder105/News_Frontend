@@ -61,7 +61,7 @@ function ContentForm({
           key={`summary-${previewLanguage}`}
           rows={3}
           placeholder={`Brief summary of the article in ${languages[previewLanguage]?.name}`}
-          className="w-full resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+          className="w-full resize-none rounded-sm border border-gray-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
           {...register(`summary.${previewLanguage}`, {
             required: "Summary is required",
           })}
