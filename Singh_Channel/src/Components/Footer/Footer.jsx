@@ -1,176 +1,83 @@
-import { Mail, MapPin, Phone, ArrowUp } from "lucide-react";
-import React, { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
 import { footerData } from "../../Constants/FooterData";
-import Button from "../Ui/Button";
-
-const FooterSection = ({ title, children, className = "" }) => (
-  <div className={`space-y-4 ${className}`}>
-    <h4 className="inline-block border-b-2 border-sky-400 pb-2 text-lg font-semibold text-white">
-      {title}
-    </h4>
-    {children}
-  </div>
-);
-
-const ContactItem = ({ icon: Icon, children, href, type = "link" }) => (
-  <div className="group flex items-start space-x-3">
-    <Icon
-      size={18}
-      className="mt-0.5 flex-shrink-0 text-sky-400 transition-transform group-hover:scale-110"
-    />
-    {type === "link" ? (
-      <a
-        href={href}
-        className="flex-1 text-sm text-gray-300 transition-colors hover:text-sky-400"
-      >
-        {children}
-      </a>
-    ) : (
-      <p className="flex-1 text-sm text-gray-300">{children}</p>
-    )}
-  </div>
-);
-
-const SocialLink = ({ social }) => (
-  <a
-    href={social.url}
-    target="_blank"
-    rel="noopener noreferrer"
-    className={`group transition-all duration-200 hover:scale-110 ${social.color}`}
-    aria-label={social.name}
-  >
-    <img
-      src={social.icon}
-      alt={social.name}
-      className="h-6 w-6 transition-transform duration-200 group-hover:scale-110"
-    />
-  </a>
-);
+import { Twitter, Instagram, Facebook, Youtube } from "lucide-react";
+import Logo from "../Ui/Logo";
 
 function Footer() {
-  const [showScrollTop, setShowScrollTop] = useState(false);
-  const { company, contact, socialMedia, quickLinks, categories } = footerData;
+  const { company, socialMedia, mainLinks = [], legal = [] } = footerData;
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 300);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const getIcon = (name, size = 20) => {
+    switch (name) {
+      case "Instagram": return <Instagram size={size} />;
+      case "Twitter": case "X": return <Twitter size={size} />;
+      case "YouTube": return <Youtube size={size} />;
+      case "Facebook": return <Facebook size={size} />;
+      default: return <div className="h-5 w-5 bg-gray-500" />;
+    }
   };
 
   return (
-    <footer className="relative bg-slate-900 text-white">
-      {showScrollTop && (
-        <Button
-          variant="fab"
-          onClick={scrollToTop}
-          className="fixed right-6 bottom-6 z-50"
-          iconLeft={<ArrowUp size={20} />}
-        />
-      )}
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {/* Company Info */}
-          <div className="space-y-4 lg:col-span-2">
-            <NavLink to="/" className="group flex items-center space-x-2">
-              <img
-                src={company.logo}
-                alt="Logo"
-                className="h-8 w-8 rounded-full object-cover shadow-lg transition-transform duration-300 group-hover:scale-110"
-              />
-              <span className="text-2xl font-bold text-white transition-colors group-hover:text-sky-400 sm:block">
-                {company.name}
-              </span>
-            </NavLink>
+    <footer className="w-full bg-slate-900 px-4 py-8 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
 
-            <p className="max-w-md text-sm leading-relaxed text-gray-300">
-              {company.description}
-            </p>
-
-            {/* Social Links */}
-            <div className="space-y-3">
-              <h5 className="text-sm font-semibold tracking-wider text-gray-400 uppercase">
-                Follow Us
-              </h5>
-              <div className="flex gap-4">
-                {socialMedia.map((social, index) => (
-                  <SocialLink key={index} social={social} />
-                ))}
-              </div>
-            </div>
-          </div>
-          {/* Contact Info */}
-
-          <FooterSection title="Contact Us">
-            <div className="space-y-4">
-              <ContactItem icon={MapPin} type="text">
-                {contact.address}
-              </ContactItem>
-              <ContactItem icon={Phone} href={`tel:${contact.phone}`}>
-                {contact.phone}
-              </ContactItem>
-              <ContactItem icon={Mail} href={`mailto:${contact.email}`}>
-                {contact.email}
-              </ContactItem>
-            </div>
-          </FooterSection>
-
-          <FooterSection title="Quick Links">
-            <ul className="space-y-3">
-              {quickLinks.map((link, index) => (
-                <li key={index}>
-                  <NavLink
-                    to={link.path}
-                    className={({ isActive }) =>
-                      `block text-sm transition-all duration-200 hover:translate-x-1 hover:text-sky-400 ${
-                        isActive ? "text-sky-400" : "text-gray-300"
-                      }`
-                    }
-                  >
-                    {link.name}
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
-          </FooterSection>
-        </div>
-        <div
-          className={`mt-12 flex flex-col items-center justify-between gap-4 border-t border-gray-700 pt-8 sm:flex-row`}
-        >
-          <p className="flex items-center gap-1 text-sm text-gray-400">
-            &copy; {new Date().getFullYear()} {company.name}. All rights
-            reserved.
+        {/* 1. LOGO ROW - Using Shared Logo Component */}
+        <div className="mb-6">
+          <Logo size="large" />
+          <p className="mt-2 text-xs text-gray-400 max-w-md">
+            {company.description}
           </p>
+        </div>
 
-          <div className="flex items-center gap-4 text-xs text-gray-500">
-            <NavLink
-              to="/privacy"
-              className="transition-colors hover:text-sky-400"
-            >
-              Privacy
-            </NavLink>
-            <span>•</span>
-            <NavLink
-              to="/terms"
-              className="transition-colors hover:text-sky-400"
-            >
-              Terms
-            </NavLink>
-            <span>•</span>
-            <NavLink
-              to="/sitemap"
-              className="transition-colors hover:text-sky-400"
-            >
-              Sitemap
-            </NavLink>
+        {/* 2. NAVIGATION ROW (Horizontal List) */}
+        <div className="mb-8 border-b border-gray-700 pb-6">
+          <nav className="flex flex-wrap gap-x-6 gap-y-3">
+            {mainLinks.map((link) => (
+              <Link
+                key={link.name}
+                to={link.path}
+                className="text-sm font-bold text-gray-200 hover:text-white hover:underline transition-all"
+              >
+                {link.name}
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        {/* 3. SOCIALS ROW */}
+        <div className="mb-8 flex items-center gap-4">
+          <span className="text-sm font-semibold text-gray-100">Follow Us on:</span>
+          <div className="flex gap-4">
+            {socialMedia.map((social) => (
+              <a
+                key={social.name}
+                href={social.url}
+                className="rounded-full bg-slate-800 p-2 text-white hover:bg-slate-700 hover:scale-110 transition-all"
+                aria-label={social.name}
+              >
+                {getIcon(social.name, 18)}
+              </a>
+            ))}
           </div>
         </div>
+
+        {/* 4. LEGAL & COPYRIGHT */}
+        <div className="border-t border-gray-800 pt-6">
+          {/* Legal Links Row */}
+          <div className="mb-4 flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-400">
+            {legal.map(l => (
+              <Link key={l.name} to={l.path} className="hover:text-white hover:underline">{l.name}</Link>
+            ))}
+            <span className="cursor-pointer hover:text-white hover:underline">Do not share or sell my info</span>
+          </div>
+
+          {/* Copyright Text */}
+          <p className="text-xs text-gray-500">
+            Copyright © {new Date().getFullYear()} {company.name}. The {company.name} is not responsible for the content of external sites.
+            <span className="font-bold text-gray-400 ml-1">Read about our approach to external linking.</span>
+          </p>
+        </div>
+
       </div>
     </footer>
   );

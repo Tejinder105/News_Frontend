@@ -1,47 +1,59 @@
 import React from "react";
-import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Clock } from "lucide-react";
 import { formatRelativeTime } from "../../Utils/date";
-function CarouselItem({ item }) {
 
+function CarouselItem({ item, isActive }) {
   return (
-    <div className="group grid h-full w-full grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-[2fr_3fr]">
-      <div className="relative h-full w-full overflow-hidden rounded-sm">
-        <img
-          src={item.image || "/placeholder-image.jpg"}
-          alt={item.tag || item.category || "News"}
-          className="h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
-          onError={(e) => {
-            e.target.src = "/placeholder-image.jpg";
-          }}
-        />
-      </div>
+    <div className="group relative h-full w-full overflow-hidden rounded-xl bg-slate-900">
 
-      {/* Text Content */}
-      <div className="flex flex-col gap-4 p-2">
-        <div className="">
-          <h2 className="font-serif line-clamp-2 text-lg font-bold text-gray-900 transition-colors hover:text-blue-600 lg:text-3xl">
-            {item.headline}
-          </h2>
-        </div>
-        <div className="line-clamp-3 flex-1 text-sm text-gray-700 md:line-clamp-4">
-          {item.summary}
-        </div>
+      {/* BACKGROUND IMAGE - Full Coverage */}
+      <img
+        src={item.image || "/placeholder-image.jpg"}
+        alt={item.headline}
+        className="absolute inset-0 h-full w-full object-fill transition-transform duration-700 ease-out group-hover:scale-105"
+        loading="eager"
+        onError={(e) => { e.target.src = "/placeholder-image.jpg"; }}
+      />
 
-        {/* Footer (Author + Read More) */}
-        <div className="flex flex-1 items-center justify-between">
-          <div className="text-xs text-gray-500">
-            <span>{formatRelativeTime(item.publishedAt)}</span> ·{" "}
-            <span>by {item.author || "Gurcharan Singh"}</span>
-          </div>
-          <Link
-            to={`/article/${item.slug}`}
-            className="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline"
+      {/* GRADIENT OVERLAY - Stronger for Readability (Audit Fix) */}
+      <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-black via-black/70 to-transparent" />
+      
+      {/* TEXT CONTENT - Bottom aligned */}
+      <div className="absolute inset-x-0 bottom-0 flex flex-col justify-end p-6 md:p-8">
+
+        {/* Headline - Sans Serif on Mobile for Legibility (Audit Fix) */}
+        <Link to={`/article/${item.slug}`} className="block">
+          <motion.h2
+            initial={{ opacity: 0, y: 10 }}
+            animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+            transition={{ delay: 0.2, duration: 0.4 }}
+            className="font-sans text-lg font-bold leading-snug text-white shadow-black drop-shadow-md tracking-wide sm:text-xl md:font-serif md:text-3xl lg:text-4xl"
           >
-            Read More
-            <ArrowRight size={16} className="ml-1" />
-          </Link>
-        </div>
+            {item.headline}
+          </motion.h2>
+        </Link>
+
+        {/* Footer info (Time/Author) */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isActive ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ delay: 0.4, duration: 0.4 }}
+          className="mt-3 flex items-center gap-3 text-xs font-medium text-slate-300"
+        >
+          <span className="font-semibold text-blue-400">
+            {item.author === "auth0|688e3919480c85818cab6f36"
+              ? "Gurcharan Singh"
+              : item.author || "Global News"}
+          </span>
+          <span className="h-1 w-1 rounded-full bg-slate-500" />
+          <span className="flex items-center gap-1">
+            <Clock size={12} className="text-slate-400" />
+            {formatRelativeTime(item.publishedAt)}
+          </span>
+        </motion.div>
+
       </div>
     </div>
   );

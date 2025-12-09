@@ -23,7 +23,6 @@ export { default as SectionHeading } from "./Ui/SectionHeading";
 export { default as Spinner } from "./Ui/Spinner";
 export { default as TagsInput } from "./Ui/TagsInput";
 export { default as Toggle } from "./Ui/Toggle";
-export { default as Weather } from "./Ui/Weather";
 
 // Layout Components
 export { default as Footer } from "./Footer/Footer";

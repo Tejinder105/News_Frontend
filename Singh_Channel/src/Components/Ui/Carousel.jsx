@@ -3,28 +3,34 @@ import { AnimatePresence, motion, wrap } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import CarouselItem from "./CarouselItem";
 import Button from "./Button";
+
 const variants = {
   enter: (direction) => ({
     x: direction > 0 ? "100%" : "-100%",
+    opacity: 0.5,
+    scale: 0.95,
+    zIndex: 0,
   }),
   center: {
     x: 0,
+    opacity: 1,
+    scale: 1,
+    zIndex: 1,
   },
   exit: (direction) => ({
     x: direction < 0 ? "100%" : "-100%",
+    opacity: 0.5,
+    scale: 0.95,
+    zIndex: 0,
   }),
 };
 
-const swipeConfidenceThreshold = 1000;
+const swipeConfidenceThreshold = 10000;
 const swipePower = (offset, velocity) => Math.abs(offset) * velocity;
 
-function Carousel({ autoSlide = false, autoSlideInterval = 3000, items }) {
+function Carousel({ autoSlide = true, autoSlideInterval = 6000, items }) {
   if (!items || !Array.isArray(items) || items.length === 0) {
-    return (
-      <div className="sm:[300px] relative flex h-[400px] max-w-5xl items-center justify-center overflow-hidden rounded-sm bg-white shadow-lg md:h-[300px]">
-        <p className="text-gray-500">No featured news available</p>
-      </div>
-    );
+    return null;
   }
 
   const [[index, direction], setIndex] = useState([0, 0]);
@@ -41,55 +47,78 @@ function Carousel({ autoSlide = false, autoSlideInterval = 3000, items }) {
   }, [autoSlide, autoSlideInterval, paginate]);
 
   return (
-    <div className="sm:[300px] relative h-[400px] max-w-5xl overflow-hidden rounded-sm bg-white shadow-lg md:h-[300px]">
-      <AnimatePresence initial={false} custom={direction}>
-        <motion.div
-          key={index}
-          custom={direction}
-          variants={variants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{ duration: 0.7, ease: "easeInOut" }}
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.1}
-          onDragEnd={(e, { offset, velocity }) => {
-            const swipe = swipePower(offset.x, velocity.x);
-            if (swipe < -swipeConfidenceThreshold) paginate(1);
-            else if (swipe > swipeConfidenceThreshold) paginate(-1);
-          }}
-          className="absolute inset-0 h-full w-full"
-        >
-          <CarouselItem item={items[currentIndex]} />
-        </motion.div>
-      </AnimatePresence>
+    <div className="relative mx-auto w-full max-w-[1200px] px-4 py-4 sm:px-6 lg:px-8">
+      <div className="relative h-[320px] w-full overflow-hidden rounded-xl shadow-xl bg-slate-900 sm:h-auto sm:aspect-video md:h-[400px]">
 
-      {/* Navigation Buttons */}
-      <Button
-        variant="overlay"
-        onClick={() => paginate(-1)}
-        className="absolute top-1/2 left-2 z-10 -translate-y-1/2"
-        iconLeft={<ChevronLeft size={24} />}
-      />
-      <Button
-        variant="overlay"
-        onClick={() => paginate(1)}
-        className="absolute top-1/2 right-2 z-10 -translate-y-1/2"
-        iconLeft={<ChevronRight size={24} />}
-      />
+        <AnimatePresence initial={false} custom={direction} mode="popLayout">
+          <motion.div
+            key={index}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{
+              x: { type: "spring", stiffness: 300, damping: 30 },
+              opacity: { duration: 0.4 },
+              scale: { duration: 0.4 }
+            }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={1}
+            onDragEnd={(e, { offset, velocity }) => {
+              const swipe = swipePower(offset.x, velocity.x);
+              if (swipe < -swipeConfidenceThreshold) paginate(1);
+              else if (swipe > swipeConfidenceThreshold) paginate(-1);
+            }}
+            className="absolute inset-0 h-full w-full cursor-grab active:cursor-grabbing"
+          >
+            <CarouselItem item={items[currentIndex]} isActive={true} />
+          </motion.div>
+        </AnimatePresence>
 
-      {/* Dots */}
-      <div className="absolute right-0 bottom-4 left-0 flex justify-center gap-2">
-        {items.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setIndex([i, i > currentIndex ? 1 : -1])}
-            className={`h-2 w-2 rounded-full transition-all ${i === currentIndex ? "w-5 bg-gray-900" : "bg-gray-900/50"
-              }`}
-            aria-label={`Slide ${i + 1}`}
-          />
-        ))}
+        {/* Minimalist Controls */}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-2 sm:px-4">
+          {/* Left Button (Hidden on Mobile) */}
+          <div className="pointer-events-auto hidden sm:block">
+            <Button
+              variant="overlay"
+              onClick={() => paginate(-1)}
+              className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/20 text-white backdrop-blur-md transition-all hover:bg-white hover:text-black hover:scale-110 active:scale-95"
+              iconLeft={<ChevronLeft size={24} />}
+            />
+          </div>
+          {/* Right Button (Hidden on Mobile) */}
+          <div className="pointer-events-auto hidden sm:block">
+            <Button
+              variant="overlay"
+              onClick={() => paginate(1)}
+              className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/20 text-white backdrop-blur-md transition-all hover:bg-white hover:text-black hover:scale-110 active:scale-95"
+              iconLeft={<ChevronRight size={24} />}
+            />
+          </div>
+        </div>
+
+        {/* "Instagram Story" Style Progress Indicators */}
+        <div className="absolute top-4 left-4 right-4 z-20 flex gap-2 sm:top-auto sm:bottom-8 sm:left-1/2 sm:right-auto sm:-translate-x-1/2">
+          {items.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIndex([i, i > currentIndex ? 1 : -1])}
+              className="group relative h-1 flex-1 overflow-hidden rounded-full bg-white/20 sm:h-1.5 sm:w-12 sm:flex-none"
+              aria-label={`Go to slide ${i + 1}`}
+            >
+              {/* Active Progress Fill */}
+              <motion.div
+                className="absolute inset-0 bg-white"
+                initial={{ x: "-100%" }}
+                animate={{ x: i === currentIndex ? "0%" : i < currentIndex ? "0%" : "-100%" }}
+                transition={{ duration: i === currentIndex ? autoSlideInterval / 1000 : 0, ease: "linear" }}
+              />
+            </button>
+          ))}
+        </div>
+
       </div>
     </div>
   );

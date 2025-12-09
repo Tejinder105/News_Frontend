@@ -1,65 +1,169 @@
-import React from "react";
-import { X, LogIn, UserPlus } from "lucide-react";
+import React, { useState } from "react";
+import { X, LogIn, UserPlus, ChevronDown, ChevronRight, Home, Info, Phone, Shield } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import Logo from "../Ui/Logo";
 import { navItems } from "../../Constants/Navigation";
-import Navigation from "./Navigation";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import Button from "../Ui/Button";
+
+// Animation Variants
+const menuVariants = {
+  hidden: { opacity: 0, x: "100%" },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { type: "spring", stiffness: 300, damping: 30, staggerChildren: 0.05, delayChildren: 0.1 }
+  },
+  exit: { opacity: 0, x: "100%", transition: { duration: 0.2 } }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, x: 20 },
+  visible: { opacity: 1, x: 0 }
+};
 
 const MobileMenu = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [expandedItems, setExpandedItems] = useState({});
+
+  const toggleExpand = (name) => {
+    setExpandedItems(prev => ({ ...prev, [name]: !prev[name] }));
+  };
+
+  const NavItem = ({ item }) => {
+    const isActive = location.pathname === item.path;
+    const isExpanded = expandedItems[item.name];
+    const hasChildren = item.children && item.children.length > 0;
+
+    return (
+      <motion.div variants={itemVariants} className="w-full">
+        {hasChildren ? (
+          <div className="flex flex-col">
+            <button
+              onClick={() => toggleExpand(item.name)}
+              className={`flex w-full items-center justify-between rounded-xl px-4 py-4 text-left transition-all ${isExpanded || isActive ? 'bg-white/5 text-blue-400' : 'text-gray-300 hover:bg-white/5 hover:text-white'}`}
+            >
+              <div className="flex items-center gap-4">
+                {/* Icon Placeholder or specific icon mapping could go here */}
+                <span className="text-lg font-medium tracking-wide">{item.name}</span>
+              </div>
+              {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+            </button>
+
+            {/* Dropdown Content */}
+            <AnimatePresence>
+              {isExpanded && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="overflow-hidden bg-black/20"
+                >
+                  <div className="flex flex-col py-2 pl-4">
+                    {item.children.map((child) => (
+                      <NavLink
+                        key={child.name}
+                        to={child.path}
+                        onClick={onClose}
+                        className={({ isActive: isChildActive }) =>
+                          `block border-l-2 py-3 pl-6 text-base font-medium transition-colors ${isChildActive ? 'border-blue-500 text-blue-400' : 'border-white/10 text-gray-400 hover:text-white'}`
+                        }
+                      >
+                        {child.name}
+                      </NavLink>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        ) : (
+          <NavLink
+            to={item.path}
+            onClick={onClose}
+            className={({ isActive }) =>
+              `flex w-full items-center gap-4 rounded-xl px-4 py-4 transition-all ${isActive ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40' : 'text-gray-300 hover:bg-white/5 hover:text-white'}`
+            }
+          >
+            <span className="text-lg font-medium tracking-wide">{item.name}</span>
+          </NavLink>
+        )}
+      </motion.div>
+    );
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
         <>
+          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.4 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 300 }}
-            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
             onClick={onClose}
           />
+
+          {/* Drawer */}
           <motion.div
-            key="mobile-menu"
-            initial={{ opacity: 0, y: -40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -30 }}
-            transition={{ duration: 300 / 1000 }}
-            className="fixed inset-0 z-50 max-h-[90vh] w-full overflow-y-auto bg-slate-900 px-6 pt-4 pb-6 shadow-xl lg:hidden"
+            key="mobile-drawer"
+            variants={menuVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-xs flex-col bg-[#0A0F1F]/95 backdrop-blur-2xl shadow-2xl lg:hidden border-l border-white/10"
           >
-            <div className="mb-4 flex items-center justify-between border-b border-slate-700 pb-3">
-              <Logo size="small" />
-              <Button
-                variant="icon-dark"
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
+              <Logo size="normal" showText={true} className="scale-110 origin-left" />
+              <button
                 onClick={onClose}
-                iconLeft={<X size={20} />}
-              />
+                className="rounded-full bg-white/5 p-2 text-gray-400 hover:bg-white/10 hover:text-white transition-colors"
+              >
+                <X size={24} />
+              </button>
             </div>
-            <nav className="flex flex-col gap-4">
-              <Button
-                variant="auth-login"
-                size="md"
-                className="w-full justify-center"
-                iconLeft={<LogIn size={18} />}
-                onClick={() => { navigate("/login"); onClose(); }}
-              >
-                Login
-              </Button>
-              <Button
-                variant="auth-outline-login"
-                size="md"
-                className="w-full justify-center"
-                iconLeft={<UserPlus size={18} />}
-                onClick={() => { navigate("/signup"); onClose(); }}
-              >
-                Sign Up
-              </Button>
-              <div className="border-t border-slate-700 pt-4 mt-4">
-                <Navigation variant="mobile" />
+
+            {/* Scrollable Nav Items */}
+            <div className="flex-1 overflow-y-auto px-4 py-6 scrollbar-thin scrollbar-thumb-white/10">
+              <nav className="flex flex-col gap-2">
+                {navItems.map((item) => (
+                  <NavItem key={item.name} item={item} />
+                ))}
+              </nav>
+            </div>
+
+            {/* Footer Auth Section */}
+            <div className="border-t border-white/10 bg-black/20 p-6">
+              <div className="flex flex-col gap-3">
+                <Button
+                  variant="primary" // Assuming primary is blue/solid
+                  size="lg"
+                  className="w-full justify-center shadow-lg shadow-blue-900/20"
+                  iconLeft={<LogIn size={18} />}
+                  onClick={() => { navigate("/login"); onClose(); }}
+                >
+                  Log In
+                </Button>
+
+                <Button
+                  variant="outline" // Assuming outline exists
+                  size="lg"
+                  className="w-full justify-center border-white/20 text-gray-300 hover:bg-white/5 hover:text-white hover:border-white/50"
+                  iconLeft={<UserPlus size={18} />}
+                  onClick={() => { navigate("/signup"); onClose(); }}
+                >
+                  Sign Up
+                </Button>
               </div>
-            </nav>
+
+              <p className="mt-6 text-center text-xs text-gray-600">
+                &copy; 2025 Singh Channel
+              </p>
+            </div>
+
           </motion.div>
         </>
       )}
