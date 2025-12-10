@@ -99,23 +99,16 @@ function Carousel({ autoSlide = true, autoSlideInterval = 6000, items }) {
           </div>
         </div>
 
-        {/* "Instagram Story" Style Progress Indicators */}
-        <div className="absolute top-4 left-4 right-4 z-20 flex gap-2 sm:top-auto sm:bottom-8 sm:left-1/2 sm:right-auto sm:-translate-x-1/2">
+        {/* Dots Indicators */}
+        <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 gap-2 sm:bottom-6">
           {items.map((_, i) => (
             <button
               key={i}
               onClick={() => setIndex([i, i > currentIndex ? 1 : -1])}
-              className="group relative h-1 flex-1 overflow-hidden rounded-full bg-white/20 sm:h-1.5 sm:w-12 sm:flex-none"
+              className={`h-2.5 w-2.5 rounded-full transition-all duration-300 ${i === currentIndex ? "bg-white scale-110" : "bg-white/40 hover:bg-white/70"
+                }`}
               aria-label={`Go to slide ${i + 1}`}
-            >
-              {/* Active Progress Fill */}
-              <motion.div
-                className="absolute inset-0 bg-white"
-                initial={{ x: "-100%" }}
-                animate={{ x: i === currentIndex ? "0%" : i < currentIndex ? "0%" : "-100%" }}
-                transition={{ duration: i === currentIndex ? autoSlideInterval / 1000 : 0, ease: "linear" }}
-              />
-            </button>
+            />
           ))}
         </div>
 

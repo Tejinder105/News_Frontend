@@ -1,70 +1,72 @@
 import React, { useEffect, useState } from "react";
-import { Carousel, CardAd, Card, Spinner, Button, SectionHeading } from "../Components";
-import articleService from "../Services/articleService";
+import { Carousel, HeroSection, CardAd, Card, Spinner, Button, SectionHeading } from "../Components";
 import { useSelector } from "react-redux";
+import { useGetArticlesQuery, useGetBreakingNewsQuery } from "../Services/Store/apiSlice";
 import { adItem } from "../AdItem.jsx";
 
 function Home() {
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-
+  // --- RTK QUERY HOOKS ---
   const language = useSelector((s) => s.language.current);
-  const breakingNews = useSelector((state) => state.breakingNews.breakingNews);
-
+  const [page, setPage] = useState(1);
+  const [articles, setArticles] = useState([]);
   const ITEMS_PER_PAGE = 20;
 
+  // 1. Fetch Articles
+  const {
+    data: articlesData,
+    isLoading: articlesLoading,
+    isFetching: articlesFetching,
+    error: articlesError
+  } = useGetArticlesQuery({
+    language,
+    page,
+    limit: ITEMS_PER_PAGE
+  });
+
+  // 2. Fetch Breaking News
+  const { data: breakingNews = [] } = useGetBreakingNewsQuery({ language });
+
+  // 3. Append new articles when data arrives
+  useEffect(() => {
+    if (articlesData?.articles) {
+      if (page === 1) {
+        setArticles(articlesData.articles);
+      } else {
+        // De-duplication: Only add articles that aren't already in the list
+        setArticles(prev => {
+          const existingIds = new Set(prev.map(a => a._id));
+          const newUniqueArticles = articlesData.articles.filter(a => !existingIds.has(a._id));
+          return [...prev, ...newUniqueArticles];
+        });
+      }
+    }
+  }, [articlesData, page]);
+
+  // 4. Reset on language change
+  // 4. Reset on language change
   useEffect(() => {
     setPage(1);
-    setArticles([]);
-    fetchArticles(1, true);
+    // Don't clear articles here; let the data effect handle replacement when new data arrives.
+    // This prevents clearing cached data when navigating back to the page.
   }, [language]);
 
-  const fetchArticles = async (pageNum, reset = false) => {
-    try {
-      if (reset) setLoading(true);
+  const hasMore = articlesData?.pagination?.hasNext;
+  const loading = articlesLoading && page === 1;
+  const error = articlesError ? "Failed to load news." : null;
 
-      const controller = new AbortController();
-      console.log(`Fetching page ${pageNum}...`);
-
-      const { articles: newArticles, total } = await articleService.getAllArticles(
-        language,
-        pageNum,
-        ITEMS_PER_PAGE,
-        null,
-        controller.signal
-      );
-
-      if (reset) {
-        setArticles(Array.isArray(newArticles) ? newArticles : []);
-      } else {
-        setArticles(prev => [...prev, ...(Array.isArray(newArticles) ? newArticles : [])]);
-      }
-
-      if (newArticles.length < ITEMS_PER_PAGE) {
-        setHasMore(false);
-      } else {
-        setHasMore(true);
-      }
-
-    } catch (err) {
-      if (err.name === "CanceledError") return;
-      console.error("Fetch error:", err);
-      setError("Failed to load news.");
-    } finally {
-      setLoading(false);
+  const handleLoadMore = () => {
+    if (!articlesFetching && hasMore) {
+      setPage(prev => prev + 1);
     }
   };
 
-  const handleLoadMore = () => {
-    const nextPage = page + 1;
-    setPage(nextPage);
-    fetchArticles(nextPage);
-  };
-
   // --- RENDERING HELPERS ---
+
+  // --- COMPUTE HERO DATA ---
+  const featured = articles.find(a => a.isFeatured) || articles[0];
+  const topStories = articles
+    .filter(a => a._id !== featured?._id)
+    .slice(0, 5);
 
   // Desktop View (Standard Grid + Sidebar)
   const renderDesktopView = () => (
@@ -72,8 +74,8 @@ function Home() {
       {/* Main Content */}
       <div className="space-y-8 md:col-span-2 lg:col-span-3">
 
-        {/* CAROUSEL (Moved here for Desktop to sit next to Sidebar) */}
-        <Carousel items={articles.filter(a => a.isFeatured).slice(0, 5)} />
+        {/* NEW HERO SECTION (Replaces Carousel) */}
+        <HeroSection featured={featured} topStories={topStories} />
 
         {/* Breaking News Section (Desktop) */}
         {breakingNews.length > 0 && (
@@ -131,9 +133,9 @@ function Home() {
     return (
       <div className="flex flex-col gap-6">
 
-        {/* 1. CAROUSEL (Mobile Specific Instance) */}
+        {/* 1. HERO SECTION (Replaces Carousel on Mobile too) */}
         <div className="mb-2">
-          <Carousel items={articles.filter(a => a.isFeatured).slice(0, 5)} />
+          <HeroSection featured={featured} topStories={topStories} />
         </div>
 
         {/* 2. 2x2 GRID (Photo + Text) */}
@@ -215,7 +217,7 @@ function Home() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl bg-slate-50 px-2 py-3 sm:px-4 lg:px-6">
+    <div className="mx-auto max-w-7xl bg-slate-50 px-2 py-3 sm:px-4 lg:px-2">
       {/* MOBILE Layout (Visible only on small screens) */}
       <div className="block md:hidden">
         {renderMobileView()}

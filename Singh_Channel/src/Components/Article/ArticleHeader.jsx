@@ -108,7 +108,7 @@ const ArticleHeader = ({
                     src={imageUrl}
                     alt={title}
                     className="h-auto w-full object-cover transition-all duration-700 hover:scale-105"
-                    loading="lazy"
+                    loading="eager"
                   />
                 </div>
               </figure>

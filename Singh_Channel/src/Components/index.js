@@ -14,6 +14,7 @@ export { default as Card } from "./Ui/Card";
 export { default as CardAd } from "./Ui/CardAd";
 export { default as Carousel } from "./Ui/Carousel";
 export { default as CarouselItem } from "./Ui/CarouselItem";
+export { default as HeroSection } from "./Ui/HeroSection";
 export { default as Input } from "./Ui/Input";
 export { default as Logo } from "./Ui/Logo";
 export { default as Modal } from "./Ui/Modal";

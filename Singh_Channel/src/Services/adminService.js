@@ -38,15 +38,15 @@ const getDashboardData = async (token) => {
 };
 
 // Fetch all articles with admin privileges and enhanced filtering
-const getAllArticlesForAdmin = async ({ 
-  page = 1, 
-  limit = 10, 
-  language = "en", 
-  status = "all", 
+const getAllArticlesForAdmin = async ({
+  page = 1,
+  limit = 10,
+  language = "en",
+  status = "all",
   search = "",
   sortBy = "createdAt",
   sortOrder = "desc",
-  token 
+  token
 } = {}) => {
   try {
     const res = await api.get("/api/v1/admin/articles", {
@@ -111,6 +111,57 @@ const updateArticle = async (articleId, formData, token) => {
   }
 };
 
+// Settings
+const getSettings = async () => {
+  try {
+    const res = await api.get("/api/v1/settings");
+    return res.data.data;
+  } catch (error) {
+    console.error("Get settings service error:", error);
+    throw error;
+  }
+};
+
+const updateSettings = async (data, token) => {
+  try {
+    const res = await api.put("/api/v1/settings", data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Update settings service error:", error);
+    throw error;
+  }
+};
+
+const getAllUsers = async (params = {}) => {
+  try {
+    const { page = 1, limit = 10, search = "", token } = params;
+    const res = await api.get("/api/v1/users", {
+      params: { page, limit, search },
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return res.data.data;
+  } catch (error) {
+    console.error("Get all users service error:", error);
+    throw error;
+  }
+};
+
+const updateUserRole = async (userId, role, token) => {
+  try {
+    const res = await api.put(`/api/v1/users/${userId}/role`, { role }, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return res.data.data;
+  } catch (error) {
+    console.error("Update user role service error:", error);
+    throw error;
+  }
+};
+
 export default {
   getDashboardStats,
   getRecentActivities,
@@ -119,4 +170,8 @@ export default {
   deleteArticle,
   getArticleForEdit,
   updateArticle,
+  getSettings,
+  updateSettings,
+  getAllUsers,
+  updateUserRole
 };

@@ -10,11 +10,11 @@ function Card({
     imageHeight = "h-40",
     showImage = true,
     showSummary = true,
-    variant = "vertical", 
+    variant = "vertical",
     headlineClasses = ""
 }) {
     const language = useSelector((s) => s.language.current);
-    
+
     const titleClass = headlineClasses || (variant === "horizontal" ? "text-sm font-bold leading-tight" : "text-base leading-tight font-bold");
 
     return (
@@ -32,6 +32,7 @@ function Card({
                             alt={article.headline}
                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                             onError={(e) => { e.target.src = "/placeholder-image.jpg"; }}
+                            loading="lazy"
                         />
                         {/* Breaking Badge (Only on non-horizontal mobile or if space permits) */}
                         {article.isBreaking && variant !== "horizontal" && (

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 import { X, LogIn, UserPlus, ChevronDown, ChevronRight, Home, Info, Phone, Shield } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import Logo from "../Ui/Logo";
@@ -25,6 +26,7 @@ const itemVariants = {
 const MobileMenu = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
   const [expandedItems, setExpandedItems] = useState({});
 
   const toggleExpand = (name) => {
@@ -137,27 +139,57 @@ const MobileMenu = ({ isOpen, onClose }) => {
 
             {/* Footer Auth Section */}
             <div className="border-t border-white/10 bg-black/20 p-6">
-              <div className="flex flex-col gap-3">
-                <Button
-                  variant="primary" // Assuming primary is blue/solid
-                  size="lg"
-                  className="w-full justify-center shadow-lg shadow-blue-900/20"
-                  iconLeft={<LogIn size={18} />}
-                  onClick={() => { navigate("/login"); onClose(); }}
-                >
-                  Log In
-                </Button>
+              {isAuthenticated ? (
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-3 px-2">
+                    {user?.picture ? (
+                      <img src={user.picture} alt={user.name} className="h-10 w-10 rounded-full border border-white/20" />
+                    ) : (
+                      <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                        {user?.name?.[0] || "U"}
+                      </div>
+                    )}
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-white">{user?.name}</span>
+                      <span className="text-xs text-gray-400">{user?.email}</span>
+                    </div>
+                  </div>
 
-                <Button
-                  variant="outline" // Assuming outline exists
-                  size="lg"
-                  className="w-full justify-center border-white/20 text-gray-300 hover:bg-white/5 hover:text-white hover:border-white/50"
-                  iconLeft={<UserPlus size={18} />}
-                  onClick={() => { navigate("/signup"); onClose(); }}
-                >
-                  Sign Up
-                </Button>
-              </div>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="w-full justify-center border-red-500/50 text-red-400 hover:bg-red-500/10 hover:text-red-300 hover:border-red-500"
+                    onClick={() => {
+                      logout({ logoutParams: { returnTo: window.location.origin } });
+                      onClose();
+                    }}
+                  >
+                    Log Out
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    className="w-full justify-center shadow-lg shadow-blue-900/20"
+                    iconLeft={<LogIn size={18} />}
+                    onClick={() => { loginWithRedirect(); onClose(); }}
+                  >
+                    Log In
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="w-full justify-center border-white/20 text-gray-300 hover:bg-white/5 hover:text-white hover:border-white/50"
+                    iconLeft={<UserPlus size={18} />}
+                    onClick={() => { loginWithRedirect({ authorizationParams: { screen_hint: "signup" } }); onClose(); }}
+                  >
+                    Sign Up
+                  </Button>
+                </div>
+              )}
 
               <p className="mt-6 text-center text-xs text-gray-600">
                 &copy; 2025 Singh Channel

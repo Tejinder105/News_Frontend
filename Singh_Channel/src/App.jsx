@@ -1,62 +1,130 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import UserLayout from "./Layouts/UserLayout";
-import AdminLayout from "./Layouts/AdminLayout";
-import Home from "./Pages/Home";
-import NewsArticle from "./Pages/NewsArticle";
-import Dashboard from "./Pages/Admin/Dashboard";
-import CreateArticle from "./Pages/Admin/CreateArticle";
-import AllArticle from "./Pages/Admin/AllArticle";
-import EditArticle from "./Pages/Admin/EditArticle";
-import About from "./Pages/About";
-import Contact from "./Pages/Contact";
-import CategoryPage from "./Pages/CategoryPage";
+// Lazy Load Layouts
+const UserLayout = React.lazy(() => import("./Layouts/UserLayout"));
+const AdminLayout = React.lazy(() => import("./Layouts/AdminLayout"));
+
+// Lazy Load User Pages
+const Home = React.lazy(() => import("./Pages/Home"));
+const NewsArticle = React.lazy(() => import("./Pages/NewsArticle"));
+const About = React.lazy(() => import("./Pages/About"));
+const Contact = React.lazy(() => import("./Pages/Contact"));
+const CategoryPage = React.lazy(() => import("./Pages/CategoryPage"));
+
+// Lazy Load Admin Pages
+const Dashboard = React.lazy(() => import("./Pages/Admin/Dashboard"));
+const CreateArticle = React.lazy(() => import("./Pages/Admin/CreateArticle"));
+const AllArticle = React.lazy(() => import("./Pages/Admin/AllArticle"));
+const EditArticle = React.lazy(() => import("./Pages/Admin/EditArticle"));
+const Settings = React.lazy(() => import("./Pages/Admin/Settings"));
+
+// Fallback Spinner
+import { Spinner } from "./Components";
+
+const LoadingFallback = () => (
+  <div className="flex h-screen items-center justify-center">
+    <Spinner />
+  </div>
+);
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <UserLayout />,
+    element: (
+      <React.Suspense fallback={<LoadingFallback />}>
+        <UserLayout />
+      </React.Suspense>
+    ),
     children: [
       {
         index: true,
-        element: <Home />,
+        element: (
+          <React.Suspense fallback={<LoadingFallback />}>
+            <Home />
+          </React.Suspense>
+        ),
       },
       {
         path: "/article/:id",
-        element: <NewsArticle />,
+        element: (
+          <React.Suspense fallback={<LoadingFallback />}>
+            <NewsArticle />
+          </React.Suspense>
+        ),
       },
       {
         path: "/about",
-        element: <About />,
+        element: (
+          <React.Suspense fallback={<LoadingFallback />}>
+            <About />
+          </React.Suspense>
+        ),
       },
       {
         path: "/contact",
-        element: <Contact />,
+        element: (
+          <React.Suspense fallback={<LoadingFallback />}>
+            <Contact />
+          </React.Suspense>
+        ),
       },
       {
         path: "/category/:tag",
-        element: <CategoryPage />,
+        element: (
+          <React.Suspense fallback={<LoadingFallback />}>
+            <CategoryPage />
+          </React.Suspense>
+        ),
       },
     ],
   },
   {
     path: "/admin",
-    element: <AdminLayout />,
+    element: (
+      <React.Suspense fallback={<LoadingFallback />}>
+        <AdminLayout />
+      </React.Suspense>
+    ),
     children: [
       {
         index: true,
-        element: <Dashboard />,
+        element: (
+          <React.Suspense fallback={<LoadingFallback />}>
+            <Dashboard />
+          </React.Suspense>
+        ),
       },
       {
         path: "createarticles",
-        element: <CreateArticle />,
+        element: (
+          <React.Suspense fallback={<LoadingFallback />}>
+            <CreateArticle />
+          </React.Suspense>
+        ),
       },
       {
         path: "allarticles",
-        element: <AllArticle />,
+        element: (
+          <React.Suspense fallback={<LoadingFallback />}>
+            <AllArticle />
+          </React.Suspense>
+        ),
       },
       {
         path: "edit-article/:id",
-        element: <EditArticle />,
+        element: (
+          <React.Suspense fallback={<LoadingFallback />}>
+            <EditArticle />
+          </React.Suspense>
+        ),
+      },
+      {
+        path: "settings",
+        element: (
+          <React.Suspense fallback={<LoadingFallback />}>
+            <Settings />
+          </React.Suspense>
+        ),
       },
     ],
   },
