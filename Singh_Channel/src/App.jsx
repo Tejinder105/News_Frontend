@@ -18,6 +18,9 @@ const AllArticle = React.lazy(() => import("./Pages/Admin/AllArticle"));
 const EditArticle = React.lazy(() => import("./Pages/Admin/EditArticle"));
 const Settings = React.lazy(() => import("./Pages/Admin/Settings"));
 
+// Lazy Load NotFound Page
+const NotFound = React.lazy(() => import("./Pages/NotFound"));
+
 // Fallback Spinner
 import { Spinner } from "./Components";
 
@@ -33,6 +36,11 @@ const router = createBrowserRouter([
     element: (
       <React.Suspense fallback={<LoadingFallback />}>
         <UserLayout />
+      </React.Suspense>
+    ),
+    errorElement: (
+      <React.Suspense fallback={<LoadingFallback />}>
+        <NotFound />
       </React.Suspense>
     ),
     children: [
@@ -76,6 +84,15 @@ const router = createBrowserRouter([
           </React.Suspense>
         ),
       },
+      /* 404 Route for User Layout */
+      {
+        path: "*",
+        element: (
+          <React.Suspense fallback={<LoadingFallback />}>
+            <NotFound />
+          </React.Suspense>
+        )
+      }
     ],
   },
   {
@@ -83,6 +100,11 @@ const router = createBrowserRouter([
     element: (
       <React.Suspense fallback={<LoadingFallback />}>
         <AdminLayout />
+      </React.Suspense>
+    ),
+    errorElement: (
+      <React.Suspense fallback={<LoadingFallback />}>
+        <NotFound />
       </React.Suspense>
     ),
     children: [
@@ -126,8 +148,26 @@ const router = createBrowserRouter([
           </React.Suspense>
         ),
       },
+      /* 404 Route for Admin Layout */
+      {
+        path: "*",
+        element: (
+          <React.Suspense fallback={<LoadingFallback />}>
+            <NotFound />
+          </React.Suspense>
+        )
+      }
     ],
   },
+  // Catch-all for top-level routes that don't match / or /admin
+  {
+    path: "*",
+    element: (
+      <React.Suspense fallback={<LoadingFallback />}>
+        <NotFound />
+      </React.Suspense>
+    ),
+  }
 ]);
 
 function App() {
