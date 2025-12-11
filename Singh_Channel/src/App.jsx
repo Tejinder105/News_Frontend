@@ -10,6 +10,7 @@ const NewsArticle = React.lazy(() => import("./Pages/NewsArticle"));
 const About = React.lazy(() => import("./Pages/About"));
 const Contact = React.lazy(() => import("./Pages/Contact"));
 const CategoryPage = React.lazy(() => import("./Pages/CategoryPage"));
+const LocationPage = React.lazy(() => import("./Pages/LocationPage"));
 
 // Lazy Load Admin Pages
 const Dashboard = React.lazy(() => import("./Pages/Admin/Dashboard"));
@@ -21,8 +22,8 @@ const Settings = React.lazy(() => import("./Pages/Admin/Settings"));
 // Lazy Load NotFound Page
 const NotFound = React.lazy(() => import("./Pages/NotFound"));
 
-// Fallback Spinner
-import { Spinner } from "./Components";
+// Fallback Spinner & Protected Route
+import { Spinner, ProtectedRoute } from "./Components";
 
 const LoadingFallback = () => (
   <div className="flex h-screen items-center justify-center">
@@ -84,6 +85,14 @@ const router = createBrowserRouter([
           </React.Suspense>
         ),
       },
+      {
+        path: "/location/:location",
+        element: (
+          <React.Suspense fallback={<LoadingFallback />}>
+            <LocationPage />
+          </React.Suspense>
+        ),
+      },
       /* 404 Route for User Layout */
       {
         path: "*",
@@ -98,9 +107,11 @@ const router = createBrowserRouter([
   {
     path: "/admin",
     element: (
-      <React.Suspense fallback={<LoadingFallback />}>
-        <AdminLayout />
-      </React.Suspense>
+      <ProtectedRoute>
+        <React.Suspense fallback={<LoadingFallback />}>
+          <AdminLayout />
+        </React.Suspense>
+      </ProtectedRoute>
     ),
     errorElement: (
       <React.Suspense fallback={<LoadingFallback />}>
