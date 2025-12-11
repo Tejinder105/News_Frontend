@@ -37,6 +37,7 @@ export const useArticleForm = (post) => {
             isFeatured: post?.isFeatured || false,
             isBreaking: post?.isBreaking || false,
             youtubeLink: post?.youtubeLink || "",
+            location: post?.location || "",
             featuredImage: null
         },
     });
@@ -61,6 +62,7 @@ export const useArticleForm = (post) => {
                 isFeatured: post?.isFeatured || false,
                 isBreaking: post?.isBreaking || false,
                 youtubeLink: post?.youtubeLink || "",
+                location: post?.location || "",
             });
             setTags(post.tags || []);
         }

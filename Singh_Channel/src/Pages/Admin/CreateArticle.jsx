@@ -111,6 +111,7 @@ export default function CreateArticle({ post }) {
     formData.append("isFeatured", data.isFeatured);
     formData.append("isBreaking", data.isBreaking);
     formData.append("youtubeLink", data.youtubeLink);
+    formData.append("location", data.location || "");
     formData.append("tags", JSON.stringify(tags));
     formData.append("status", status.current);
     if (user) {
@@ -245,7 +246,7 @@ export default function CreateArticle({ post }) {
 
             <VideoSection register={register} errors={errors} watch={watch} />
 
-            <ArticleSettings watch={watch} setValue={setValue} />
+            <ArticleSettings watch={watch} setValue={setValue} register={register} />
           </Panel>
 
           {/* Button Section */}

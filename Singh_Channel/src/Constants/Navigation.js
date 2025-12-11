@@ -1,13 +1,13 @@
 export const navItems = [
     { name: "Home", path: "/" },
-    { name: "Ratia", path: "/category/ratia" },
+    { name: "Ratia", path: "/location/ratia" },
     {
         name: "Fatehabad",
-        path: "/category/fatehabad",
+        path: "/location/fatehabad",
         children: [
-            { name: "Fatehabad", path: "/category/fatehabad" },
-            { name: "Hisar", path: "/category/hisar" },
-            { name: "Tohana", path: "/category/tohana" },
+            { name: "Fatehabad", path: "/location/fatehabad" },
+            { name: "Hisar", path: "/location/hisar" },
+            { name: "Tohana", path: "/location/tohana" },
         ]
     },
     { name: "About", path: "/about" },

@@ -12,10 +12,15 @@ const getAllArticles = async (
   page = 1,
   limit = 20,
   tag = null,
+  location = null,
   signal = null
 ) => {
+  const params = { language, page, limit };
+  if (tag) params.tag = tag;
+  if (location) params.location = location;
+
   const res = await api.get(`/api/v1/articles/getarticles`, {
-    params: { language, page, limit, tag },
+    params,
     signal,
   });
   const normalized = normalizeArticlesResponse(res);

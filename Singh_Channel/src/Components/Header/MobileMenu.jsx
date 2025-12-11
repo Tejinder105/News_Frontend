@@ -25,7 +25,6 @@ const itemVariants = {
 };
 
 const MobileMenu = ({ isOpen, onClose }) => {
-  const navigate = useNavigate();
   const location = useLocation();
   const { loginWithRedirect, logout, user, isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [expandedItems, setExpandedItems] = useState({});

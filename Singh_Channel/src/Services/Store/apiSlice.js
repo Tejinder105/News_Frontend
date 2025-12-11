@@ -3,14 +3,15 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const apiSlice = createApi({
     reducerPath: "api",
     baseQuery: fetchBaseQuery({
-        baseUrl: (import.meta.env.VITE_API_URL || "http://localhost:8000") + "api/v1",
+        baseUrl: (import.meta.env.VITE_API_URL || "http://localhost:8000") + "/api/v1",
     }),
     tagTypes: ["Article"],
     endpoints: (builder) => ({
         getArticles: builder.query({
-            query: ({ language = "en", page = 1, limit = 20, tag = null }) => {
+            query: ({ language = "en", page = 1, limit = 20, tag = null, location = null }) => {
                 const params = { language, page, limit };
                 if (tag) params.tag = tag;
+                if (location) params.location = location;
                 return {
                     url: "/articles/getarticles",
                     params,

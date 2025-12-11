@@ -1,30 +1,38 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Save, Globe, Share2, Mail, Image as ImageIcon, CheckCircle, AlertCircle, Users } from "lucide-react";
+import { useAuth0 } from "@auth0/auth0-react";
 import Input from "../../Components/Ui/Input";
 import Button from "../../Components/Ui/Button";
 import SectionHeading from "../../Components/Ui/SectionHeading";
 import adminService from "../../Services/adminService";
-// import { useAuth } from "../../hooks/useAuth"; // Assuming hook exists, checking snippet later.
-// Using local storage for token if useAuth not obvious, or I'll try to find it.
-// Checking Sidebar again, it doesn't show auth usage clearly but likely passed down or in context.
-// Re-checking AdminLayout.
 
 function Settings() {
     const [activeTab, setActiveTab] = useState("general");
     const [loading, setLoading] = useState(false);
     const [fetchLoading, setFetchLoading] = useState(true);
     const [message, setMessage] = useState(null);
-    const [users, setUsers] = useState([]);
-    const [usersLoading, setUsersLoading] = useState(false);
 
-    const { register, handleSubmit, setValue, reset } = useForm();
+    const { register, handleSubmit, setValue } = useForm();
+    const { getAccessTokenSilently } = useAuth0();
 
-    // Get token from localStorage for now as common pattern
-    const token = localStorage.getItem("accessToken");
+    const [token, setToken] = useState(null);
+
+    useEffect(() => {
+        const fetchToken = async () => {
+            try {
+                const accessToken = await getAccessTokenSilently();
+                setToken(accessToken);
+            } catch (error) {
+                console.error("Error getting token:", error);
+            }
+        };
+        fetchToken();
+    }, [getAccessTokenSilently]);
 
     useEffect(() => {
         const fetchSettings = async () => {
+            if (!token) return;
             try {
                 const data = await adminService.getSettings();
                 if (data) {
@@ -40,7 +48,7 @@ function Settings() {
             }
         };
         fetchSettings();
-    }, [setValue]);
+    }, [setValue, token]);
 
     const onSubmit = async (data) => {
         setLoading(true);
@@ -59,34 +67,30 @@ function Settings() {
         }
     };
 
-    const fetchUsers = async () => {
-        setUsersLoading(true);
-        try {
-            const data = await adminService.getAllUsers({ token, limit: 100 });
-            setUsers(data.users || []);
-        } catch (err) {
-            console.error("Failed to fetch users", err);
-        } finally {
-            setUsersLoading(false);
-        }
-    };
+    const [userEmail, setUserEmail] = useState("");
+    const [selectedRole, setSelectedRole] = useState("user");
+    const [roleUpdateLoading, setRoleUpdateLoading] = useState(false);
 
-    useEffect(() => {
-        if (activeTab === "team" && token) {
-            fetchUsers();
+    const handleRoleUpdate = async (e) => {
+        e.preventDefault();
+        if (!userEmail.trim()) {
+            setMessage({ type: "error", text: "Please enter a valid email address" });
+            return;
         }
-    }, [activeTab, token]);
 
-    const handleRoleUpdate = async (userId, newRole) => {
+        setRoleUpdateLoading(true);
+        setMessage(null);
         try {
-            await adminService.updateUserRole(userId, newRole, token);
-            // Optimistic update or refetch
-            setUsers(prev => prev.map(u => u._id === userId ? { ...u, role: newRole } : u));
-            setMessage({ type: "success", text: "User role updated successfully" });
+            await adminService.updateUserRoleByEmail(userEmail, selectedRole, token);
+            setMessage({ type: "success", text: `Role updated successfully for ${userEmail}` });
+            setUserEmail("");
+            setSelectedRole("user");
             setTimeout(() => setMessage(null), 3000);
         } catch (err) {
             console.error("Failed to update role", err);
-            setMessage({ type: "error", text: "Failed to update user role" });
+            setMessage({ type: "error", text: err.response?.data?.message || "Failed to update user role" });
+        } finally {
+            setRoleUpdateLoading(false);
         }
     };
 
@@ -213,43 +217,56 @@ function Settings() {
                         {/* Team Settings */}
                         <div className={activeTab === "team" ? "block" : "hidden"}>
                             <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Team Management</h3>
+                            <p className="text-sm text-gray-600 mb-6">Update user roles by entering their email address</p>
 
-                            {usersLoading ? (
-                                <div className="text-center py-8 text-gray-500">Loading users...</div>
-                            ) : (
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-left border-collapse">
-                                        <thead>
-                                            <tr className="border-b border-gray-100 text-gray-600 text-sm">
-                                                <th className="py-2 px-2">Name</th>
-                                                <th className="py-2 px-2">Email</th>
-                                                <th className="py-2 px-2">Role</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {users.map((user) => (
-                                                <tr key={user._id} className="border-b border-gray-50 hover:bg-gray-50">
-                                                    <td className="py-3 px-2 font-medium text-gray-800">{user.name}</td>
-                                                    <td className="py-3 px-2 text-gray-600 text-sm">{user.email}</td>
-                                                    <td className="py-3 px-2">
-                                                        <select
-                                                            value={user.role}
-                                                            onChange={(e) => handleRoleUpdate(user._id, e.target.value)}
-                                                            className="px-2 py-1 bg-white border border-gray-200 rounded text-sm focus:outline-none focus:border-blue-500"
-                                                            disabled={user._id === "current_user_id_placeholder" /* Add current user check logic if needed */}
-                                                        >
-                                                            <option value="user">User</option>
-                                                            <option value="editor">Editor</option>
-                                                            <option value="admin">Admin</option>
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                    {users.length === 0 && <p className="text-center py-4 text-gray-500">No users found.</p>}
+                            <form onSubmit={handleRoleUpdate} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        User Email
+                                    </label>
+                                    <Input
+                                        type="email"
+                                        value={userEmail}
+                                        onChange={(e) => setUserEmail(e.target.value)}
+                                        placeholder="user@example.com"
+                                        required
+                                        disabled={roleUpdateLoading}
+                                    />
                                 </div>
-                            )}
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Assign Role
+                                    </label>
+                                    <select
+                                        value={selectedRole}
+                                        onChange={(e) => setSelectedRole(e.target.value)}
+                                        className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        disabled={roleUpdateLoading}
+                                    >
+                                        <option value="user">User</option>
+                                        <option value="editor">Editor</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                </div>
+
+                                <Button
+                                    type="submit"
+                                    loading={roleUpdateLoading}
+                                    iconLeft={<Save size={18} />}
+                                >
+                                    Update Role
+                                </Button>
+                            </form>
+
+                            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
+                                <h4 className="text-sm font-semibold text-blue-900 mb-2">Role Descriptions:</h4>
+                                <ul className="text-sm text-blue-800 space-y-1">
+                                    <li><strong>User:</strong> Can view published articles</li>
+                                    <li><strong>Editor:</strong> Can create and edit articles</li>
+                                    <li><strong>Admin:</strong> Full access to all features</li>
+                                </ul>
+                            </div>
                         </div>
 
                         <div className="mt-8 flex justify-end">

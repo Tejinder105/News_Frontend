@@ -162,6 +162,18 @@ const updateUserRole = async (userId, role, token) => {
   }
 };
 
+const updateUserRoleByEmail = async (email, role, token) => {
+  try {
+    const res = await api.put(`/api/v1/users/role/by-email`, { email, role }, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return res.data.data;
+  } catch (error) {
+    console.error("Update user role by email service error:", error);
+    throw error;
+  }
+};
+
 export default {
   getDashboardStats,
   getRecentActivities,
@@ -173,5 +185,6 @@ export default {
   getSettings,
   updateSettings,
   getAllUsers,
-  updateUserRole
+  updateUserRole,
+  updateUserRoleByEmail
 };
