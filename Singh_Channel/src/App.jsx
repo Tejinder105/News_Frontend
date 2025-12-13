@@ -1,5 +1,7 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ErrorBoundary } from "./Components";
+
 // Lazy Load Layouts
 const UserLayout = React.lazy(() => import("./Layouts/UserLayout"));
 const AdminLayout = React.lazy(() => import("./Layouts/AdminLayout"));
@@ -183,9 +185,9 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <>
+    <ErrorBoundary>
       <RouterProvider router={router} />
-    </>
+    </ErrorBoundary>
   );
 }
 
