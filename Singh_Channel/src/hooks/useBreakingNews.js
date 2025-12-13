@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoading, setBreakingNews, setError, clearBreakingNews } from "../Services/store/breakingNewsSlice";
+import { setLoading, setBreakingNews, setError, clearBreakingNews } from "../Services/Store/breakingNewsSlice";
 import articleService from "../Services/articleService";
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes

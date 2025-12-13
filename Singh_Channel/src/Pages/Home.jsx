@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
-import { Carousel, HeroSection, CardAd, Card, Button, SectionHeading, HeroSkeleton, CardGridSkeleton } from "../Components";
+import { HeroSection, CardAd, Card, Button, SectionHeading, HeroSkeleton, CardGridSkeleton } from "../Components";
 import { useSelector } from "react-redux";
-import { useGetArticlesQuery, useGetBreakingNewsQuery } from "../Services/store/apiSlice.js";
+import { useGetArticlesQuery, useGetBreakingNewsQuery } from "../Services/Store/apiSlice";
 import { useAdvertisements } from "../hooks/useAdvertisements";
 
 function Home() {
