@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Clock, Eye } from "lucide-react";
+import { Clock, BookOpen } from "lucide-react";
 import { formatRelativeTime } from "../../Utils/date";
 
 const HeroSection = ({ featured, topStories }) => {
@@ -70,9 +70,9 @@ const HeroSection = ({ featured, topStories }) => {
 
                                 <div className="mt-1 flex items-center justify-between text-[10px] text-gray-500 uppercase tracking-wide">
                                     <span>{formatRelativeTime(story.publishedAt)}</span>
-                                    {story.views > 500 && (
+                                    {story.readTime && (
                                         <span className="flex items-center gap-1 text-gray-400">
-                                            <Eye size={10} /> {story.views}
+                                            <BookOpen size={10} /> {story.readTime} min
                                         </span>
                                     )}
                                 </div>
@@ -90,9 +90,9 @@ const HeroSection = ({ featured, topStories }) => {
 
                                 <div className="mt-1 flex items-center justify-between text-[10px] text-gray-500 uppercase tracking-wide">
                                     <span>{formatRelativeTime(story.publishedAt)}</span>
-                                    {story.views > 500 && (
+                                    {story.readTime && (
                                         <span className="flex items-center gap-1 text-gray-400">
-                                            <Eye size={10} /> {story.views}
+                                            <BookOpen size={10} /> {story.readTime} min
                                         </span>
                                     )}
                                 </div>

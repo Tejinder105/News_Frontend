@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Carousel, HeroSection, CardAd, Card, Spinner, Button, SectionHeading } from "../Components";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
+import { Carousel, HeroSection, CardAd, Card, Button, SectionHeading, HeroSkeleton, CardGridSkeleton } from "../Components";
 import { useSelector } from "react-redux";
-import { useGetArticlesQuery, useGetBreakingNewsQuery } from "../Services/Store/apiSlice";
+import { useGetArticlesQuery, useGetBreakingNewsQuery } from "../Services/store/apiSlice";
 import { adItem } from "../AdItem.jsx";
 
 function Home() {
@@ -43,7 +43,6 @@ function Home() {
   }, [articlesData, page]);
 
   // 4. Reset on language change
-  // 4. Reset on language change
   useEffect(() => {
     setPage(1);
     // Don't clear articles here; let the data effect handle replacement when new data arrives.
@@ -54,19 +53,25 @@ function Home() {
   const loading = articlesLoading && page === 1;
   const error = articlesError ? "Failed to load news." : null;
 
-  const handleLoadMore = () => {
+  // Memoized callback to prevent unnecessary re-renders
+  const handleLoadMore = useCallback(() => {
     if (!articlesFetching && hasMore) {
       setPage(prev => prev + 1);
     }
-  };
+  }, [articlesFetching, hasMore]);
 
-  // --- RENDERING HELPERS ---
-
-  // --- COMPUTE HERO DATA ---
-  const featured = articles.find(a => a.isFeatured) || articles[0];
-  const topStories = articles
-    .filter(a => a._id !== featured?._id)
-    .slice(0, 5);
+  // --- MEMOIZED COMPUTED VALUES ---
+  
+  // Compute hero data with useMemo to prevent recalculation on every render
+  const featured = useMemo(() => 
+    articles.find(a => a.isFeatured) || articles[0], 
+    [articles]
+  );
+  
+  const topStories = useMemo(() => 
+    articles.filter(a => a._id !== featured?._id).slice(0, 5),
+    [articles, featured?._id]
+  );
 
   // Desktop View (Standard Grid + Sidebar)
   const renderDesktopView = () => (
@@ -209,7 +214,22 @@ function Home() {
 
   // --- MAIN RENDER ---
   if (loading && articles.length === 0) {
-    return <div className="flex h-screen items-center justify-center"><Spinner /></div>;
+    return (
+      <div className="mx-auto max-w-7xl bg-slate-50 px-2 py-3 sm:px-4 lg:px-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          <div className="space-y-8 md:col-span-2 lg:col-span-3">
+            <HeroSkeleton />
+            <CardGridSkeleton count={6} columns={3} />
+          </div>
+          <div className="hidden md:block space-y-4">
+            <div className="h-8 w-24 rounded bg-gray-200 animate-pulse" />
+            <div className="space-y-4">
+              {[1, 2, 3].map(i => <div key={i} className="h-40 rounded-lg bg-gray-200 animate-pulse" />)}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {

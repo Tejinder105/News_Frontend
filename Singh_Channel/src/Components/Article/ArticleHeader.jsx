@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import Button from "../Ui/Button";
-import { Share2, Calendar, User, Clock } from "lucide-react";
+import { Share2, User, Clock } from "lucide-react";
 import { formatDateTime } from "../../Utils/date";
-import LikeButton from "./LikeButton";
 
 const ArticleHeader = ({
   title,
@@ -11,7 +10,6 @@ const ArticleHeader = ({
   readTime,
   imageUrl,
   summary,
-  articleId,
 }) => {
   const handleShare = async () => {
     if (navigator.share) {
@@ -39,11 +37,11 @@ const ArticleHeader = ({
           </h1>
           {summary && (
             <div className="mb-6">
-              <div className="relative overflow-hidden rounded-lg bg-gray-50 border-l-4 border-gray-900 p-6">
-                <h3 className="mb-2 text-sm font-bold uppercase tracking-wider text-gray-400">
+              <div className="relative overflow-hidden rounded-lg border-l-4 border-gray-900 bg-gray-50 p-6">
+                <h3 className="mb-2 text-sm font-bold tracking-wider text-gray-400 uppercase">
                   Key Takeaways
                 </h3>
-                <p className="text-lg italic leading-relaxed text-gray-700 font-serif">
+                <p className="font-serif text-lg leading-relaxed text-gray-700 italic">
                   {summary}
                 </p>
               </div>
@@ -58,7 +56,7 @@ const ArticleHeader = ({
                     <User className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                    <p className="text-xs font-semibold tracking-wider text-gray-500 uppercase">
                       Written By
                     </p>
                     <p className="font-medium text-gray-900">{author}</p>
@@ -68,7 +66,7 @@ const ArticleHeader = ({
 
               {publishedTime && (
                 <div className="hidden sm:block">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                  <p className="text-xs font-semibold tracking-wider text-gray-500 uppercase">
                     Published
                   </p>
                   <p className="text-sm font-medium text-gray-900">
@@ -87,7 +85,6 @@ const ArticleHeader = ({
               <div className="h-4 w-px bg-gray-200"></div>
 
               <div className="flex items-center space-x-2">
-                {articleId && <LikeButton articleId={articleId} />}
                 <Button
                   iconLeft={<Share2 size={16} />}
                   type="button"

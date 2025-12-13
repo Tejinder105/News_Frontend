@@ -39,14 +39,6 @@ function NewsArticle() {
       });
   }, [id, language]);
 
-  const calculateReadTime = (text) => {
-    if (!text || typeof text !== "string") return "0 min read";
-    const wordsPerMinute = 150;
-    const noOfWords = text.replace(/<[^>]*>/g, "").split(/\s/g).length;
-    const minutes = Math.ceil(noOfWords / wordsPerMinute);
-    return `${minutes} min read`;
-  };
-
   if (loading) return <SkeletonArticle />;
   if (error) return <ResourceNotFound />;
 
@@ -76,7 +68,7 @@ function NewsArticle() {
                   publishedTime={content.publishedAt}
                   imageUrl={content.image}
                   summary={content.summary || content.description}
-                  readTime={calculateReadTime(content.content)}
+                  readTime={`${content.readTime || 1} min read`}
                   articleId={content._id}
                 />
                 <ArticleContent

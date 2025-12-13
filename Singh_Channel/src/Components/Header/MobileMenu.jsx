@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { X, LogIn, UserPlus, ChevronDown, ChevronRight, Home, Info, Phone, Shield } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import Logo from "../Ui/Logo";
 import { navItems } from "../../Constants/Navigation";
-import { useNavigate, NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import Button from "../Ui/Button";
-import api from "../../Services/apiClient";
+import { useAdminCheck } from "../../hooks/useAdminCheck";
 
 // Animation Variants
 const menuVariants = {
@@ -26,36 +26,9 @@ const itemVariants = {
 
 const MobileMenu = ({ isOpen, onClose }) => {
   const location = useLocation();
-  const { loginWithRedirect, logout, user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
   const [expandedItems, setExpandedItems] = useState({});
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (isAuthenticated && user) {
-        try {
-          const token = await getAccessTokenSilently();
-
-          const response = await api.get("/api/v1/users/profile", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-
-          const profile = response.data;
-          setIsAdmin(
-            profile.user.roles?.some(
-              (role) => role.toLowerCase() === "admin"
-            )
-          );
-        } catch (error) {
-          console.error("Error fetching user profile:", error);
-        }
-      }
-    };
-
-    fetchUserProfile();
-  }, [isAuthenticated, user, getAccessTokenSilently]);
+  const { isAdmin } = useAdminCheck();
 
   const toggleExpand = (name) => {
     setExpandedItems(prev => ({ ...prev, [name]: !prev[name] }));

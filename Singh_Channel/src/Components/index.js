@@ -3,7 +3,6 @@ export { default as ArticleHeader } from "./Article/ArticleHeader";
 export { default as ArticleContent } from "./Article/ArticleContent";
 export { default as SkeletonArticle } from "./Article/SkeletonArticle";
 export { default as RelatedArticles } from "./Article/RelatedArticles";
-export { default as LikeButton } from "./Article/LikeButton";
 export { default as CommentSection } from "./Article/CommentSection";
 export { default as LazyYouTubeEmbed } from "./Article/LazyYouTubeEmbed";
 export { ReadingProgress } from "./Article/ArticleAnimations";
@@ -18,12 +17,19 @@ export { default as HeroSection } from "./Ui/HeroSection";
 export { default as Input } from "./Ui/Input";
 export { default as Logo } from "./Ui/Logo";
 export { default as Modal } from "./Ui/Modal";
+export { default as OptimizedImage } from "./Ui/OptimizedImage";
 export { default as Panel } from "./Ui/Panel";
 export { default as ResourceNotFound } from "./Ui/ResourceNotFound";
 export { default as SectionHeading } from "./Ui/SectionHeading";
 export { default as Spinner } from "./Ui/Spinner";
 export { default as TagsInput } from "./Ui/TagsInput";
 export { default as Toggle } from "./Ui/Toggle";
+
+// Skeleton Components
+export * from "./Ui/Skeleton";
+
+// Error Boundary
+export { default as ErrorBoundary, withErrorBoundary } from "./ErrorBoundary";
 
 // Layout Components
 export { default as Footer } from "./Footer/Footer";
