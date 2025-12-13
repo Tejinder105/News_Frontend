@@ -29,12 +29,6 @@ const getStatsData = (statsData) => {
         icon: <Clock className="text-yellow-600" />,
         bgcolor: "bg-yellow-100",
       },
-      {
-        name: "Total Views",
-        value: "0",
-        icon: <Eye className="text-purple-600" />,
-        bgcolor: "bg-purple-100",
-      },
     ];
   }
 
@@ -62,12 +56,6 @@ const getStatsData = (statsData) => {
       value: formatNumber(statsData.draftArticles || 0),
       icon: <Clock className="text-yellow-600" />,
       bgcolor: "bg-yellow-100",
-    },
-    {
-      name: "Total Views",
-      value: formatNumber(statsData.totalViews || 0),
-      icon: <Eye className="text-purple-600" />,
-      bgcolor: "bg-purple-100",
     },
   ];
 };

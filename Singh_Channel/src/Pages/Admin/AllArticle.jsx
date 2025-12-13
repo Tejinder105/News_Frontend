@@ -3,7 +3,7 @@ import { Eye, Edit, Trash2, Search, Filter } from "lucide-react";
 import adminService from "../../Services/adminService";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
-import { Panel } from "../../Components";
+import { Panel, TableSkeleton } from "../../Components";
 
 // Debounce hook
 const useDebounce = (value, delay) => {
@@ -210,7 +210,7 @@ function AllArticle() {
                   <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Author</th>
                   <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Status</th>
                   <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Views</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Read Time</th>
                   <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">Actions</th>
                 </tr>
               </thead>
@@ -257,7 +257,7 @@ function AllArticle() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500">{formatDate(article.updatedAt)}</td>
-                      <td className="px-6 py-4 text-sm text-gray-500">{article.views?.toLocaleString() ?? 0}</td>
+                      <td className="px-6 py-4 text-sm text-gray-500">{article.readTime || 1} min</td>
                       <td className="px-6 py-4 text-right text-sm">
                         <div className="flex justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100">
                           <button
@@ -335,7 +335,7 @@ function AllArticle() {
                   <div className="mb-1 text-sm text-gray-700">By {article.author || '-'}</div>
                   <div className="mb-1 text-xs text-gray-500">{formatDate(article.updatedAt)}</div>
                   <div className="mb-2 text-xs text-gray-500 flex items-center gap-1">
-                    <Eye size={14} /> {article.views?.toLocaleString() ?? 0}
+                    <Clock size={14} /> {article.readTime || 1} min read
                   </div>
                   <div className="flex gap-2">
                     <button

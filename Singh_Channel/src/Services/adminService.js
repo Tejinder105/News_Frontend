@@ -62,10 +62,6 @@ const getAllArticlesForAdmin = async ({
   }
 };
 
-// Note: Public articles endpoints live in articleService.js
-// Avoid duplicating them here to reduce drift.
-
-// Delete article
 const deleteArticle = async (articleId, token) => {
   try {
     const res = await api.delete(`/api/v1/admin/articles/${articleId}`, {
@@ -136,31 +132,6 @@ const updateSettings = async (data, token) => {
   }
 };
 
-const getAllUsers = async (params = {}) => {
-  try {
-    const { page = 1, limit = 10, search = "", token } = params;
-    const res = await api.get("/api/v1/users", {
-      params: { page, limit, search },
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    return res.data.data;
-  } catch (error) {
-    console.error("Get all users service error:", error);
-    throw error;
-  }
-};
-
-const updateUserRole = async (userId, role, token) => {
-  try {
-    const res = await api.put(`/api/v1/users/${userId}/role`, { role }, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    return res.data.data;
-  } catch (error) {
-    console.error("Update user role service error:", error);
-    throw error;
-  }
-};
 
 const updateUserRoleByEmail = async (email, role, token) => {
   try {
@@ -184,7 +155,5 @@ export default {
   updateArticle,
   getSettings,
   updateSettings,
-  getAllUsers,
-  updateUserRole,
   updateUserRoleByEmail
 };

@@ -43,6 +43,8 @@ function Settings() {
                 }
             } catch (err) {
                 console.error("Failed to fetch settings", err);
+                // Don't block the UI if settings fetch fails
+                // User can still update settings
             } finally {
                 setFetchLoading(false);
             }
