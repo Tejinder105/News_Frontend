@@ -36,15 +36,15 @@ const Card = memo(
           {/* IMAGE SECTION */}
           {showImage && (
             <div
-              className={`relative overflow-hidden ${
-                variant === "horizontal"
+              className={`relative overflow-hidden ${variant === "horizontal"
                   ? "order-2 h-24 w-1/3 shrink-0 rounded-lg" // Image on Right for Horizontal
                   : `${imageHeight} w-full`
-              }`}
+                }`}
             >
               <OptimizedImage
                 src={article.image}
                 alt={article.headline}
+                width={500}
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               {/* Breaking Badge (Only on non-horizontal mobile or if space permits) */}

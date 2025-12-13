@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, memo } from "react";
+import { getOptimizedImageUrl } from "../../Utils/image";
 
 /**
  * OptimizedImage component with:
@@ -12,6 +13,8 @@ const OptimizedImage = memo(function OptimizedImage({
     src,
     alt,
     className = "",
+    width,
+    height,
     placeholderColor = "#e5e7eb", // Tailwind gray-200
     fallbackSrc = "/placeholder-image.jpg",
     ...props
@@ -54,7 +57,7 @@ const OptimizedImage = memo(function OptimizedImage({
         setIsLoaded(true);
     };
 
-    const imageSrc = hasError ? fallbackSrc : src;
+    const imageSrc = hasError ? fallbackSrc : getOptimizedImageUrl(src, { width, height });
 
     return (
         <div
@@ -64,9 +67,9 @@ const OptimizedImage = memo(function OptimizedImage({
         >
             {/* Low-quality placeholder / blur effect */}
             {!isLoaded && (
-                <div 
+                <div
                     className="absolute inset-0 animate-pulse"
-                    style={{ 
+                    style={{
                         background: `linear-gradient(90deg, ${placeholderColor} 0%, #f3f4f6 50%, ${placeholderColor} 100%)`,
                         backgroundSize: "200% 100%",
                         animation: "shimmer 1.5s infinite"
@@ -83,9 +86,8 @@ const OptimizedImage = memo(function OptimizedImage({
                     decoding="async"
                     onLoad={handleLoad}
                     onError={handleError}
-                    className={`h-full w-full object-cover transition-opacity duration-500 ${
-                        isLoaded ? "opacity-100" : "opacity-0"
-                    }`}
+                    className={`h-full w-full object-cover transition-opacity duration-500 ${isLoaded ? "opacity-100" : "opacity-0"
+                        }`}
                     {...props}
                 />
             )}

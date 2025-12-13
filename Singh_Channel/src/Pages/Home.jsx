@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { Carousel, HeroSection, CardAd, Card, Button, SectionHeading, HeroSkeleton, CardGridSkeleton } from "../Components";
 import { useSelector } from "react-redux";
-import { useGetArticlesQuery, useGetBreakingNewsQuery } from "../Services/store/apiSlice";
+import { useGetArticlesQuery, useGetBreakingNewsQuery } from "../Services/store/apiSlice.js";
 import { adItem } from "../AdItem.jsx";
 
 function Home() {
@@ -24,7 +24,7 @@ function Home() {
   });
 
   // 2. Fetch Breaking News
-  const { data: breakingNews = [] } = useGetBreakingNewsQuery({ language });
+  const { data: breakingNews = [], isLoading: breakingNewsLoading } = useGetBreakingNewsQuery({ language });
 
   // 3. Append new articles when data arrives
   useEffect(() => {
@@ -61,14 +61,14 @@ function Home() {
   }, [articlesFetching, hasMore]);
 
   // --- MEMOIZED COMPUTED VALUES ---
-  
+
   // Compute hero data with useMemo to prevent recalculation on every render
-  const featured = useMemo(() => 
-    articles.find(a => a.isFeatured) || articles[0], 
+  const featured = useMemo(() =>
+    articles.find(a => a.isFeatured) || articles[0],
     [articles]
   );
-  
-  const topStories = useMemo(() => 
+
+  const topStories = useMemo(() =>
     articles.filter(a => a._id !== featured?._id).slice(0, 5),
     [articles, featured?._id]
   );
@@ -82,12 +82,23 @@ function Home() {
         {/* NEW HERO SECTION (Replaces Carousel) */}
         <HeroSection featured={featured} topStories={topStories} />
 
-        {/* Breaking News Section (Desktop) */}
-        {breakingNews.length > 0 && (
+        {/* Breaking News Section (Desktop) - With Skeleton to prevent CLS */}
+        {(breakingNews.length > 0 || breakingNewsLoading) && (
           <div>
             <SectionHeading title="Breaking News" color="red" animated />
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {breakingNews.slice(0, 3).map(item => <Card key={item.slug} article={item} />)}
+              {breakingNewsLoading ? (
+                // Skeleton for Breaking News
+                [...Array(3)].map((_, i) => (
+                  <div key={i} className="flex flex-col gap-2">
+                    <div className="h-40 w-full animate-pulse rounded-lg bg-gray-200"></div>
+                    <div className="h-4 w-3/4 animate-pulse rounded bg-gray-200"></div>
+                    <div className="h-4 w-1/2 animate-pulse rounded bg-gray-200"></div>
+                  </div>
+                ))
+              ) : (
+                breakingNews.slice(0, 3).map(item => <Card key={item.slug} article={item} />)
+              )}
             </div>
           </div>
         )}

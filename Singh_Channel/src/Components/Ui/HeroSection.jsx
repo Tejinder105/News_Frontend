@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Clock, BookOpen } from "lucide-react";
 import { formatRelativeTime } from "../../Utils/date";
+import { getOptimizedImageUrl } from "../../Utils/image";
 
 const HeroSection = ({ featured, topStories }) => {
     if (!featured) return null;
@@ -15,15 +16,16 @@ const HeroSection = ({ featured, topStories }) => {
 
     return (
         <div className="grid grid-cols-1 gap-2 lg:grid-cols-7 lg:gap-4 mb-2">
-            
+
             {/* LEFT SIDE — FEATURED BANNER */}
             <div className="lg:col-span-4 group">
                 <Link to={`/article/${featured.slug}`} className="block h-full">
                     <div className="relative h-[375px] w-full overflow-hidden rounded-2xl shadow-lg">
                         <img
-                            src={featured.image}
+                            src={getOptimizedImageUrl(featured.image, { width: 1200 })}
                             alt={featured.headline}
                             loading="eager"
+                            fetchPriority="high"
                             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                         />
 
@@ -59,7 +61,7 @@ const HeroSection = ({ featured, topStories }) => {
                 </h3>
 
                 <div className="grid grid-cols-2 gap-2 flex-1">
-                    
+
                     {/* COLUMN 1 */}
                     <div className="flex flex-col gap-2 divide-y divide-gray-100">
                         {firstColumn.map((story) => (

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Tag } from "lucide-react";
 import articleService from "../../Services/articleService";
 import Panel from "../Ui/Panel";
+import { getOptimizedImageUrl } from "../../Utils/image";
 
 const RelatedArticles = ({
   tags,
@@ -87,7 +88,7 @@ const RelatedArticles = ({
           >
             {article.image && (
               <img
-                src={article.image}
+                src={getOptimizedImageUrl(article.image, { width: 200 })}
                 alt={article.headline}
                 className="h-16 w-24 flex-shrink-0 rounded-md object-cover shadow-sm transition-opacity group-hover:opacity-90"
                 loading="lazy"

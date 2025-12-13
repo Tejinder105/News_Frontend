@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoading, setBreakingNews, setError, clearBreakingNews } from "../Services/Store/breakingNewsSlice";
+import { setLoading, setBreakingNews, setError, clearBreakingNews } from "../Services/store/breakingNewsSlice";
 import articleService from "../Services/articleService";
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
@@ -23,14 +23,14 @@ export const useBreakingNews = () => {
 
     try {
       dispatch(setLoading(true));
-      
+
       // Fetch all articles and filter for breaking news
       // This ensures consistency with Home.jsx and provides full article objects
       const { articles } = await articleService.getAllArticles(language, 1, 50);
-      const breaking = Array.isArray(articles) 
+      const breaking = Array.isArray(articles)
         ? articles.filter((article) => article?.isBreaking)
         : [];
-      
+
       dispatch(setBreakingNews(breaking));
     } catch (err) {
       console.error("Error fetching breaking news:", err);

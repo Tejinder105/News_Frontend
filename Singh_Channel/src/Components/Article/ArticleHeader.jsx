@@ -2,6 +2,7 @@ import React from "react";
 import Button from "../Ui/Button";
 import { Share2, User, Clock } from "lucide-react";
 import { formatDateTime } from "../../Utils/date";
+import { getOptimizedImageUrl } from "../../Utils/image";
 
 const ArticleHeader = ({
   title,
@@ -102,7 +103,7 @@ const ArticleHeader = ({
               <figure className="group relative">
                 <div className="relative overflow-hidden rounded-2xl shadow-lg">
                   <img
-                    src={imageUrl}
+                    src={getOptimizedImageUrl(imageUrl, { width: 1200 })}
                     alt={title}
                     className="h-auto w-full object-cover transition-all duration-700 hover:scale-105"
                     loading="eager"

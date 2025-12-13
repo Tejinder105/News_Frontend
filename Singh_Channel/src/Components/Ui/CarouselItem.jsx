@@ -2,6 +2,8 @@ import React from "react";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatRelativeTime } from "../../Utils/date";
+import { getOptimizedImageUrl } from "../../Utils/image";
+
 function CarouselItem({ item }) {
 
   return (
@@ -9,7 +11,7 @@ function CarouselItem({ item }) {
       {/* Image Container - Top on mobile (fixed height), Left on desktop */}
       <div className="relative h-40 w-full shrink-0 sm:h-full sm:w-full overflow-hidden">
         <img
-          src={item.image || "/placeholder-image.jpg"}
+          src={getOptimizedImageUrl(item.image, { width: 800 }) || "/placeholder-image.jpg"}
           alt={item.tag || item.category || "News"}
           className="h-full w-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
           onError={(e) => {

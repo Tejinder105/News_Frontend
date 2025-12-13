@@ -46,7 +46,7 @@ function Footer() {
 
         {/* 3. SOCIALS ROW */}
         <div className="mb-8 flex items-center gap-4">
-          <span className="text-sm font-semibold text-gray-100">Follow Us on:</span>
+          <span className="text-sm font-semibold text-gray-200">Follow Us on:</span>
           <div className="flex gap-4">
             {socialMedia.map((social) => (
               <a
@@ -64,7 +64,7 @@ function Footer() {
         {/* 4. LEGAL & COPYRIGHT */}
         <div className="border-t border-gray-800 pt-6">
           {/* Legal Links Row */}
-          <div className="mb-4 flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-400">
+          <div className="mb-4 flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-300">
             {legal.map(l => (
               <Link key={l.name} to={l.path} className="hover:text-white hover:underline">{l.name}</Link>
             ))}
@@ -72,9 +72,8 @@ function Footer() {
           </div>
 
           {/* Copyright Text */}
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-400">
             Copyright © {new Date().getFullYear()} {company.name}. The {company.name} is not responsible for the content of external sites.
-            <span className="font-bold text-gray-400 ml-1">Read about our approach to external linking.</span>
           </p>
         </div>
 

@@ -36,11 +36,10 @@ export const AnimatedWrapper = ({ children, className = "", delay = 0 }) => {
     return (
         <div
             ref={ref}
-            className={`transition-all duration-700 ease-out ${
-                isInView
+            className={`transition-all duration-700 ease-out ${isInView
                     ? "translate-y-0 opacity-100"
                     : "translate-y-8 opacity-0"
-            } ${className}`}
+                } ${className}`}
             style={{ transitionDelay: `${delay}ms` }}
         >
             {children}
@@ -53,21 +52,33 @@ export const ReadingProgress = () => {
     const [progress, setProgress] = React.useState(0);
 
     useEffect(() => {
-        const handleScroll = () => {
-            const totalHeight =
-                document.documentElement.scrollHeight - window.innerHeight;
+        let ticking = false;
+
+        const updateProgress = () => {
+            const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
             const currentProgress = (window.pageYOffset / totalHeight) * 100;
             setProgress(Math.min(currentProgress, 100));
+            ticking = false;
+        };
+
+        const handleScroll = () => {
+            if (!ticking) {
+                window.requestAnimationFrame(updateProgress);
+                ticking = true;
+            }
         };
 
         window.addEventListener("scroll", handleScroll);
+        // Initial calculation
+        updateProgress();
+
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
     return (
-        <div className="fixed top-0 left-0 z-50 h-0.5 w-full bg-gray-200">
+        <div className="fixed top-0 left-0 z-[100] h-1 w-full bg-gray-200/20">
             <div
-                className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 transition-all duration-300 ease-out"
+                className="h-full bg-gradient-to-r from-red-600 to-red-600 transition-all duration-150 ease-out"
                 style={{ width: `${progress}%` }}
             />
         </div>
@@ -80,12 +91,27 @@ export const ParallaxImage = ({ src, alt, className = "" }) => {
     const ref = useRef();
 
     useEffect(() => {
-        const handleScroll = () => {
+        let ticking = false;
+
+        const updateParallax = () => {
             if (ref.current) {
                 const rect = ref.current.getBoundingClientRect();
-                const scrolled = window.pageYOffset;
-                const parallax = scrolled * 0.5;
-                setOffset(parallax);
+                const viewHeight = window.innerHeight;
+
+                // Only animate if in view to save resources
+                if (rect.top < viewHeight && rect.bottom > 0) {
+                    const scrolled = window.pageYOffset;
+                    const parallax = scrolled * 0.5;
+                    setOffset(parallax);
+                }
+            }
+            ticking = false;
+        };
+
+        const handleScroll = () => {
+            if (!ticking) {
+                window.requestAnimationFrame(updateParallax);
+                ticking = true;
             }
         };
 

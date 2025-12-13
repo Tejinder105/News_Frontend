@@ -1,5 +1,6 @@
 import React from "react";
 import { ExternalLink, ArrowRight } from "lucide-react";
+import { getOptimizedImageUrl } from "../../Utils/image";
 
 function CardAd({ data }) {
   return (
@@ -8,7 +9,7 @@ function CardAd({ data }) {
       {/* Image Section */}
       <div className="relative aspect-[16/9] w-full overflow-hidden">
         <img
-          src={data.image}
+          src={getOptimizedImageUrl(data.image, { width: 500 })}
           alt={data.name}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -23,7 +24,7 @@ function CardAd({ data }) {
 
         {/* Sponsored Label */}
         <div className="mb-2 flex items-center justify-between">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
             Sponsored
           </span>
           <span className="text-[10px] font-medium text-slate-500">
