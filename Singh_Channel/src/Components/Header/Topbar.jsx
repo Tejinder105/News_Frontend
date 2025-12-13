@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setLanguage } from "../../Services/store/languageSlice.js";
+import { setLanguage } from "../../Services/Store/languageSlice";
 import Button from "../Ui/Button.jsx";
 
 function Topbar() {
