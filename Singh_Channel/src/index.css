@@ -1,7 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap");
 @import "tailwindcss";
 @import "./Components/Article/article-styles.css";
 
@@ -16,9 +15,6 @@
 
   /* Reading font family - Source Serif for body text */
   --font-serif: "Source Serif 4", "Times New Roman", Georgia, serif;
-
-  /* Monospace font family - JetBrains Mono for code */
-  --font-mono: "JetBrains Mono", "Fira Code", "Monaco", "Consolas", monospace;
 
   /* Typography scale variables */
   --font-scale-ratio: 1.25;
