@@ -145,6 +145,88 @@ const updateUserRoleByEmail = async (email, role, token) => {
   }
 };
 
+// Advertisement Management
+const getAdvertisements = async (token) => {
+  try {
+    const res = await api.get("/api/v1/advertisements", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return res.data.data;
+  } catch (error) {
+    console.error("Get advertisements service error:", error);
+    throw error;
+  }
+};
+
+const getActiveAdvertisements = async (placement = null) => {
+  try {
+    const params = placement ? { placement } : {};
+    const res = await api.get("/api/v1/advertisements/active", { params });
+    return res.data.data;
+  } catch (error) {
+    console.error("Get active advertisements service error:", error);
+    throw error;
+  }
+};
+
+const createAdvertisement = async (data, token) => {
+  try {
+    const res = await api.post("/api/v1/advertisements", data, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return res.data.data;
+  } catch (error) {
+    console.error("Create advertisement service error:", error);
+    throw error;
+  }
+};
+
+const updateAdvertisement = async (id, data, token) => {
+  try {
+    const res = await api.patch(`/api/v1/advertisements/${id}`, data, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return res.data.data;
+  } catch (error) {
+    console.error("Update advertisement service error:", error);
+    throw error;
+  }
+};
+
+const deleteAdvertisement = async (id, token) => {
+  try {
+    const res = await api.delete(`/api/v1/advertisements/${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Delete advertisement service error:", error);
+    throw error;
+  }
+};
+
+const getAdvertisementStats = async (token) => {
+  try {
+    const res = await api.get("/api/v1/advertisements/stats", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return res.data.data;
+  } catch (error) {
+    console.error("Get advertisement stats service error:", error);
+    throw error;
+  }
+};
+
+const trackAdClick = async (id) => {
+  try {
+    const res = await api.post(`/api/v1/advertisements/${id}/click`);
+    return res.data.data;
+  } catch (error) {
+    console.error("Track ad click service error:", error);
+    throw error;
+  }
+};
+
 export default {
   getDashboardStats,
   getRecentActivities,
@@ -155,5 +237,13 @@ export default {
   updateArticle,
   getSettings,
   updateSettings,
-  updateUserRoleByEmail
+  updateUserRoleByEmail,
+  // Advertisement
+  getAdvertisements,
+  getActiveAdvertisements,
+  createAdvertisement,
+  updateAdvertisement,
+  deleteAdvertisement,
+  getAdvertisementStats,
+  trackAdClick,
 };

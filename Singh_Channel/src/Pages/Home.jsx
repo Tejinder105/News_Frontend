@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { Carousel, HeroSection, CardAd, Card, Button, SectionHeading, HeroSkeleton, CardGridSkeleton } from "../Components";
 import { useSelector } from "react-redux";
 import { useGetArticlesQuery, useGetBreakingNewsQuery } from "../Services/store/apiSlice.js";
-import { adItem } from "../AdItem.jsx";
+import { useAdvertisements } from "../hooks/useAdvertisements";
 
 function Home() {
   // --- RTK QUERY HOOKS ---
@@ -10,6 +10,9 @@ function Home() {
   const [page, setPage] = useState(1);
   const [articles, setArticles] = useState([]);
   const ITEMS_PER_PAGE = 20;
+
+  // Fetch advertisements from backend (with fallback to static)
+  const { advertisements } = useAdvertisements("sidebar");
 
   // 1. Fetch Articles
   const {
@@ -127,7 +130,7 @@ function Home() {
             <span className="text-blue-600">Sponsored</span>
           </h2>
           <div className="space-y-4">
-            {adItem.map((ad, i) => <CardAd key={i} data={ad} />)}
+            {advertisements.map((ad, i) => <CardAd key={ad._id || i} data={ad} />)}
           </div>
         </div>
       </div>
@@ -197,8 +200,8 @@ function Home() {
             <div className="h-[1px] flex-1 bg-gray-200" />
           </div>
           <div className="grid grid-cols-2 gap-2">
-            {adItem.slice(0, 4).map((ad, i) => (
-              <CardAd key={i} data={ad} />
+            {advertisements.slice(0, 4).map((ad, i) => (
+              <CardAd key={ad._id || i} data={ad} />
             ))}
           </div>
         </div>

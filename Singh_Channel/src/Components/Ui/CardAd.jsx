@@ -1,8 +1,21 @@
 import React from "react";
-import { ExternalLink, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { getOptimizedImageUrl } from "../../Utils/image";
+import adminService from "../../Services/adminService";
 
 function CardAd({ data }) {
+  const handleClick = async () => {
+    // Track the click if we have an ID (from backend)
+    if (data._id) {
+      try {
+        await adminService.trackAdClick(data._id);
+      } catch (err) {
+        // Silently fail - don't block the user
+        console.error("Failed to track ad click:", err);
+      }
+    }
+  };
+
   return (
     <div className="group relative flex h-full flex-col overflow-hidden rounded-lg border border-slate-200 bg-slate-50 transition-all hover:bg-slate-100 hover:shadow-md">
 
@@ -47,6 +60,7 @@ function CardAd({ data }) {
           href={data.link}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={handleClick}
           className="flex w-full items-center justify-center gap-2 rounded-md bg-white border border-slate-300 py-2.5 text-sm font-semibold text-slate-800 transition-all hover:bg-slate-900 hover:text-white hover:border-slate-900 group/btn"
         >
           {data.tag || "Learn More"}

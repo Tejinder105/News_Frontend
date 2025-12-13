@@ -12,7 +12,7 @@ import {
   Panel,
   CommentSection,
 } from "../Components";
-import { adItem } from "../AdItem.jsx";
+import { useAdvertisements } from "../hooks/useAdvertisements";
 import articleService from "../Services/articleService";
 
 function NewsArticle() {
@@ -21,6 +21,9 @@ function NewsArticle() {
   const [content, setContent] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  
+  // Fetch advertisements from backend
+  const { advertisements } = useAdvertisements("sidebar");
 
   useEffect(() => {
     setLoading(true);
@@ -100,9 +103,9 @@ function NewsArticle() {
                   </p>
                 </div>
                 <div className="grid grid-cols-1 gap-3">
-                  {adItem.slice(0, 4).map((ad, idx) => (
+                  {advertisements.slice(0, 4).map((ad, idx) => (
                     <div
-                      key={idx}
+                      key={ad._id || idx}
                       className="transform transition-transform hover:scale-105"
                     >
                       <CardAd data={ad} />
